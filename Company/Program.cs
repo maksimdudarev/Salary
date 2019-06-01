@@ -20,7 +20,7 @@ namespace Company
                 new Employee(3, "Трамп", DateTime.Parse("11/12/13"), Groups.Salesman, 35, new List<int> {2, 4}, salarySalesman),
                 new Employee(4, "Паркер", DateTime.Parse("8/4/2"), Groups.Employee, 20, new List<int> {}, salaryEmployee),
                 new Employee(5, "Морган", DateTime.Parse("15/10/15"), Groups.Manager, 40, new List<int> {3}, salaryManager),
-                new Employee(6, "Хьюз", DateTime.Parse("3/9/3"), Groups.Salesman, 25, new List<int> {7}, salarySalesman),
+                new Employee(6, "Хьюз", DateTime.Parse("3/8/3"), Groups.Salesman, 25, new List<int> {7}, salarySalesman),
                 new Employee(7, "МакФлай", DateTime.Parse("31/1/13"), Groups.Employee, 10, new List<int> {}, salaryEmployee)
             };
             for (int i = 0; i < employeeList.Count; i++)
