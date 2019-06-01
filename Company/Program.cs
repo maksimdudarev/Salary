@@ -20,7 +20,7 @@ namespace Company
                 new Employee(3, "Трамп", DateTime.Parse("11/12/13"), Groups.Salesman, 35, new List<int> {2, 4}, salarySalesman),
                 new Employee(4, "Паркер", DateTime.Parse("8/4/2"), Groups.Employee, 20, new List<int> {}, salaryEmployee),
                 new Employee(5, "Морган", DateTime.Parse("15/10/15"), Groups.Manager, 40, new List<int> {3}, salaryManager),
-                new Employee(6, "Хьюз", DateTime.Parse("3/8/3"), Groups.Salesman, 25, new List<int> {7}, salarySalesman),
+                new Employee(6, "Хьюз", DateTime.Parse("7/5/75"), Groups.Salesman, 25, new List<int> {7}, salarySalesman),
                 new Employee(7, "МакФлай", DateTime.Parse("31/1/13"), Groups.Employee, 10, new List<int> {}, salaryEmployee)
             };
             for (int i = 0; i < employeeList.Count; i++)
@@ -36,10 +36,9 @@ namespace Company
         }
     }
 
-    public enum Groups
-    {
-        Employee, Manager, Salesman
-    }
+    public enum Groups { Employee, Manager, Salesman }
+    public enum ExperienceRates { Employee = 3, Manager = 5, Salesman = 1 }
+    public enum LimitRates { Employee = 30, Manager = 40, Salesman = 35 }
 
     public class Employee
     {
@@ -60,11 +59,20 @@ namespace Company
             SalaryBase = salaryBase;
             SubordinateListID = subordinateListID;
             SalaryCalculator = salaryCalculator;
+            Experience = GetExperience(dateHire);
         }
         public List<Employee> EmployeeList { get; set; }
         public List<Employee> GetSubordinateList()
         {
             return EmployeeList.Where(emp => SubordinateListID.Contains(emp.ID)).ToList();
+        }
+        public int Experience { get; set; }
+        public int GetExperience(DateTime dateHire)
+        {
+            var today = DateTime.Today;
+            var exp = today.Year - dateHire.Year;
+            if (dateHire.Date > today.AddYears(-exp)) exp--;
+            return exp;
         }
         public int SalaryCalculated { get; set; }
         public void CalculateSalary()
@@ -78,7 +86,7 @@ namespace Company
         }
         public void SalaryWrite()
         {
-            Console.WriteLine(Name + " " + Group + " " + DateHire.ToString("dd MMMM yyyy") + " зп = " + SalaryCalculated);
+            Console.WriteLine(ID + " " + Name + " " + Group + " " + DateHire.ToString("dd MMMM yyyy") + " зп = " + SalaryCalculated);
         }
     }
 
@@ -88,37 +96,46 @@ namespace Company
     }
     abstract class SalaryCalculator
     {
+        public int ExperienceRate { get; set; }
+        public int LimitRate { get; set; }
+        public SalaryCalculator(int experienceRate, int limitRate)
+        {
+            ExperienceRate = experienceRate;
+            LimitRate = limitRate;
+        }
         public int GetSalaryBase(int salaryBase)
         {
             return salaryBase;
         }
-        public int GetSalaryExperience(DateTime dateHire)
+        public decimal GetExperienceRate(int experience)
         {
-            var today = DateTime.Today;
-            var exp = today.Year - dateHire.Year;
-            if (dateHire.Date > today.AddYears(-exp)) exp--;
-            return exp;
+            return (decimal)Math.Min(ExperienceRate * experience, LimitRate) / 100 + 1;
         }
     }
     class SalaryEmployee : SalaryCalculator, ISalaryCalculator
     {
+        public SalaryEmployee(int experienceRate, int limitRate) : base(experienceRate, limitRate) { }
         public int GetSalary(List<Employee> subordinateList, Employee employee)
         {
-            return GetSalaryBase(employee.SalaryBase);
+            return (int)(GetSalaryBase(employee.SalaryBase) * GetExperienceRate(employee.Experience));
         }
     }
     class SalaryManager : SalaryCalculator, ISalaryCalculator
     {
+        public SalaryManager(int experienceRate, int limitRate) : base(experienceRate, limitRate) { }
         public int GetSalary(List<Employee> subordinateList, Employee employee)
         {
-            return GetSalaryBase(employee.SalaryBase) + GetSalaryExperience(employee.DateHire) + subordinateList.Sum(s => s.GetSalary());
+            return (int)(GetSalaryBase(employee.SalaryBase) * GetExperienceRate(employee.Experience)) + 
+                subordinateList.Sum(s => s.GetSalary());
         }
     }
     class SalarySalesman : SalaryCalculator, ISalaryCalculator
     {
+        public SalarySalesman(int experienceRate, int limitRate) : base(experienceRate, limitRate) { }
         public int GetSalary(List<Employee> subordinateList, Employee employee)
         {
-            return GetSalaryBase(employee.SalaryBase) + subordinateList.Sum(s => s.GetSalary());
+            return (int)(GetSalaryBase(employee.SalaryBase) * GetExperienceRate(employee.Experience)) + 
+                subordinateList.Sum(s => s.GetSalary());
         }
     }
 
@@ -128,9 +145,9 @@ namespace Company
         public SalaryFactory()
         {
             SalaryDictionary = new Dictionary<Groups, ISalaryCalculator> {
-                {Groups.Employee, new SalaryEmployee() },
-                {Groups.Manager, new SalaryManager() },
-                {Groups.Salesman, new SalarySalesman() }
+                {Groups.Employee, new SalaryEmployee((int)ExperienceRates.Employee, (int)LimitRates.Employee) },
+                {Groups.Manager, new SalaryManager((int)ExperienceRates.Manager, (int)LimitRates.Manager) },
+                {Groups.Salesman, new SalarySalesman((int)ExperienceRates.Salesman, (int)LimitRates.Salesman) }
             };
         }
         public ISalaryCalculator GetSalaryCalculator(Groups group)
