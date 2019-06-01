@@ -10,18 +10,26 @@ namespace Company
     {
         static void Main(string[] args)
         {
+            SalaryFactory salaryFactory = new SalaryFactory();
+            ISalaryCalculator salaryEmployee = salaryFactory.GetSalaryCalculator(Groups.Employee);
+            ISalaryCalculator salaryManager = salaryFactory.GetSalaryCalculator(Groups.Manager);
+            ISalaryCalculator salarySalesman = salaryFactory.GetSalaryCalculator(Groups.Salesman);
             List<Employee> employeeList = new List<Employee> {
-                new Employee(1, "Смит", DateTime.Parse("5/5/5"), Groups.Employee, 15, new List<int> {}),
-                new Employee(2, "Гейтс", DateTime.Parse("7/7/7"), Groups.Manager, 30, new List<int> {1, 6}),
-                new Employee(3, "Трамп", DateTime.Parse("11/12/13"), Groups.Salesman, 35, new List<int> {2, 4}),
-                new Employee(4, "Паркер", DateTime.Parse("8/4/2"), Groups.Employee, 20, new List<int> {}),
-                new Employee(5, "Морган", DateTime.Parse("15/10/15"), Groups.Manager, 40, new List<int> {3}),
-                new Employee(6, "Хьюз", DateTime.Parse("3/9/3"), Groups.Salesman, 25, new List<int> {7}),
-                new Employee(7, "МакФлай", DateTime.Parse("31/1/13"), Groups.Employee, 10, new List<int> {})
+                new Employee(1, "Смит", DateTime.Parse("5/5/5"), Groups.Employee, 15, new List<int> {}, salaryEmployee),
+                new Employee(2, "Гейтс", DateTime.Parse("7/7/7"), Groups.Manager, 30, new List<int> {1, 6}, salaryManager),
+                new Employee(3, "Трамп", DateTime.Parse("11/12/13"), Groups.Salesman, 35, new List<int> {2, 4}, salarySalesman),
+                new Employee(4, "Паркер", DateTime.Parse("8/4/2"), Groups.Employee, 20, new List<int> {}, salaryEmployee),
+                new Employee(5, "Морган", DateTime.Parse("15/10/15"), Groups.Manager, 40, new List<int> {3}, salaryManager),
+                new Employee(6, "Хьюз", DateTime.Parse("3/9/3"), Groups.Salesman, 25, new List<int> {7}, salarySalesman),
+                new Employee(7, "МакФлай", DateTime.Parse("31/1/13"), Groups.Employee, 10, new List<int> {}, salaryEmployee)
             };
+            for (int i = 0; i < employeeList.Count; i++)
+            {
+                employeeList[i].EmployeeList = employeeList;
+            }
             foreach (Employee employee in employeeList)
             {
-                employee.SalaryCalculate(employeeList);
+                employee.CalculateSalary();
                 employee.SalaryWrite();
             }
             Console.Read();
@@ -37,80 +45,80 @@ namespace Company
     {
         public int ID { get; }
         private string Name { get; set; }
-        private DateTime HireDate { get; set; }
+        public DateTime DateHire { get; set; }
         private Groups Group { get; set; }
         public int SalaryBase { get; set; }
-        public List<int> SubordinateList { get; set; }
-        public Employee(int id, string name, DateTime hireDate, Groups group, int salaryBase, List<int> subordinateList)
+        public List<int> SubordinateListID { get; set; }
+        public ISalaryCalculator SalaryCalculator { get; set; }
+        public Employee(int id, string name, DateTime dateHire, Groups group, int salaryBase, List<int> subordinateListID,
+            ISalaryCalculator salaryCalculator)
         {
             ID = id;
             Name = name;
-            HireDate = hireDate;
+            DateHire = dateHire;
             Group = group;
             SalaryBase = salaryBase;
-            SubordinateList = subordinateList;
+            SubordinateListID = subordinateListID;
+            SalaryCalculator = salaryCalculator;
         }
-        private int SalaryCalculated { get; set; }
-        public void SalaryCalculate(List<Employee> employeeList)
+        public List<Employee> EmployeeList { get; set; }
+        public List<Employee> GetSubordinateList()
         {
-            SalaryCalculated = new SalaryFactory().GetSalaryCalculator(Group).GetSalary(employeeList, ID);
+            return EmployeeList.Where(emp => SubordinateListID.Contains(emp.ID)).ToList();
+        }
+        public int SalaryCalculated { get; set; }
+        public void CalculateSalary()
+        {
+            SalaryCalculated = SalaryCalculator.GetSalary(GetSubordinateList(), this);
+        }
+        public int GetSalary()
+        {
+            CalculateSalary();
+            return SalaryCalculated;
         }
         public void SalaryWrite()
         {
-            Console.WriteLine(Name + " " + Group + " " + HireDate.ToString("dd MMMM yyyy") + " зп = " + SalaryCalculated);
+            Console.WriteLine(Name + " " + Group + " " + DateHire.ToString("dd MMMM yyyy") + " зп = " + SalaryCalculated);
         }
     }
 
     public interface ISalaryCalculator
     {
-        int GetSalary(List<Employee> employeeList, int employeeID);
-        int GetSalarySubordinate();
+        int GetSalary(List<Employee> subordinateList, Employee employee);
     }
-    abstract class Salary
+    abstract class SalaryCalculator
     {
-        public int GetSalaryBase(List<Employee> employeeList, int subordinateID)
+        public int GetSalaryBase(int salaryBase)
         {
-            return employeeList.Find(s => s.ID == subordinateID).SalaryBase;
+            return salaryBase;
         }
-        public List<int> GetSubordinateList(List<Employee> employeeList, int employeeID)
+        public int GetSalaryExperience(DateTime dateHire)
         {
-            return employeeList.Find(s => s.ID == employeeID).SubordinateList;
-        }
-    }
-    class SalaryEmployee : Salary, ISalaryCalculator
-    {
-        public int GetSalary(List<Employee> employeeList, int employeeID)
-        {
-            return GetSalaryBase(employeeList, employeeID);
-        }
-        public int GetSalarySubordinate()
-        {
-            return 0;
+            var today = DateTime.Today;
+            var exp = today.Year - dateHire.Year;
+            if (dateHire.Date > today.AddYears(-exp)) exp--;
+            return exp;
         }
     }
-    class SalaryManager : Salary, ISalaryCalculator
+    class SalaryEmployee : SalaryCalculator, ISalaryCalculator
     {
-        public int GetSalary(List<Employee> employeeList, int employeeID)
+        public int GetSalary(List<Employee> subordinateList, Employee employee)
         {
-            int sum = 0;
-            foreach (int subordinateID in GetSubordinateList(employeeList, employeeID))
-                sum += GetSalary(employeeList, subordinateID) + GetSalaryBase(employeeList, subordinateID);
-            return sum;
-        }
-        public int GetSalarySubordinate()
-        {
-            return 0;
+            return GetSalaryBase(employee.SalaryBase);
         }
     }
-    class SalarySalesman : Salary, ISalaryCalculator
+    class SalaryManager : SalaryCalculator, ISalaryCalculator
     {
-        public int GetSalary(List<Employee> employeeList, int employeeID)
+        public int GetSalary(List<Employee> subordinateList, Employee employee)
         {
-            return 0;
+            return GetSalaryBase(employee.SalaryBase) + GetSalaryExperience(employee.DateHire) + subordinateList.Sum(s => s.GetSalary());
         }
-        public int GetSalarySubordinate()
+    }
+    class SalarySalesman : SalaryCalculator, ISalaryCalculator
+    {
+        public int GetSalary(List<Employee> subordinateList, Employee employee)
         {
-            return 0;
+            return GetSalaryBase(employee.SalaryBase) + subordinateList.Sum(s => s.GetSalary());
         }
     }
 
