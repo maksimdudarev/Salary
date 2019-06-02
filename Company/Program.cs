@@ -15,17 +15,17 @@ namespace Company
             ISalaryCalculator salaryManager = salaryFactory.GetSalaryCalculator(Groups.Manager);
             ISalaryCalculator salarySalesman = salaryFactory.GetSalaryCalculator(Groups.Salesman);
             List<Employee> employeeList = new List<Employee> {
-                new Employee(1, "Смит", DateTime.Parse("5/5/5"), Groups.Employee, 15, new List<int> {}, salaryEmployee),
+                new Employee(1, "Смит", DateTime.Parse("5/5/5"), Groups.Employee, 15, new List<int> { }, salaryEmployee),
                 new Employee(2, "Гейтс", DateTime.Parse("7/7/7"), Groups.Manager, 30, new List<int> {1, 6}, salaryManager),
                 new Employee(3, "Трамп", DateTime.Parse("11/12/13"), Groups.Salesman, 35, new List<int> {2, 4}, salarySalesman),
-                new Employee(4, "Паркер", DateTime.Parse("8/4/2"), Groups.Employee, 20, new List<int> {}, salaryEmployee),
+                new Employee(4, "Паркер", DateTime.Parse("8/4/2"), Groups.Employee, 20, new List<int> { }, salaryEmployee),
                 new Employee(5, "Морган", DateTime.Parse("15/10/15"), Groups.Manager, 40, new List<int> {3}, salaryManager),
                 new Employee(6, "Хьюз", DateTime.Parse("7/5/75"), Groups.Salesman, 25, new List<int> {7}, salarySalesman),
-                new Employee(7, "МакФлай", DateTime.Parse("31/1/13"), Groups.Employee, 10, new List<int> {}, salaryEmployee)
+                new Employee(7, "МакФлай", DateTime.Parse("31/1/13"), Groups.Employee, 10, new List<int> { }, salaryEmployee)
             };
             for (int i = 0; i < employeeList.Count; i++)
             {
-                employeeList[i].CalculateSubordinateDirectList(employeeList);
+                employeeList[i].CalculateSubordinateAllList(employeeList);
             }
             foreach (Employee employee in employeeList)
             {
@@ -49,6 +49,7 @@ namespace Company
         public int SalaryBase { get; set; }
         public List<int> SubordinateDirectListID { get; set; }
         public List<Employee> SubordinateDirectList { get; set; }
+        public List<Employee> SubordinateAllList { get; set; }
         public ISalaryCalculator SalaryCalculator { get; set; }
         public Employee(int id, string name, DateTime dateHire, Groups group, int salaryBase, List<int> subordinateDirectListID,
             ISalaryCalculator salaryCalculator)
@@ -65,6 +66,17 @@ namespace Company
         public void CalculateSubordinateDirectList(List<Employee> employeeList)
         {
             SubordinateDirectList = employeeList.Where(emp => SubordinateDirectListID.Contains(emp.ID)).ToList();
+        }
+        public void CalculateSubordinateAllList(List<Employee> employeeList)
+        {
+            SubordinateAllList = new List<Employee>();
+            CalculateSubordinateDirectList(employeeList);
+            if (SubordinateDirectList.Count > 0) SubordinateAllList.AddRange(SubordinateDirectList);
+            foreach (var emp in SubordinateDirectList)
+            {
+                emp.CalculateSubordinateAllList(employeeList);
+                if (emp.SubordinateAllList.Count > 0) SubordinateAllList.AddRange(emp.SubordinateAllList);
+            }
         }
         public int Experience { get; set; }
         public int GetExperience(DateTime dateHire)
