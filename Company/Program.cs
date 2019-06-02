@@ -25,7 +25,7 @@ namespace Company
             };
             for (int i = 0; i < employeeList.Count; i++)
             {
-                employeeList[i].EmployeeList = employeeList;
+                employeeList[i].CalculateSubordinateDirectList(employeeList);
             }
             foreach (Employee employee in employeeList)
             {
@@ -47,9 +47,10 @@ namespace Company
         public DateTime DateHire { get; set; }
         private Groups Group { get; set; }
         public int SalaryBase { get; set; }
-        public List<int> SubordinateListID { get; set; }
+        public List<int> SubordinateDirectListID { get; set; }
+        public List<Employee> SubordinateDirectList { get; set; }
         public ISalaryCalculator SalaryCalculator { get; set; }
-        public Employee(int id, string name, DateTime dateHire, Groups group, int salaryBase, List<int> subordinateListID,
+        public Employee(int id, string name, DateTime dateHire, Groups group, int salaryBase, List<int> subordinateDirectListID,
             ISalaryCalculator salaryCalculator)
         {
             ID = id;
@@ -57,14 +58,13 @@ namespace Company
             DateHire = dateHire;
             Group = group;
             SalaryBase = salaryBase;
-            SubordinateListID = subordinateListID;
+            SubordinateDirectListID = subordinateDirectListID;
             SalaryCalculator = salaryCalculator;
             Experience = GetExperience(dateHire);
         }
-        public List<Employee> EmployeeList { get; set; }
-        public List<Employee> GetSubordinateList()
+        public void CalculateSubordinateDirectList(List<Employee> employeeList)
         {
-            return EmployeeList.Where(emp => SubordinateListID.Contains(emp.ID)).ToList();
+            SubordinateDirectList = employeeList.Where(emp => SubordinateDirectListID.Contains(emp.ID)).ToList();
         }
         public int Experience { get; set; }
         public int GetExperience(DateTime dateHire)
@@ -77,7 +77,7 @@ namespace Company
         public int SalaryCalculated { get; set; }
         public void CalculateSalary()
         {
-            SalaryCalculated = SalaryCalculator.GetSalary(GetSubordinateList(), this);
+            SalaryCalculated = SalaryCalculator.GetSalary(SubordinateDirectList, this);
         }
         public int GetSalary()
         {
@@ -92,7 +92,7 @@ namespace Company
 
     public interface ISalaryCalculator
     {
-        int GetSalary(List<Employee> subordinateList, Employee employee);
+        int GetSalary(List<Employee> subordinateDirectList, Employee employee);
     }
     abstract class SalaryCalculator
     {
@@ -103,39 +103,41 @@ namespace Company
             ExperienceRate = experienceRate;
             LimitRate = limitRate;
         }
-        public int GetSalaryBase(int salaryBase)
+        private int GetSalaryBase(int salaryBase)
         {
             return salaryBase;
         }
-        public decimal GetExperienceRate(int experience)
+        private decimal GetExperienceRate(int experience)
         {
             return (decimal)Math.Min(ExperienceRate * experience, LimitRate) / 100 + 1;
+        }
+        public int GetSalaryPersonal(Employee employee)
+        {
+            return (int)(GetSalaryBase(employee.SalaryBase) * GetExperienceRate(employee.Experience));
         }
     }
     class SalaryEmployee : SalaryCalculator, ISalaryCalculator
     {
         public SalaryEmployee(int experienceRate, int limitRate) : base(experienceRate, limitRate) { }
-        public int GetSalary(List<Employee> subordinateList, Employee employee)
+        public int GetSalary(List<Employee> subordinateDirectList, Employee employee)
         {
-            return (int)(GetSalaryBase(employee.SalaryBase) * GetExperienceRate(employee.Experience));
+            return GetSalaryPersonal(employee);
         }
     }
     class SalaryManager : SalaryCalculator, ISalaryCalculator
     {
         public SalaryManager(int experienceRate, int limitRate) : base(experienceRate, limitRate) { }
-        public int GetSalary(List<Employee> subordinateList, Employee employee)
+        public int GetSalary(List<Employee> subordinateDirectList, Employee employee)
         {
-            return (int)(GetSalaryBase(employee.SalaryBase) * GetExperienceRate(employee.Experience)) + 
-                subordinateList.Sum(s => s.GetSalary());
+            return GetSalaryPersonal(employee) + subordinateDirectList.Sum(s => s.GetSalary());
         }
     }
     class SalarySalesman : SalaryCalculator, ISalaryCalculator
     {
         public SalarySalesman(int experienceRate, int limitRate) : base(experienceRate, limitRate) { }
-        public int GetSalary(List<Employee> subordinateList, Employee employee)
+        public int GetSalary(List<Employee> subordinateDirectList, Employee employee)
         {
-            return (int)(GetSalaryBase(employee.SalaryBase) * GetExperienceRate(employee.Experience)) + 
-                subordinateList.Sum(s => s.GetSalary());
+            return GetSalaryPersonal(employee) + subordinateDirectList.Sum(s => s.GetSalary());
         }
     }
 
