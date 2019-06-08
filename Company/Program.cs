@@ -8,6 +8,29 @@ namespace Company
 {
     class Program
     {
+        /*
+Тестовое задание
+Для отдела HR одной компании нужно написать приложение расчета заработной платы.
+В компании работают сотрудники, характеризующиеся именем, датой поступления на работу, группой и базовой ставкой заработной платы.
+Есть 3 группы сотрудников - Employee, Manager и Salesman. У каждого сотрудника может быть начальник. У каждого сотрудника кроме Employee могут быть подчинённые.
+Зарплата сотрудника рассчитывается следующим образом:
+⦁	Employee - это базовая ставка плюс 3% за каждый год работы, но не больше 30% суммарной надбавки. 
+⦁	Manager - это базовая ставка плюс 5% за каждый год работы, но не больше 40% суммарной надбавки за стаж работы. Плюс 0,5% зарплаты всех подчинённых первого уровня.
+⦁	Salesman - это базовая ставка плюс 1% за каждый год работы в компании, но не больше 35% суммарной надбавки за стаж работы. Плюс 0,3% зарплаты всех подчинённых всех уровней.
+⦁	У сотрудников (кроме Employee) может быть любое количество подчинённых любой группы.
+Требуется: составить структуру классов, описывающих данную модель, а также реализовать алгоритм расчета зарплаты каждого сотрудника на произвольный момент времени, а также подсчёт суммарной зарплаты всех сотрудников фирмы в целом.
+Замечание: при реализации тестового задания необходимо предположить, что вы разрабатываете не просто прототип, а систему enterprise уровня, соответственно важнее продемонстрировать архитектурно более красивое решение, даже в ущерб быстродействию. Не обязательно реализовывать всю архитектуру в полном объёме, не реализованные или упрощённые моменты нужно прокомментировать.
+Решение: нужно сделать на C# с использованием sqlite, применяя любые библиотеки.
+Код передать в виде репозитория git на github или аналоге.
+
+Дополнительные плюсы:
+⦁	Написан краткий обзор решения тестовой задачи, описана архитектура, ее плюсы и минусы (что можно улучшить, поменять или еще какие-то соображения для использования решения в реальных целях).
+⦁	Код покрыт тестами.
+⦁	Программа имеет графический интерфейс.
+⦁	Будет возможность просмотреть для выбранного сотрудника список его подчинённых.
+⦁	Будет возможность добавлять новых сотрудников разных видов
+⦁	Будет возможность разграничения прав, каждый сотрудник будет иметь свой логин/пароль, имея возможность просматривать только свою зарплату, и зарплату своих подчинённых. Также должен быть супер-пользователь, который имеет доступ ко всем.         
+             */
         static void Main(string[] args)
         {
             SalaryFactory salaryFactory = new SalaryFactory();
@@ -17,11 +40,12 @@ namespace Company
             List<Employee> employeeList = new List<Employee> {
                 new Employee(1, "Смит", DateTime.Parse("5/5/5"), Groups.Employee, 15, new List<int> { }, salaryEmployee),
                 new Employee(2, "Гейтс", DateTime.Parse("7/7/7"), Groups.Manager, 30, new List<int> {1, 6}, salaryManager),
-                new Employee(3, "Трамп", DateTime.Parse("11/12/13"), Groups.Salesman, 35, new List<int> {2, 4}, salarySalesman),
+                new Employee(3, "Трамп", DateTime.Parse("11/12/13"), Groups.Salesman, 35, new List<int> {2, 4, 8}, salarySalesman),
                 new Employee(4, "Паркер", DateTime.Parse("8/4/2"), Groups.Employee, 20, new List<int> { }, salaryEmployee),
                 new Employee(5, "Морган", DateTime.Parse("15/10/15"), Groups.Manager, 40, new List<int> {3}, salaryManager),
                 new Employee(6, "Хьюз", DateTime.Parse("7/5/75"), Groups.Salesman, 25, new List<int> {7}, salarySalesman),
-                new Employee(7, "МакФлай", DateTime.Parse("31/1/13"), Groups.Employee, 10, new List<int> { }, salaryEmployee)
+                new Employee(7, "МакФлай", DateTime.Parse("31/1/13"), Groups.Employee, 10, new List<int> { }, salaryEmployee),
+                new Employee(8, "Уиллис", DateTime.Parse("1/1/1"), Groups.Manager, 45, new List<int> { }, salaryManager)
             };
             for (int i = 0; i < employeeList.Count; i++)
             {
@@ -37,8 +61,12 @@ namespace Company
     }
 
     public enum Groups { Employee, Manager, Salesman }
-    public enum ExperienceRates { Employee = 3, Manager = 5, Salesman = 1 }
-    public enum LimitRates { Employee = 30, Manager = 40, Salesman = 35 }
+    public struct SalaryRates
+    {
+        public int Experience;
+        public int Limit;
+        public decimal Subordinate;
+    }
 
     public class Employee
     {
@@ -48,7 +76,6 @@ namespace Company
         private Groups Group { get; set; }
         public int SalaryBase { get; set; }
         public List<int> SubordinateDirectListID { get; set; }
-        public List<Employee> SubordinateDirectList { get; set; }
         public List<Employee> SubordinateAllList { get; set; }
         public ISalaryCalculator SalaryCalculator { get; set; }
         public Employee(int id, string name, DateTime dateHire, Groups group, int salaryBase, List<int> subordinateDirectListID,
@@ -60,24 +87,40 @@ namespace Company
             Group = group;
             SalaryBase = salaryBase;
             SubordinateDirectListID = subordinateDirectListID;
+            SubordinateAllList = new List<Employee>();
             SalaryCalculator = salaryCalculator;
             Experience = GetExperience(dateHire);
         }
-        public void CalculateSubordinateDirectList(List<Employee> employeeList)
+        public List<Employee> GetSubordinateDirectList(List<Employee> employeeList)
         {
-            SubordinateDirectList = employeeList.Where(emp => SubordinateDirectListID.Contains(emp.ID)).ToList();
+            return employeeList.Where(emp => SubordinateDirectListID.Contains(emp.ID)).ToList();
         }
         public void CalculateSubordinateAllList(List<Employee> employeeList)
         {
-            SubordinateAllList = new List<Employee>();
-            CalculateSubordinateDirectList(employeeList);
-            if (SubordinateDirectList.Count > 0) SubordinateAllList.AddRange(SubordinateDirectList);
-            foreach (var emp in SubordinateDirectList)
+            List<Employee> subordinateDirectList = GetSubordinateDirectList(employeeList);
+            SubordinateAllList.AddRange(subordinateDirectList);
+            if (Group == Groups.Salesman)
             {
-                emp.CalculateSubordinateAllList(employeeList);
-                if (emp.SubordinateAllList.Count > 0) SubordinateAllList.AddRange(emp.SubordinateAllList);
+                foreach (var emp in subordinateDirectList)
+                {
+                    emp.CalculateSubordinateAllList(employeeList);
+                    SubordinateAllList.AddRange(emp.SubordinateAllList);
+                }
             }
         }
+        public List<Employee> GetSubordinateAllList(List<Employee> employeeList)
+        {
+            List<Employee> subordinateDirectList = GetSubordinateDirectList(employeeList);
+            if (Group == Groups.Salesman)
+            {
+                foreach (var emp in subordinateDirectList)
+                {
+                    subordinateDirectList.AddRange(emp.GetSubordinateAllList(employeeList));
+                }
+            }
+            return subordinateDirectList;
+        }
+
         public int Experience { get; set; }
         public int GetExperience(DateTime dateHire)
         {
@@ -89,7 +132,7 @@ namespace Company
         public int SalaryCalculated { get; set; }
         public void CalculateSalary()
         {
-            SalaryCalculated = SalaryCalculator.GetSalary(SubordinateDirectList, this);
+            SalaryCalculated = SalaryCalculator.GetSalary(this);
         }
         public int GetSalary()
         {
@@ -104,16 +147,18 @@ namespace Company
 
     public interface ISalaryCalculator
     {
-        int GetSalary(List<Employee> subordinateDirectList, Employee employee);
+        int GetSalary(Employee employee);
     }
     abstract class SalaryCalculator
     {
         public int ExperienceRate { get; set; }
         public int LimitRate { get; set; }
-        public SalaryCalculator(int experienceRate, int limitRate)
+        public decimal SubordinateRate { get; set; }
+        public SalaryCalculator(SalaryRates salaryRates)
         {
-            ExperienceRate = experienceRate;
-            LimitRate = limitRate;
+            ExperienceRate = salaryRates.Experience;
+            LimitRate = salaryRates.Limit;
+            SubordinateRate = salaryRates.Subordinate;
         }
         private int GetSalaryBase(int salaryBase)
         {
@@ -127,29 +172,34 @@ namespace Company
         {
             return (int)(GetSalaryBase(employee.SalaryBase) * GetExperienceRate(employee.Experience));
         }
+        public int GetSalarySubordinate(Employee employee)
+        {
+
+            return 0;
+        }
     }
     class SalaryEmployee : SalaryCalculator, ISalaryCalculator
     {
-        public SalaryEmployee(int experienceRate, int limitRate) : base(experienceRate, limitRate) { }
-        public int GetSalary(List<Employee> subordinateDirectList, Employee employee)
+        public SalaryEmployee(SalaryRates salaryRates) : base(salaryRates) { }
+        public int GetSalary(Employee employee)
         {
             return GetSalaryPersonal(employee);
         }
     }
     class SalaryManager : SalaryCalculator, ISalaryCalculator
     {
-        public SalaryManager(int experienceRate, int limitRate) : base(experienceRate, limitRate) { }
-        public int GetSalary(List<Employee> subordinateDirectList, Employee employee)
+        public SalaryManager(SalaryRates salaryRates) : base(salaryRates) { }
+        public int GetSalary(Employee employee)
         {
-            return GetSalaryPersonal(employee) + subordinateDirectList.Sum(s => s.GetSalary());
+            return GetSalaryPersonal(employee) + employee.SubordinateAllList.Sum(s => s.GetSalary()) / 100;
         }
     }
     class SalarySalesman : SalaryCalculator, ISalaryCalculator
     {
-        public SalarySalesman(int experienceRate, int limitRate) : base(experienceRate, limitRate) { }
-        public int GetSalary(List<Employee> subordinateDirectList, Employee employee)
+        public SalarySalesman(SalaryRates salaryRates) : base(salaryRates) { }
+        public int GetSalary(Employee employee)
         {
-            return GetSalaryPersonal(employee) + subordinateDirectList.Sum(s => s.GetSalary());
+            return GetSalaryPersonal(employee) + employee.SubordinateAllList.Sum(s => s.GetSalary()) / 100;
         }
     }
 
@@ -158,10 +208,13 @@ namespace Company
         private Dictionary<Groups, ISalaryCalculator> SalaryDictionary { get; set; }
         public SalaryFactory()
         {
-            SalaryDictionary = new Dictionary<Groups, ISalaryCalculator> {
-                {Groups.Employee, new SalaryEmployee((int)ExperienceRates.Employee, (int)LimitRates.Employee) },
-                {Groups.Manager, new SalaryManager((int)ExperienceRates.Manager, (int)LimitRates.Manager) },
-                {Groups.Salesman, new SalarySalesman((int)ExperienceRates.Salesman, (int)LimitRates.Salesman) }
+        SalaryRates salaryRateEmployee = new SalaryRates { Experience = 3, Limit = 30 };
+        SalaryRates salaryRateManager = new SalaryRates { Experience = 5, Limit = 40, Subordinate = 0.5m };
+        SalaryRates salaryRateSalesman = new SalaryRates { Experience = 1, Limit = 35, Subordinate = 0.3m };
+        SalaryDictionary = new Dictionary<Groups, ISalaryCalculator> {
+                {Groups.Employee, new SalaryEmployee(salaryRateEmployee) },
+                {Groups.Manager, new SalaryManager(salaryRateManager) },
+                {Groups.Salesman, new SalarySalesman(salaryRateSalesman) }
             };
         }
         public ISalaryCalculator GetSalaryCalculator(Groups group)
