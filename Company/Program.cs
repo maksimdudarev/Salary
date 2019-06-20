@@ -74,7 +74,7 @@ namespace Company
         }
         public List<Employee> GetSubordinate(List<Employee> employeeList)
         {
-            return SubordinateCalculator.GetSubordinate(this, employeeList);
+            return SubordinateCalculator.GetSubordinate(employeeList, SubordinateDirectListID);
         }
 
         public int Experience { get; set; }
@@ -103,20 +103,20 @@ namespace Company
 
     public interface ISubordinateCalculator
     {
-        List<Employee> GetSubordinate(Employee employee, List<Employee> employeeList);
+        List<Employee> GetSubordinate(List<Employee> employeeList, List<int> subordinateDirectListID);
     }
     abstract class SubordinateCalculator
     {
-        public List<Employee> GetSubordinateDirect(Employee employee, List<Employee> employeeList)
+        public List<Employee> GetSubordinateDirect(List<Employee> employeeList, List<int> subordinateDirectListID)
         {
-            return employeeList.Where(emp => employee.SubordinateDirectListID.Contains(emp.ID)).ToList();
+            return employeeList.Where(emp => subordinateDirectListID.Contains(emp.ID)).ToList();
         }
     }
     class SubordinateNonSalesman : SubordinateCalculator, ISubordinateCalculator
     {
-        public List<Employee> GetSubordinate(Employee employee, List<Employee> employeeList)
+        public List<Employee> GetSubordinate(List<Employee> employeeList, List<int> subordinateDirectListID)
         {
-            return GetSubordinateDirect(employee, employeeList);
+            return GetSubordinateDirect(employeeList, subordinateDirectListID);
         }
     }
     class SubordinateSalesman : SubordinateCalculator, ISubordinateCalculator
@@ -127,9 +127,9 @@ namespace Company
             managerList.ForEach(emp => subordinateList.AddRange(emp.GetSubordinate(employeeList)));
             return subordinateList;
         }
-        public List<Employee> GetSubordinate(Employee employee, List<Employee> employeeList)
+        public List<Employee> GetSubordinate(List<Employee> employeeList, List<int> subordinateDirectListID)
         {
-            List<Employee> subordinateList = GetSubordinateDirect(employee, employeeList);
+            List<Employee> subordinateList = GetSubordinateDirect(employeeList, subordinateDirectListID);
             subordinateList.AddRange(GetSubordinateIndirect(employeeList, subordinateList));
             return subordinateList;
         }
