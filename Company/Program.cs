@@ -28,11 +28,12 @@ namespace Company
     new Employee(7, "МакФлай", DateTime.Parse("31/1/13"), Groups.Employee, 10, new List<int> { }, salaryEmployee, subordinateEmployee),
     new Employee(8, "Уиллис", DateTime.Parse("1/1/1"), Groups.Manager, 45, new List<int> { }, salaryManager, subordinateManager)
             };
+            DateTime salaryDate = DateTime.Parse("17/1/7");
             foreach (Employee employee in employeeList)
             {
-                employee.CalculateSalary(employeeList);
-                employee.SalaryWrite();
+                employee.SalaryWrite(employee.GetSalary(employeeList, salaryDate));
             }
+            Console.WriteLine("Итого = " + Round(employeeList.Sum(emp => emp.GetSalary(employeeList, salaryDate))));
             Console.Read();
         }
     }
@@ -49,62 +50,43 @@ namespace Company
     {
         public int ID { get; }
         private string Name { get; set; }
-        public DateTime DateHire { get; set; }
+        public DateTime HireDate { get; set; }
         private Groups Group { get; set; }
         public int SalaryBase { get; set; }
         public List<int> SubordinateDirectListID { get; set; }
         public SalaryCalculator SalaryCalculator { get; set; }
         public ISubordinateCalculator SubordinateCalculator { get; set; }
-        public Employee(int id, string name, DateTime dateHire, Groups group, int salaryBase, List<int> subordinateDirectListID,
+        public Employee(int id, string name, DateTime hireDate, Groups group, int salaryBase, List<int> subordinateDirectListID,
             SalaryCalculator salaryCalculator, ISubordinateCalculator subordinateCalculator)
         {
             ID = id;
             Name = name;
-            DateHire = dateHire;
+            HireDate = hireDate;
             Group = group;
             SalaryBase = salaryBase;
             SubordinateDirectListID = subordinateDirectListID;
             SalaryCalculator = salaryCalculator;
             SubordinateCalculator = subordinateCalculator;
-            Experience = GetExperience(dateHire);
         }
-        public decimal GetSubordinateSalary(List<Employee> employeeList)
+        public decimal GetSalarySubordinate(List<Employee> employeeList, DateTime salaryDate)
         {
-            return GetSubordinate(employeeList).Sum(emp => emp.GetSalary(employeeList));
+            return GetSubordinate(employeeList).Sum(emp => emp.GetSalary(employeeList, salaryDate));
         }
         public List<Employee> GetSubordinate(List<Employee> employeeList)
         {
             return SubordinateCalculator.GetSubordinate(employeeList, SubordinateDirectListID);
         }
-
-        public int Experience { get; set; }
-        public int GetExperience(DateTime dateHire)
+        public decimal GetSalary(List<Employee> employeeList, DateTime? salaryDateOptional = null)
         {
-            var today = DateTime.Today;
-            var exp = today.Year - dateHire.Year;
-            if (dateHire.Date > today.AddYears(-exp)) exp--;
-            return exp;
+            return SalaryCalculator.GetSalary(this, employeeList, salaryDateOptional ?? DateTime.Today);
         }
-        public decimal SalaryCalculated { get; set; }
-        public void CalculateSalary(List<Employee> employeeList)
+        public void SalaryWrite(decimal salaryCalculated)
         {
-            SalaryCalculated = SalaryCalculator.GetSalaryTotal(this, employeeList);
-        }
-        public decimal GetSalary(List<Employee> employeeList)
-        {
-            CalculateSalary(employeeList);
-            return SalaryCalculated;
-        }
-        public void SalaryWrite()
-        {
-            Console.WriteLine(ID + " " + Name + " " + Group + " " + DateHire.ToString("dd MMMM yyyy") + " зп = " + Round(SalaryCalculated));
+            Console.WriteLine(ID + " " + Name + " " + Group + " " + HireDate.ToString("dd MMMM yyyy") + " зп = " + Round(salaryCalculated));
         }
     }
 
-    public interface ISubordinateCalculator
-    {
-        List<Employee> GetSubordinate(List<Employee> employeeList, List<int> subordinateDirectListID);
-    }
+    public interface ISubordinateCalculator { List<Employee> GetSubordinate(List<Employee> employeeList, List<int> subordinateDirectListID); }
     abstract class SubordinateCalculator
     {
         public List<Employee> GetSubordinateDirect(List<Employee> employeeList, List<int> subordinateDirectListID)
@@ -137,34 +119,26 @@ namespace Company
 
     public class SalaryCalculator
     {
-        public int ExperienceRate { get; set; }
-        public int LimitRate { get; set; }
-        public decimal SubordinateRate { get; set; }
+        private decimal ExperienceRate { get; set; }
+        private decimal LimitRate { get; set; }
+        private decimal SubordinateRate { get; set; }
         public SalaryCalculator(SalaryRates salaryRates)
         {
-            ExperienceRate = salaryRates.Experience;
-            LimitRate = salaryRates.Limit;
-            SubordinateRate = salaryRates.Subordinate;
+            decimal unitRate = 100;
+            ExperienceRate = salaryRates.Experience / unitRate;
+            LimitRate = salaryRates.Limit / unitRate;
+            SubordinateRate = salaryRates.Subordinate / unitRate;
         }
-        private int GetSalaryBase(int salaryBase)
+        private int GetExperience(DateTime salaryDate, DateTime hireDate)
         {
-            return salaryBase;
+            var exp = salaryDate.Year - hireDate.Year;
+            if (hireDate.Date > salaryDate.AddYears(-exp)) exp--;
+            return exp;
         }
-        private decimal GetExperienceRate(int experience)
+        public decimal GetSalary(Employee employee, List<Employee> employeeList, DateTime salaryDate)
         {
-            return (decimal)Min(ExperienceRate * experience, LimitRate) / 100 + 1;
-        }
-        private decimal GetSalaryPersonal(Employee employee)
-        {
-            return GetSalaryBase(employee.SalaryBase) * GetExperienceRate(employee.Experience);
-        }
-        private decimal GetSalarySubordinate(Employee employee, List<Employee> employeeList)
-        {
-            return SubordinateRate * employee.GetSubordinateSalary(employeeList) / 100;
-        }
-        public decimal GetSalaryTotal(Employee employee, List<Employee> employeeList)
-        {
-            return GetSalaryPersonal(employee) + GetSalarySubordinate(employee, employeeList);
+            return (Min(ExperienceRate * GetExperience(salaryDate, employee.HireDate), LimitRate) + 1) * employee.SalaryBase +
+                SubordinateRate * employee.GetSalarySubordinate(employeeList, salaryDate);
         }
     }
 
