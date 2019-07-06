@@ -30,10 +30,12 @@ namespace Company
             DateTime salaryDate;
             salaryDate = DateTime.Today;
             //salaryDate = DateTime.Parse("17/1/7");
-            foreach (var employee in employeeList) employee.SalaryWrite(employee.GetSalary(employeeList, salaryDate));
-            Console.WriteLine("Итого = " + Round(employeeList.Sum(emp => emp.GetSalary(employeeList, salaryDate))));
+            foreach (var employee in employeeList) employee.GetSalary(salaryDate);
+            foreach (var employee in employeeList) employee.SalaryWrite(SalaryCalculated[employee.ID]);
+            Console.WriteLine("Итого = " + Round(SalaryCalculated.Sum(item => item.Value)));
             Console.Read();
         }
+        public static Dictionary<int, decimal> SalaryCalculated = new Dictionary<int, decimal>();
     }
 
     public enum Groups { Employee, Manager, Salesman }
@@ -54,7 +56,7 @@ namespace Company
         public List<int> SubordinateDirectID { get; set; }
         public List<Employee> SubordinateList { get; set; }
         public ISalarySubCalculator SalarySub { get; set; }
-        public SalaryPersonal SalaryPersonal { get; set; }
+        public SalaryPersonalCalculator SalaryPersonal { get; set; }
         public Employee(int id, string name, DateTime hireDate, Groups group, int salaryBase, List<int> subordinateDirectID)
         {
             ID = id;
@@ -71,10 +73,12 @@ namespace Company
         {
             SubordinateList = employeeList.Where(emp => SubordinateDirectID.Contains(emp.ID)).ToList();
         }
-        public decimal GetSalary(List<Employee> employeeList, DateTime? salaryDateOptional = null)
+        public decimal GetSalary(DateTime? salaryDateOptional = null)
         {
             var salaryDate = salaryDateOptional ?? DateTime.Today;
-            return SalaryPersonal.GetSalary(this, salaryDate) + SalarySub.GetSalary(this, employeeList, salaryDate);
+            var salary = SalaryPersonal.GetSalary(SalaryBase, HireDate, salaryDate) + SalarySub.GetSalary(SubordinateList, salaryDate);
+            if (!Program.SalaryCalculated.ContainsKey(ID)) Program.SalaryCalculated[ID] = salary;
+            return salary;
         }
         public void SalaryWrite(decimal salaryCalculated)
         {
@@ -84,7 +88,7 @@ namespace Company
 
     public interface ISalarySubCalculator
     {
-        decimal GetSalary(Employee employee, List<Employee> employeeList, DateTime salaryDate);
+        decimal GetSalary(List<Employee> subList, DateTime salaryDate);
     }
     public class SalaryCalculator
     {
@@ -98,29 +102,30 @@ namespace Company
             LimitRate = salaryRates.Limit / unitRate;
             SubordinateRate = salaryRates.Subordinate / unitRate;
         }
-        public decimal GetSalaryDirect(List<Employee> employeeList, List<Employee> subList, DateTime salaryDate)
+        public decimal GetSalaryDirect(List<Employee> subList, DateTime salaryDate)
         {
-            return subList.Sum(emp => emp.GetSalary(employeeList, salaryDate));
+            return subList.Sum(emp => Program.SalaryCalculated.ContainsKey(emp.ID) ?
+            Program.SalaryCalculated[emp.ID] : emp.GetSalary(salaryDate));
         }
     }
-    public class SalaryPersonal : SalaryCalculator
+    public class SalaryPersonalCalculator : SalaryCalculator
     {
-        public SalaryPersonal(SalaryRates salaryRates) : base(salaryRates) { }
+        public SalaryPersonalCalculator(SalaryRates salaryRates) : base(salaryRates) { }
         private int GetExperience(DateTime salaryDate, DateTime hireDate)
         {
             var exp = salaryDate.Year - hireDate.Year;
             if (hireDate.Date > salaryDate.AddYears(-exp)) exp--;
             return exp;
         }
-        public decimal GetSalary(Employee employee, DateTime salaryDate)
+        public decimal GetSalary(int salaryBase, DateTime hireDate, DateTime salaryDate)
         {
-            return (Min(ExperienceRate * GetExperience(salaryDate, employee.HireDate), LimitRate) + 1) * employee.SalaryBase;
+            return (Min(ExperienceRate * GetExperience(salaryDate, hireDate), LimitRate) + 1) * salaryBase;
         }
     }
     class SalarySubEmployee : SalaryCalculator, ISalarySubCalculator
     {
         public SalarySubEmployee(SalaryRates salaryRates) : base(salaryRates) { }
-        public decimal GetSalary(Employee employee, List<Employee> employeeList, DateTime salaryDate)
+        public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
         {
             return 0;
         }
@@ -128,28 +133,27 @@ namespace Company
     class SalarySubManager : SalaryCalculator, ISalarySubCalculator
     {
         public SalarySubManager(SalaryRates salaryRates) : base(salaryRates) { }
-        public decimal GetSalary(Employee employee, List<Employee> employeeList, DateTime salaryDate)
+        public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
         {
-            return SubordinateRate * GetSalaryDirect(employeeList, employee.SubordinateList, salaryDate);
+            return SubordinateRate * GetSalaryDirect(subList, salaryDate);
         }
     }
     class SalarySubSalesman : SalaryCalculator, ISalarySubCalculator
     {
         public SalarySubSalesman(SalaryRates salaryRates) : base(salaryRates) { }
-        private decimal GetSalaryIndirect(List<Employee> employeeList, List<Employee> subList, DateTime salaryDate)
+        private decimal GetSalaryIndirect(List<Employee> subList, DateTime salaryDate)
         {
-            return subList.Sum(emp => GetSalaryDirect(employeeList, emp.SubordinateList, salaryDate));
+            return subList.Sum(emp => GetSalaryDirect(emp.SubordinateList, salaryDate));
         }
-        public decimal GetSalary(Employee employee, List<Employee> employeeList, DateTime salaryDate)
+        public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
         {
-            return SubordinateRate * (GetSalaryDirect(employeeList, employee.SubordinateList, salaryDate) +
-                GetSalaryIndirect(employeeList, employee.SubordinateList, salaryDate));
+            return SubordinateRate * (GetSalaryDirect(subList, salaryDate) + GetSalaryIndirect(subList, salaryDate));
         }
     }
 
     public struct SalaryCalculators
     {
-        public SalaryPersonal SalaryPersonal;
+        public SalaryPersonalCalculator SalaryPersonal;
         public ISalarySubCalculator SalarySub;
     }
     public class SalaryFactory
@@ -162,11 +166,11 @@ namespace Company
             var salaryRateSalesman = new SalaryRates { Experience = 1, Limit = 35, Subordinate = 0.3m };
             SalaryDictionary = new Dictionary<Groups, SalaryCalculators> {
                 {Groups.Employee, new SalaryCalculators { SalarySub = new SalarySubEmployee(salaryRateEmployee),
-                                                SalaryPersonal = new SalaryPersonal(salaryRateEmployee) } },
+                                                SalaryPersonal = new SalaryPersonalCalculator(salaryRateEmployee) } },
                 {Groups.Manager, new SalaryCalculators { SalarySub = new SalarySubManager(salaryRateManager),
-                                               SalaryPersonal = new SalaryPersonal(salaryRateManager) }  },
+                                               SalaryPersonal = new SalaryPersonalCalculator(salaryRateManager) }  },
                 {Groups.Salesman, new SalaryCalculators { SalarySub = new SalarySubSalesman(salaryRateSalesman),
-                                                SalaryPersonal = new SalaryPersonal(salaryRateSalesman) }  }
+                                                SalaryPersonal = new SalaryPersonalCalculator(salaryRateSalesman) }  }
             };
         }
         public SalaryCalculators GetSalaryCalculator(Groups group)
