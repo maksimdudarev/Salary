@@ -31,11 +31,33 @@ namespace Company
             salaryDate = DateTime.Today;
             //salaryDate = DateTime.Parse("17/1/7");
             foreach (var employee in employeeList) employee.GetSalary(salaryDate);
-            foreach (var employee in employeeList) employee.SalaryWrite(SalaryCalculated[employee.ID]);
-            Console.WriteLine("Итого = " + Round(SalaryCalculated.Sum(item => item.Value)));
+            foreach (var employee in employeeList) employee.SalaryWrite(SalaryCache.Get(employee.ID));
+            Console.WriteLine("Итого = " + Round(SalaryCache.GetSum()));
             Console.Read();
         }
-        public static Dictionary<int, decimal> SalaryCalculated = new Dictionary<int, decimal>();
+        public static SalaryCache SalaryCache = new SalaryCache();
+    }
+
+    class SalaryCache
+    {
+        Dictionary<int, decimal> SalaryCalculated { get; set; }
+        public SalaryCache() {SalaryCalculated = new Dictionary<int, decimal> { };}
+        public decimal GetSum()
+        {
+            return SalaryCalculated.Sum(item => item.Value);
+        }
+        public void Add(int ID, decimal salary)
+        {
+            if (!Contains(ID)) SalaryCalculated[ID] = salary;
+        }
+        public decimal Get(int ID)
+        {
+            return SalaryCalculated[ID];
+        }
+        public bool Contains(int ID)
+        {
+            return SalaryCalculated.ContainsKey(ID);
+        }
     }
 
     public enum Groups { Employee, Manager, Salesman }
@@ -48,10 +70,10 @@ namespace Company
 
     public class Employee
     {
-        public int ID { get; }
         private string Name { get; set; }
-        public DateTime HireDate { get; set; }
         private Groups Group { get; set; }
+        public int ID { get; }
+        public DateTime HireDate { get; set; }
         public int SalaryBase { get; set; }
         public List<int> SubordinateDirectID { get; set; }
         public List<Employee> SubordinateList { get; set; }
@@ -77,7 +99,7 @@ namespace Company
         {
             var salaryDate = salaryDateOptional ?? DateTime.Today;
             var salary = SalaryPersonal.GetSalary(SalaryBase, HireDate, salaryDate) + SalarySub.GetSalary(SubordinateList, salaryDate);
-            if (!Program.SalaryCalculated.ContainsKey(ID)) Program.SalaryCalculated[ID] = salary;
+            Program.SalaryCache.Add(ID, salary);
             return salary;
         }
         public void SalaryWrite(decimal salaryCalculated)
@@ -104,8 +126,8 @@ namespace Company
         }
         public decimal GetSalaryDirect(List<Employee> subList, DateTime salaryDate)
         {
-            return subList.Sum(emp => Program.SalaryCalculated.ContainsKey(emp.ID) ?
-            Program.SalaryCalculated[emp.ID] : emp.GetSalary(salaryDate));
+            return subList.Sum(emp => Program.SalaryCache.Contains(emp.ID) ? 
+                                      Program.SalaryCache.Get(emp.ID) : emp.GetSalary(salaryDate));
         }
     }
     public class SalaryPersonalCalculator : SalaryCalculator
