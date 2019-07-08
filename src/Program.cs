@@ -1,43 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.SQLite;
 using static System.Math;
+using MD.Salary.Application;
 
-namespace Company
+namespace MD.Salary.Model
 {
-    static class Program
-    {
-        static void Main(string[] args)
-        {
-            /*SQLiteConnection sqlite_conn;
-            sqlite_conn = CreateConnection();
-            CreateTable(sqlite_conn);
-            InsertData(sqlite_conn);
-            ReadData(sqlite_conn);*/
-
-            var employeeList = new List<Employee> {
-                new Employee(1, "Смит", DateTime.Parse("5/5/5"), Groups.Employee, 15, new List<int> { }),
-                new Employee(2, "Гейтс", DateTime.Parse("7/7/7"), Groups.Manager, 30, new List<int> {1, 6}),
-                new Employee(3, "Трамп", DateTime.Parse("11/12/13"), Groups.Salesman, 35, new List<int> {2, 4, 8}),
-                new Employee(4, "Паркер", DateTime.Parse("8/4/2"), Groups.Employee, 20, new List<int> { }),
-                new Employee(5, "Морган", DateTime.Parse("15/10/15"), Groups.Manager, 40, new List<int> {3}),
-                new Employee(6, "Хьюз", DateTime.Parse("7/5/75"), Groups.Salesman, 25, new List<int> {7}),
-                new Employee(7, "МакФлай", DateTime.Parse("31/1/13"), Groups.Employee, 10, new List<int> { }),
-                new Employee(8, "Уиллис", DateTime.Parse("1/1/1"), Groups.Manager, 45, new List<int> { })
-            };
-            foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
-            DateTime salaryDate;
-            salaryDate = DateTime.Today;
-            //salaryDate = DateTime.Parse("17/1/7");
-            foreach (var employee in employeeList) employee.GetSalary(salaryDate);
-            foreach (var employee in employeeList) employee.SalaryWrite(SalaryCache.Get(employee.ID));
-            Console.WriteLine("Итого = " + Round(SalaryCache.GetSum()));
-            Console.Read();
-        }
-        public static SalaryCache SalaryCache = new SalaryCache();
-    }
-
     class SalaryCache
     {
         Dictionary<int, decimal> SalaryCalculated { get; set; }
@@ -198,58 +166,6 @@ namespace Company
         public SalaryCalculators GetSalaryCalculator(Groups group)
         {
             return SalaryDictionary[group];
-        }
-    }
-
-    class DB
-    {
-        static SQLiteConnection CreateConnection()
-        {
-            SQLiteConnection sqlite_conn;
-            // Create a new database connection:
-            sqlite_conn = new SQLiteConnection("Data Source=D:/Code/Company/DB/database.db; Version = 3; New = True; Compress = True; ");
-            // Open the connection:
-            try { sqlite_conn.Open(); } catch (Exception ex) { }
-            return sqlite_conn;
-        }
-        static void CreateTable(SQLiteConnection conn)
-        {
-            SQLiteCommand sqlite_cmd;
-            string Createsql = "CREATE TABLE SampleTable (Col1 VARCHAR(20), Col2 INT)";
-            string Createsql1 = "CREATE TABLE SampleTable1 (Col1 VARCHAR(20), Col2 INT)";
-            sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText = Createsql;
-            sqlite_cmd.ExecuteNonQuery();
-            sqlite_cmd.CommandText = Createsql1;
-            sqlite_cmd.ExecuteNonQuery();
-        }
-        static void InsertData(SQLiteConnection conn)
-        {
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable(Col1, Col2) VALUES('Test Text ', 1); ";
-            sqlite_cmd.ExecuteNonQuery();
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable(Col1, Col2) VALUES('Test1 Text1 ', 2); ";
-            sqlite_cmd.ExecuteNonQuery();
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable(Col1, Col2) VALUES('Test2 Text2 ', 3); ";
-            sqlite_cmd.ExecuteNonQuery();
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable1(Col1, Col2) VALUES('Test3 Text3 ', 3); ";
-            sqlite_cmd.ExecuteNonQuery();
-        }
-        static void ReadData(SQLiteConnection conn)
-        {
-            SQLiteDataReader sqlite_datareader;
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT * FROM SampleTable";
-
-            sqlite_datareader = sqlite_cmd.ExecuteReader();
-            while (sqlite_datareader.Read())
-            {
-                string myreader = sqlite_datareader.GetString(0);
-                Console.WriteLine(myreader);
-            }
-            conn.Close();
         }
     }
 }
