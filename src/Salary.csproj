@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C717D9A4-16E3-493A-AFDF-D0BDC48D19AD}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Company</RootNamespace>
-    <AssemblyName>Company</AssemblyName>
+    <RootNamespace>MD.Salary</RootNamespace>
+    <AssemblyName>MD.Salary</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -94,6 +94,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application.cs" />
+    <Compile Include="DBConnection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
