@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using static System.Math;
+using MD.Salary.Database;
 using MD.Salary.Model;
+using MD.Salary.Utilities;
+using System.Data.SQLite;
 
 namespace MD.Salary.Application
 {
@@ -9,11 +12,11 @@ namespace MD.Salary.Application
     {
         static void Main(string[] args)
         {
-            /*SQLiteConnection sqlite_conn;
-            sqlite_conn = CreateConnection();
-            CreateTable(sqlite_conn);
-            InsertData(sqlite_conn);
-            ReadData(sqlite_conn);*/
+            SQLiteConnection sqlite_conn;
+            sqlite_conn = DBConnection.CreateConnection();
+            DBConnection.CreateTable(sqlite_conn);
+            DBConnection.InsertData(sqlite_conn);
+            DBConnection.ReadData(sqlite_conn);
 
             var employeeList = new List<Employee> {
                 new Employee(1, "Смит", DateTime.Parse("5/5/5"), Groups.Employee, 15, new List<int> { }),
@@ -30,10 +33,15 @@ namespace MD.Salary.Application
             salaryDate = DateTime.Today;
             //salaryDate = DateTime.Parse("17/1/7");
             foreach (var employee in employeeList) employee.GetSalary(salaryDate);
-            foreach (var employee in employeeList) employee.SalaryWrite(SalaryCache.Get(employee.ID));
+            foreach (var employee in employeeList) WriteSalary(employee);
             Console.WriteLine("Итого = " + Round(SalaryCache.GetSum()));
             Console.Read();
         }
-        public static SalaryCache SalaryCache = new SalaryCache();
+        public static void WriteSalary(Employee employee)
+        {
+            Console.WriteLine(employee.ID + " " + employee.Name + " " + employee.Group + " " +
+                employee.HireDate.ToString("dd MMMM yyyy") + " зп = " + Round(SalaryCache.GetValue(employee.ID)));
+        }
+        public static MemoizationCache SalaryCache = new MemoizationCache();
     }
 }

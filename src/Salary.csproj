@@ -95,8 +95,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="DBConnection.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="Database.cs" />
+    <Compile Include="Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
