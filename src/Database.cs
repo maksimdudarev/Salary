@@ -1,20 +1,22 @@
 ﻿using System;
+using System.IO;
 using System.Data.SQLite;
 
 namespace MD.Salary.Database
 {
     class DBConnection
     {
-        static SQLiteConnection CreateConnection()
+        public static SQLiteConnection CreateConnection()
         {
             SQLiteConnection sqlite_conn;
             // Create a new database connection:
-            sqlite_conn = new SQLiteConnection("Data Source=D:/Code/Company/DB/database.db; Version = 3; New = True; Compress = True; ");
+            string projectFolder = Directory.GetParent(Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory()))).ToString();
+            sqlite_conn = new SQLiteConnection("Data Source=F:/Side/Salary/db/database.db; Version = 3; New = True; Compress = True; ");
             // Open the connection:
             try { sqlite_conn.Open(); } catch (Exception ex) { }
             return sqlite_conn;
         }
-        static void CreateTable(SQLiteConnection conn)
+        public static void CreateTable(SQLiteConnection conn)
         {
             SQLiteCommand sqlite_cmd;
             string Createsql = "CREATE TABLE SampleTable (Col1 VARCHAR(20), Col2 INT)";
@@ -25,7 +27,7 @@ namespace MD.Salary.Database
             sqlite_cmd.CommandText = Createsql1;
             sqlite_cmd.ExecuteNonQuery();
         }
-        static void InsertData(SQLiteConnection conn)
+        public static void InsertData(SQLiteConnection conn)
         {
             SQLiteCommand sqlite_cmd;
             sqlite_cmd = conn.CreateCommand();
@@ -38,7 +40,7 @@ namespace MD.Salary.Database
             sqlite_cmd.CommandText = "INSERT INTO SampleTable1(Col1, Col2) VALUES('Test3 Text3 ', 3); ";
             sqlite_cmd.ExecuteNonQuery();
         }
-        static void ReadData(SQLiteConnection conn)
+        public static void ReadData(SQLiteConnection conn)
         {
             SQLiteDataReader sqlite_datareader;
             SQLiteCommand sqlite_cmd;

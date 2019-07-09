@@ -6,41 +6,12 @@ using MD.Salary.Application;
 
 namespace MD.Salary.Model
 {
-    class SalaryCache
-    {
-        Dictionary<int, decimal> SalaryCalculated { get; set; }
-        public SalaryCache() {SalaryCalculated = new Dictionary<int, decimal> { };}
-        public decimal GetSum()
-        {
-            return SalaryCalculated.Sum(item => item.Value);
-        }
-        public void Add(int ID, decimal salary)
-        {
-            if (!Contains(ID)) SalaryCalculated[ID] = salary;
-        }
-        public decimal Get(int ID)
-        {
-            return SalaryCalculated[ID];
-        }
-        public bool Contains(int ID)
-        {
-            return SalaryCalculated.ContainsKey(ID);
-        }
-    }
-
     public enum Groups { Employee, Manager, Salesman }
-    public struct SalaryRates
-    {
-        public int Experience;
-        public int Limit;
-        public decimal Subordinate;
-    }
-
     public class Employee
     {
-        private string Name { get; set; }
-        private Groups Group { get; set; }
         public int ID { get; }
+        public string Name { get; set; }
+        public Groups Group { get; set; }
         public DateTime HireDate { get; set; }
         public int SalaryBase { get; set; }
         public List<int> SubordinateDirectID { get; set; }
@@ -70,16 +41,8 @@ namespace MD.Salary.Model
             Program.SalaryCache.Add(ID, salary);
             return salary;
         }
-        public void SalaryWrite(decimal salaryCalculated)
-        {
-            Console.WriteLine(ID + " " + Name + " " + Group + " " + HireDate.ToString("dd MMMM yyyy") + " зп = " + Round(salaryCalculated));
-        }
     }
 
-    public interface ISalarySubCalculator
-    {
-        decimal GetSalary(List<Employee> subList, DateTime salaryDate);
-    }
     public class SalaryCalculator
     {
         public decimal ExperienceRate { get; set; }
@@ -94,8 +57,8 @@ namespace MD.Salary.Model
         }
         public decimal GetSalaryDirect(List<Employee> subList, DateTime salaryDate)
         {
-            return subList.Sum(emp => Program.SalaryCache.Contains(emp.ID) ? 
-                                      Program.SalaryCache.Get(emp.ID) : emp.GetSalary(salaryDate));
+            return subList.Sum(emp => Program.SalaryCache.ContainsKey(emp.ID) ? 
+                                      Program.SalaryCache.GetValue(emp.ID) : emp.GetSalary(salaryDate));
         }
     }
     public class SalaryPersonalCalculator : SalaryCalculator
@@ -111,6 +74,10 @@ namespace MD.Salary.Model
         {
             return (Min(ExperienceRate * GetExperience(salaryDate, hireDate), LimitRate) + 1) * salaryBase;
         }
+    }
+    public interface ISalarySubCalculator
+    {
+        decimal GetSalary(List<Employee> subList, DateTime salaryDate);
     }
     class SalarySubEmployee : SalaryCalculator, ISalarySubCalculator
     {
@@ -131,23 +98,29 @@ namespace MD.Salary.Model
     class SalarySubSalesman : SalaryCalculator, ISalarySubCalculator
     {
         public SalarySubSalesman(SalaryRates salaryRates) : base(salaryRates) { }
-        private decimal GetSalaryIndirect(List<Employee> subList, DateTime salaryDate)
-        {
-            return subList.Sum(emp => GetSalaryDirect(emp.SubordinateList, salaryDate));
-        }
         public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
         {
             return SubordinateRate * (GetSalaryDirect(subList, salaryDate) + GetSalaryIndirect(subList, salaryDate));
         }
+        private decimal GetSalaryIndirect(List<Employee> subList, DateTime salaryDate)
+        {
+            return subList.Sum(emp => GetSalaryDirect(emp.SubordinateList, salaryDate));
+        }
     }
 
-    public struct SalaryCalculators
+    public struct SalaryRates
     {
-        public SalaryPersonalCalculator SalaryPersonal;
-        public ISalarySubCalculator SalarySub;
+        public int Experience;
+        public int Limit;
+        public decimal Subordinate;
     }
     public class SalaryFactory
     {
+        public struct SalaryCalculators
+        {
+            public SalaryPersonalCalculator SalaryPersonal;
+            public ISalarySubCalculator SalarySub;
+        }
         private Dictionary<Groups, SalaryCalculators> SalaryDictionary { get; set; }
         public SalaryFactory()
         {
