@@ -1,59 +1,78 @@
 ﻿using System;
-using System.IO;
 using System.Data.SQLite;
+using System.Reflection;
+using MD.Salary.Model;
 
 namespace MD.Salary.Database
 {
+    class DBEmployee
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public DateTime HireDate { get; set; }
+        public Groups Group { get; set; }
+        public decimal SalaryBase { get; set; }
+        public int SuperiorID { get; set; }
+    }
     class DBConnection
     {
-        public static SQLiteConnection CreateConnection()
+        public static SQLiteConnection CreateConnection(string connectionString)
         {
-            SQLiteConnection sqlite_conn;
-            // Create a new database connection:
-            string projectFolder = Directory.GetParent(Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory()))).ToString();
-            sqlite_conn = new SQLiteConnection("Data Source=F:/Side/Salary/db/database.db; Version = 3; New = True; Compress = True; ");
-            // Open the connection:
-            try { sqlite_conn.Open(); } catch (Exception ex) { }
-            return sqlite_conn;
+            SQLiteConnection connection = new SQLiteConnection(connectionString);
+            try { connection.Open(); } catch (Exception ex) { }
+            return connection;
         }
-        public static void CreateTable(SQLiteConnection conn)
+        public static void CloseConnection(SQLiteConnection connection)
         {
-            SQLiteCommand sqlite_cmd;
-            string Createsql = "CREATE TABLE SampleTable (Col1 VARCHAR(20), Col2 INT)";
-            string Createsql1 = "CREATE TABLE SampleTable1 (Col1 VARCHAR(20), Col2 INT)";
-            sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText = Createsql;
-            sqlite_cmd.ExecuteNonQuery();
-            sqlite_cmd.CommandText = Createsql1;
-            sqlite_cmd.ExecuteNonQuery();
+            connection.Close();
         }
-        public static void InsertData(SQLiteConnection conn)
+        private static SQLiteCommand CreateCommand(SQLiteConnection connection, string commandText)
         {
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable(Col1, Col2) VALUES('Test Text ', 1); ";
-            sqlite_cmd.ExecuteNonQuery();
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable(Col1, Col2) VALUES('Test1 Text1 ', 2); ";
-            sqlite_cmd.ExecuteNonQuery();
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable(Col1, Col2) VALUES('Test2 Text2 ', 3); ";
-            sqlite_cmd.ExecuteNonQuery();
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable1(Col1, Col2) VALUES('Test3 Text3 ', 3); ";
-            sqlite_cmd.ExecuteNonQuery();
+            SQLiteCommand command;
+            command = connection.CreateCommand();
+            command.CommandText = commandText;
+            return command;
         }
-        public static void ReadData(SQLiteConnection conn)
+        public static void ExecuteCommand(SQLiteConnection connection, string commandText)
         {
-            SQLiteDataReader sqlite_datareader;
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = conn.CreateCommand();
-            sqlite_cmd.CommandText = "SELECT * FROM SampleTable";
-
-            sqlite_datareader = sqlite_cmd.ExecuteReader();
-            while (sqlite_datareader.Read())
+            CreateCommand(connection, commandText).ExecuteNonQuery();
+        }
+        public static void ReadData(SQLiteConnection connection, string commandText)
+        {
+            SQLiteDataReader dataReader;
+            dataReader = CreateCommand(connection, commandText).ExecuteReader();
+            while (dataReader.Read())
             {
-                string myreader = sqlite_datareader.GetString(0);
+                DBEmployee employee = new DBEmployee();
+                
+                string myreader = "";
+                for (int i = 0; i < dataReader.FieldCount; i++)
+                {
+                    object value = null;
+                    switch (dataReader.GetFieldType(i).Name)
+                    {
+                        case "String":
+                            value = dataReader.GetString(i);
+                            break;
+                        case "Int64":
+                            value = dataReader.GetInt64(i);
+                            break;
+                        case "Decimal":
+                            value = dataReader.GetDecimal(i);
+                            break;
+                    }
+                    object prop = GetPropValue(employee, dataReader.GetName(i), value);
+                    myreader += value + " " + dataReader.GetName(i) + " " + dataReader.GetFieldType(i).Name + "\n";
+                }
                 Console.WriteLine(myreader);
             }
-            conn.Close();
+        }
+        public static object GetPropValue(object src, string propName, object value)
+        {
+            PropertyInfo property = src.GetType().GetProperty(propName,
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            if (propName != "group") { property.SetValue(src, value); }
+            return property.GetValue(src, null);
         }
     }
 }

@@ -9,30 +9,31 @@ namespace MD.Salary.Model
     public enum Groups { Employee, Manager, Salesman }
     public class Employee
     {
-        public int ID { get; }
+        public int ID { get; set; }
         public string Name { get; set; }
         public Groups Group { get; set; }
         public DateTime HireDate { get; set; }
-        public int SalaryBase { get; set; }
-        public List<int> SubordinateDirectID { get; set; }
+        public decimal SalaryBase { get; set; }
+        public int SuperiorID { get; set; }
+        public List<int> SubordinateID { get; set; }
         public List<Employee> SubordinateList { get; set; }
         public ISalarySubCalculator SalarySub { get; set; }
         public SalaryPersonalCalculator SalaryPersonal { get; set; }
-        public Employee(int id, string name, DateTime hireDate, Groups group, int salaryBase, List<int> subordinateDirectID)
+        public Employee(int id, string name, DateTime hireDate, Groups group, decimal salaryBase, List<int> subordinateID)
         {
             ID = id;
             Name = name;
             HireDate = hireDate;
             Group = group;
             SalaryBase = salaryBase;
-            SubordinateDirectID = subordinateDirectID;
+            SubordinateID = subordinateID;
             var salaryCalculators = new SalaryFactory().GetSalaryCalculator(group);
             SalaryPersonal = salaryCalculators.SalaryPersonal;
             SalarySub = salaryCalculators.SalarySub;
         }
         public void CalculateSubordinate(List<Employee> employeeList)
         {
-            SubordinateList = employeeList.Where(emp => SubordinateDirectID.Contains(emp.ID)).ToList();
+            SubordinateList = employeeList.Where(emp => SubordinateID.Contains(emp.ID)).ToList();
         }
         public decimal GetSalary(DateTime? salaryDateOptional = null)
         {
@@ -70,7 +71,7 @@ namespace MD.Salary.Model
             if (hireDate.Date > salaryDate.AddYears(-exp)) exp--;
             return exp;
         }
-        public decimal GetSalary(int salaryBase, DateTime hireDate, DateTime salaryDate)
+        public decimal GetSalary(decimal salaryBase, DateTime hireDate, DateTime salaryDate)
         {
             return (Min(ExperienceRate * GetExperience(salaryDate, hireDate), LimitRate) + 1) * salaryBase;
         }

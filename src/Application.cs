@@ -12,11 +12,16 @@ namespace MD.Salary.Application
     {
         static void Main(string[] args)
         {
-            SQLiteConnection sqlite_conn;
-            sqlite_conn = DBConnection.CreateConnection();
-            DBConnection.CreateTable(sqlite_conn);
-            DBConnection.InsertData(sqlite_conn);
-            DBConnection.ReadData(sqlite_conn);
+            string tableName;
+            string commandText;
+            SQLiteConnection connection;
+            tableName = "employees";
+            string connectionString = "Data Source = " + Environment.CurrentDirectory + "/" + tableName + ".db" +
+                "; Version = 3; New = True; Compress = True;";
+            connection = DBConnection.CreateConnection(connectionString);
+            commandText = "SELECT * FROM " + tableName;
+            DBConnection.ReadData(connection, commandText);
+            DBConnection.CloseConnection(connection);
 
             var employeeList = new List<Employee> {
                 new Employee(1, "Смит", DateTime.Parse("5/5/5"), Groups.Employee, 15, new List<int> { }),
