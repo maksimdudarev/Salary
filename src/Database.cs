@@ -7,12 +7,12 @@ namespace MD.Salary.Database
 {
     class DBEmployee
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
         public string Name { get; set; }
         public DateTime HireDate { get; set; }
         public Groups Group { get; set; }
         public decimal SalaryBase { get; set; }
-        public int SuperiorID { get; set; }
+        public long SuperiorID { get; set; }
     }
     class DBConnection
     {
@@ -46,33 +46,31 @@ namespace MD.Salary.Database
                 DBEmployee employee = new DBEmployee();
                 
                 string myreader = "";
-                for (int i = 0; i < dataReader.FieldCount; i++)
-                {
-                    object value = null;
-                    switch (dataReader.GetFieldType(i).Name)
-                    {
-                        case "String":
-                            value = dataReader.GetString(i);
-                            break;
-                        case "Int64":
-                            value = dataReader.GetInt64(i);
-                            break;
-                        case "Decimal":
-                            value = dataReader.GetDecimal(i);
-                            break;
-                    }
-                    object prop = GetPropValue(employee, dataReader.GetName(i), value);
-                    myreader += value + " " + dataReader.GetName(i) + " " + dataReader.GetFieldType(i).Name + "\n";
-                }
+                for (int i = 0; i < dataReader.FieldCount; i++) myreader += ReadValue(dataReader, employee, i);
                 Console.WriteLine(myreader);
             }
         }
-        public static object GetPropValue(object src, string propName, object value)
+        private static string ReadValue(SQLiteDataReader dataReader, DBEmployee employee, int column)
+        {
+            object value = dataReader.GetValue(column);
+            string propertyName = dataReader.GetName(column);
+            switch (propertyName)
+            {
+                case "group":
+                    value = Enum.Parse(typeof(Groups), value.ToString());
+                    break;
+                case "hiredate":
+                    value = DateTimeOffset.FromUnixTimeSeconds((long)value).UtcDateTime;
+                    break;
+            }
+            SetPropValue(employee, propertyName, value);
+            return value + " ";
+        }
+        private static void SetPropValue(object src, string propName, object value)
         {
             PropertyInfo property = src.GetType().GetProperty(propName,
                 BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            if (propName != "group") { property.SetValue(src, value); }
-            return property.GetValue(src, null);
+            property.SetValue(src, value);
         }
     }
 }

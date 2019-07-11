@@ -9,17 +9,17 @@ namespace MD.Salary.Model
     public enum Groups { Employee, Manager, Salesman }
     public class Employee
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
         public string Name { get; set; }
         public Groups Group { get; set; }
         public DateTime HireDate { get; set; }
         public decimal SalaryBase { get; set; }
-        public int SuperiorID { get; set; }
-        public List<int> SubordinateID { get; set; }
+        public long SuperiorID { get; set; }
+        public List<long> SubordinateID { get; set; }
         public List<Employee> SubordinateList { get; set; }
         public ISalarySubCalculator SalarySub { get; set; }
         public SalaryPersonalCalculator SalaryPersonal { get; set; }
-        public Employee(int id, string name, DateTime hireDate, Groups group, decimal salaryBase, List<int> subordinateID)
+        public Employee(long id, string name, DateTime hireDate, Groups group, decimal salaryBase, List<long> subordinateID)
         {
             ID = id;
             Name = name;

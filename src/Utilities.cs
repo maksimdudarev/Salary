@@ -5,13 +5,13 @@ namespace MD.Salary.Utilities
 {
     class MemoizationCache
     {
-        private Dictionary<int, decimal> CacheCollection { get; set; }
-        public MemoizationCache() { CacheCollection = new Dictionary<int, decimal> { }; }
-        public void Add(int key, decimal value)
+        private Dictionary<long, decimal> CacheCollection { get; set; }
+        public MemoizationCache() { CacheCollection = new Dictionary<long, decimal> { }; }
+        public void Add(long key, decimal value)
         {
             if (!ContainsKey(key)) CacheCollection[key] = value;
         }
-        public decimal GetValue(int key)
+        public decimal GetValue(long key)
         {
             return CacheCollection[key];
         }
@@ -19,7 +19,7 @@ namespace MD.Salary.Utilities
         {
             return CacheCollection.Sum(item => item.Value);
         }
-        public bool ContainsKey(int key)
+        public bool ContainsKey(long key)
         {
             return CacheCollection.ContainsKey(key);
         }
