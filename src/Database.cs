@@ -1,28 +1,29 @@
 ﻿using System;
-using System.Data.SQLite;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Data.SQLite;
 using MD.Salary.Model;
 
 namespace MD.Salary.Database
 {
-    class DBEmployee
+    class DataRetriever
     {
-        public long ID { get; set; }
-        public string Name { get; set; }
-        public DateTime HireDate { get; set; }
-        public Groups Group { get; set; }
-        public decimal SalaryBase { get; set; }
-        public long SuperiorID { get; set; }
-    }
-    class DBConnection
-    {
-        public static SQLiteConnection CreateConnection(string connectionString)
+        public static List<EmployeeDB> GetData(string dataSource, string tableName)
+        {
+            string connectionString = "Data Source = " + dataSource + "; Version = 3; New = True; Compress = True;";
+            SQLiteConnection connection = CreateConnection(connectionString);
+            SQLiteDataReader dataReader = CreateCommand(connection, "SELECT * FROM " + tableName).ExecuteReader();
+            List<EmployeeDB> employeeList = ReadData(dataReader);
+            CloseConnection(connection);
+            return employeeList;
+        }
+        private static SQLiteConnection CreateConnection(string connectionString)
         {
             SQLiteConnection connection = new SQLiteConnection(connectionString);
-            try { connection.Open(); } catch (Exception ex) { }
+            try { connection.Open(); } catch (Exception) { }
             return connection;
         }
-        public static void CloseConnection(SQLiteConnection connection)
+        private static void CloseConnection(SQLiteConnection connection)
         {
             connection.Close();
         }
@@ -33,44 +34,40 @@ namespace MD.Salary.Database
             command.CommandText = commandText;
             return command;
         }
-        public static void ExecuteCommand(SQLiteConnection connection, string commandText)
+        private static List<EmployeeDB> ReadData(SQLiteDataReader dataReader)
         {
-            CreateCommand(connection, commandText).ExecuteNonQuery();
-        }
-        public static void ReadData(SQLiteConnection connection, string commandText)
-        {
-            SQLiteDataReader dataReader;
-            dataReader = CreateCommand(connection, commandText).ExecuteReader();
+            var employeeList = new List<EmployeeDB> { };
             while (dataReader.Read())
             {
-                DBEmployee employee = new DBEmployee();
-                
-                string myreader = "";
-                for (int i = 0; i < dataReader.FieldCount; i++) myreader += ReadValue(dataReader, employee, i);
-                Console.WriteLine(myreader);
+                var employee = new EmployeeDB();
+                for (int i = 0; i < dataReader.FieldCount; i++)
+                {
+                    object value = dataReader.GetValue(i);
+                    string propertyName = dataReader.GetName(i);
+                    value = TransformValue(propertyName, value);
+                    SetPropertyValue(employee, propertyName, value);
+                }
+                employeeList.Add(employee);
             }
+            return employeeList;
         }
-        private static string ReadValue(SQLiteDataReader dataReader, DBEmployee employee, int column)
+        private static object TransformValue(string propertyName, object value)
         {
-            object value = dataReader.GetValue(column);
-            string propertyName = dataReader.GetName(column);
             switch (propertyName)
             {
                 case "group":
-                    value = Enum.Parse(typeof(Groups), value.ToString());
+                    value = Enum.Parse(typeof(Group), value.ToString());
                     break;
                 case "hiredate":
                     value = DateTimeOffset.FromUnixTimeSeconds((long)value).UtcDateTime;
                     break;
             }
-            SetPropValue(employee, propertyName, value);
-            return value + " ";
+            return value;
         }
-        private static void SetPropValue(object src, string propName, object value)
+        private static void SetPropertyValue(object src, string propertyName, object value)
         {
-            PropertyInfo property = src.GetType().GetProperty(propName,
-                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            property.SetValue(src, value);
+            var flags = BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance;
+            src.GetType().GetProperty(propertyName, flags).SetValue(src, value);
         }
     }
 }
