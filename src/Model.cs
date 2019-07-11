@@ -6,34 +6,43 @@ using MD.Salary.Application;
 
 namespace MD.Salary.Model
 {
-    public enum Groups { Employee, Manager, Salesman }
+    public enum Group { Employee, Manager, Salesman }
+    public class EmployeeDB
+    {
+        public long ID { get; set; }
+        public string Name { get; set; }
+        public DateTime HireDate { get; set; }
+        public Group Group { get; set; }
+        public decimal SalaryBase { get; set; }
+        public long SuperiorID { get; set; }
+    }
     public class Employee
     {
         public long ID { get; set; }
         public string Name { get; set; }
-        public Groups Group { get; set; }
         public DateTime HireDate { get; set; }
+        public Group Group { get; set; }
         public decimal SalaryBase { get; set; }
         public long SuperiorID { get; set; }
-        public List<long> SubordinateID { get; set; }
         public List<Employee> SubordinateList { get; set; }
         public ISalarySubCalculator SalarySub { get; set; }
         public SalaryPersonalCalculator SalaryPersonal { get; set; }
-        public Employee(long id, string name, DateTime hireDate, Groups group, decimal salaryBase, List<long> subordinateID)
+        public Employee(EmployeeDB employeeDB)
         {
-            ID = id;
-            Name = name;
-            HireDate = hireDate;
-            Group = group;
-            SalaryBase = salaryBase;
-            SubordinateID = subordinateID;
-            var salaryCalculators = new SalaryFactory().GetSalaryCalculator(group);
+            ID = employeeDB.ID;
+            Name = employeeDB.Name;
+            HireDate = employeeDB.HireDate;
+            Group = employeeDB.Group;
+            SalaryBase = employeeDB.SalaryBase;
+            SuperiorID = employeeDB.SuperiorID;
+            var salaryCalculators = new SalaryFactory().GetSalaryCalculator(Group);
             SalaryPersonal = salaryCalculators.SalaryPersonal;
             SalarySub = salaryCalculators.SalarySub;
         }
         public void CalculateSubordinate(List<Employee> employeeList)
         {
-            SubordinateList = employeeList.Where(emp => SubordinateID.Contains(emp.ID)).ToList();
+            List<long> subordinateID = employeeList.Where(emp => emp.SuperiorID == ID).Select(emp => emp.ID).ToList();
+            SubordinateList = employeeList.Where(emp => subordinateID.Contains(emp.ID)).ToList();
         }
         public decimal GetSalary(DateTime? salaryDateOptional = null)
         {
@@ -122,22 +131,22 @@ namespace MD.Salary.Model
             public SalaryPersonalCalculator SalaryPersonal;
             public ISalarySubCalculator SalarySub;
         }
-        private Dictionary<Groups, SalaryCalculators> SalaryDictionary { get; set; }
+        private Dictionary<Group, SalaryCalculators> SalaryDictionary { get; set; }
         public SalaryFactory()
         {
             var salaryRateEmployee = new SalaryRates { Experience = 3, Limit = 30 };
             var salaryRateManager = new SalaryRates { Experience = 5, Limit = 40, Subordinate = 0.5m };
             var salaryRateSalesman = new SalaryRates { Experience = 1, Limit = 35, Subordinate = 0.3m };
-            SalaryDictionary = new Dictionary<Groups, SalaryCalculators> {
-                {Groups.Employee, new SalaryCalculators { SalarySub = new SalarySubEmployee(salaryRateEmployee),
+            SalaryDictionary = new Dictionary<Group, SalaryCalculators> {
+                {Group.Employee, new SalaryCalculators { SalarySub = new SalarySubEmployee(salaryRateEmployee),
                                                 SalaryPersonal = new SalaryPersonalCalculator(salaryRateEmployee) } },
-                {Groups.Manager, new SalaryCalculators { SalarySub = new SalarySubManager(salaryRateManager),
+                {Group.Manager, new SalaryCalculators { SalarySub = new SalarySubManager(salaryRateManager),
                                                SalaryPersonal = new SalaryPersonalCalculator(salaryRateManager) }  },
-                {Groups.Salesman, new SalaryCalculators { SalarySub = new SalarySubSalesman(salaryRateSalesman),
+                {Group.Salesman, new SalaryCalculators { SalarySub = new SalarySubSalesman(salaryRateSalesman),
                                                 SalaryPersonal = new SalaryPersonalCalculator(salaryRateSalesman) }  }
             };
         }
-        public SalaryCalculators GetSalaryCalculator(Groups group)
+        public SalaryCalculators GetSalaryCalculator(Group group)
         {
             return SalaryDictionary[group];
         }
