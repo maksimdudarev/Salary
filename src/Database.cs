@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Data.SQLite;
 using MD.Salary.Model;
 
@@ -66,33 +65,17 @@ namespace MD.Salary.Database
         }
         private static EmployeeDB GetEmployee(SQLiteDataReader dataReader)
         {
-            var employee = new EmployeeDB();
-            for (int i = 0; i < dataReader.FieldCount; i++)
+            Enum.TryParse(dataReader["group"].ToString(), out Group group);
+            var employee = new EmployeeDB
             {
-                object value = dataReader.GetValue(i);
-                string propertyName = dataReader.GetName(i);
-                value = TransformValue(propertyName, value);
-                SetPropertyValue(employee, propertyName, value);
-            }
+                ID = (long)dataReader["id"],
+                Name = dataReader["name"].ToString(),
+                Group = group,
+                HireDate = DateTimeOffset.FromUnixTimeSeconds((long)dataReader["hiredate"]).UtcDateTime,
+                SalaryBase = (decimal)dataReader["salarybase"],
+                SuperiorID = (long)dataReader["superiorid"]
+            };
             return employee;
-        }
-        private static object TransformValue(string propertyName, object value)
-        {
-            switch (propertyName)
-            {
-                case "group":
-                    value = Enum.Parse(typeof(Group), value.ToString());
-                    break;
-                case "hiredate":
-                    value = DateTimeOffset.FromUnixTimeSeconds((long)value).UtcDateTime;
-                    break;
-            }
-            return value;
-        }
-        private static void SetPropertyValue(object src, string propertyName, object value)
-        {
-            var flags = BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance;
-            src.GetType().GetProperty(propertyName, flags).SetValue(src, value);
         }
     }
 }
