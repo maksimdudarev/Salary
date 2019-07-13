@@ -25,8 +25,8 @@ namespace MD.Salary.Model
         public decimal SalaryBase { get; set; }
         public long SuperiorID { get; set; }
         public List<Employee> SubordinateList { get; set; }
-        public ISalarySubCalculator SalarySub { get; set; }
-        public SalaryPersonalCalculator SalaryPersonal { get; set; }
+        public ICalculatorSub SalarySub { get; set; }
+        public CalculatorPersonal SalaryPersonal { get; set; }
         public Employee(EmployeeDB employeeDB)
         {
             ID = employeeDB.ID;
@@ -35,35 +35,31 @@ namespace MD.Salary.Model
             Group = employeeDB.Group;
             SalaryBase = employeeDB.SalaryBase;
             SuperiorID = employeeDB.SuperiorID;
-            var salaryCalculators = new SalaryFactory().GetSalaryCalculator(Group);
-            SalaryPersonal = salaryCalculators.SalaryPersonal;
-            SalarySub = salaryCalculators.SalarySub;
+            var calculators = new Factory().GetCalculator(Group);
+            SalaryPersonal = calculators.Personal;
+            SalarySub = calculators.Sub;
         }
         public void CalculateSubordinate(List<Employee> employeeList)
         {
             List<long> subordinateID = employeeList.Where(emp => emp.SuperiorID == ID).Select(emp => emp.ID).ToList();
             SubordinateList = employeeList.Where(emp => subordinateID.Contains(emp.ID)).ToList();
         }
-        public decimal GetSalary(DateTime? salaryDateOptional = null)
+        public decimal GetSalary(DateTime salaryDate)
         {
-            var salaryDate = salaryDateOptional ?? DateTime.Today;
-            var salary = SalaryPersonal.GetSalary(SalaryBase, HireDate, salaryDate) + SalarySub.GetSalary(SubordinateList, salaryDate);
+            decimal salary = SalaryPersonal.GetSalary(SalaryBase, HireDate, salaryDate) + SalarySub.GetSalary(SubordinateList, salaryDate);
             Program.SalaryCache.Add(ID, salary);
             return salary;
         }
     }
 
-    public class SalaryCalculator
+    public class Calculator
     {
-        public decimal ExperienceRate { get; set; }
-        public decimal LimitRate { get; set; }
         public decimal SubordinateRate { get; set; }
-        public SalaryCalculator(SalaryRates salaryRates)
+        public decimal UnitRate { get; set; } = 100;
+        public Calculator() { }
+        public Calculator(decimal subordinateRate)
         {
-            decimal unitRate = 100;
-            ExperienceRate = salaryRates.Experience / unitRate;
-            LimitRate = salaryRates.Limit / unitRate;
-            SubordinateRate = salaryRates.Subordinate / unitRate;
+            SubordinateRate = subordinateRate / UnitRate;
         }
         public decimal GetSalaryDirect(List<Employee> subList, DateTime salaryDate)
         {
@@ -71,9 +67,15 @@ namespace MD.Salary.Model
                                       Program.SalaryCache.GetValue(emp.ID) : emp.GetSalary(salaryDate));
         }
     }
-    public class SalaryPersonalCalculator : SalaryCalculator
+    public class CalculatorPersonal : Calculator
     {
-        public SalaryPersonalCalculator(SalaryRates salaryRates) : base(salaryRates) { }
+        public CalculatorPersonal(decimal experienceRate, decimal limitRate) : base()
+        {
+            ExperienceRate = experienceRate / UnitRate;
+            LimitRate = limitRate / UnitRate;
+        }
+        private decimal ExperienceRate { get; set; }
+        private decimal LimitRate { get; set; }
         private int GetExperience(DateTime salaryDate, DateTime hireDate)
         {
             var exp = salaryDate.Year - hireDate.Year;
@@ -85,29 +87,29 @@ namespace MD.Salary.Model
             return (Min(ExperienceRate * GetExperience(salaryDate, hireDate), LimitRate) + 1) * salaryBase;
         }
     }
-    public interface ISalarySubCalculator
+    public interface ICalculatorSub
     {
         decimal GetSalary(List<Employee> subList, DateTime salaryDate);
     }
-    class SalarySubEmployee : SalaryCalculator, ISalarySubCalculator
+    class ICalculatorSubEmployee : Calculator, ICalculatorSub
     {
-        public SalarySubEmployee(SalaryRates salaryRates) : base(salaryRates) { }
+        public ICalculatorSubEmployee(decimal subordinateRate) : base(subordinateRate) { }
         public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
         {
             return 0;
         }
     }
-    class SalarySubManager : SalaryCalculator, ISalarySubCalculator
+    class ICalculatorSubManager : Calculator, ICalculatorSub
     {
-        public SalarySubManager(SalaryRates salaryRates) : base(salaryRates) { }
+        public ICalculatorSubManager(decimal subordinateRate) : base(subordinateRate) { }
         public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
         {
             return SubordinateRate * GetSalaryDirect(subList, salaryDate);
         }
     }
-    class SalarySubSalesman : SalaryCalculator, ISalarySubCalculator
+    class ICalculatorSubSalesman : Calculator, ICalculatorSub
     {
-        public SalarySubSalesman(SalaryRates salaryRates) : base(salaryRates) { }
+        public ICalculatorSubSalesman(decimal subordinateRate) : base(subordinateRate) { }
         public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
         {
             return SubordinateRate * (GetSalaryDirect(subList, salaryDate) + GetSalaryIndirect(subList, salaryDate));
@@ -118,35 +120,23 @@ namespace MD.Salary.Model
         }
     }
 
-    public struct SalaryRates
+    public class Factory
     {
-        public int Experience;
-        public int Limit;
-        public decimal Subordinate;
-    }
-    public class SalaryFactory
-    {
-        public struct SalaryCalculators
+        public struct Calculators
         {
-            public SalaryPersonalCalculator SalaryPersonal;
-            public ISalarySubCalculator SalarySub;
+            public CalculatorPersonal Personal;
+            public ICalculatorSub Sub;
         }
-        private Dictionary<Group, SalaryCalculators> SalaryDictionary { get; set; }
-        public SalaryFactory()
+        private Dictionary<Group, Calculators> SalaryDictionary { get; set; }
+        public Factory()
         {
-            var salaryRateEmployee = new SalaryRates { Experience = 3, Limit = 30 };
-            var salaryRateManager = new SalaryRates { Experience = 5, Limit = 40, Subordinate = 0.5m };
-            var salaryRateSalesman = new SalaryRates { Experience = 1, Limit = 35, Subordinate = 0.3m };
-            SalaryDictionary = new Dictionary<Group, SalaryCalculators> {
-                {Group.Employee, new SalaryCalculators { SalarySub = new SalarySubEmployee(salaryRateEmployee),
-                                                SalaryPersonal = new SalaryPersonalCalculator(salaryRateEmployee) } },
-                {Group.Manager, new SalaryCalculators { SalarySub = new SalarySubManager(salaryRateManager),
-                                               SalaryPersonal = new SalaryPersonalCalculator(salaryRateManager) }  },
-                {Group.Salesman, new SalaryCalculators { SalarySub = new SalarySubSalesman(salaryRateSalesman),
-                                                SalaryPersonal = new SalaryPersonalCalculator(salaryRateSalesman) }  }
+            SalaryDictionary = new Dictionary<Group, Calculators> {
+                {Group.Employee, new Calculators {Sub = new ICalculatorSubEmployee(0), Personal = new CalculatorPersonal(3, 30) } },
+                {Group.Manager, new Calculators {Sub = new ICalculatorSubManager(0.5m), Personal = new CalculatorPersonal(5, 40) } },
+                {Group.Salesman, new Calculators {Sub = new ICalculatorSubSalesman(0.3m), Personal = new CalculatorPersonal(1, 35) } }
             };
         }
-        public SalaryCalculators GetSalaryCalculator(Group group)
+        public Calculators GetCalculator(Group group)
         {
             return SalaryDictionary[group];
         }
