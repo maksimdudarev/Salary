@@ -11,21 +11,37 @@ namespace MD.Salary.Database
         public static List<EmployeeDB> GetData(string dataSource, string tableName)
         {
             string connectionString = "Data Source = " + dataSource + "; Version = 3; New = True; Compress = True;";
+            string commandText = "SELECT * FROM " + tableName;
             SQLiteConnection connection = CreateConnection(connectionString);
-            SQLiteDataReader dataReader = CreateCommand(connection, "SELECT * FROM " + tableName).ExecuteReader();
-            List<EmployeeDB> employeeList = ReadData(dataReader);
+            SQLiteDataReader dataReader = ExecuteReader(connection, commandText);
+            List<EmployeeDB> employeeList = GetEmployeeList(dataReader);
             CloseConnection(connection);
             return employeeList;
         }
         private static SQLiteConnection CreateConnection(string connectionString)
         {
             SQLiteConnection connection = new SQLiteConnection(connectionString);
-            try { connection.Open(); } catch (Exception) { }
+            try
+            {
+                connection.Open();
+            }
+            catch (Exception) { }
             return connection;
         }
         private static void CloseConnection(SQLiteConnection connection)
         {
             connection.Close();
+        }
+        private static SQLiteDataReader ExecuteReader(SQLiteConnection connection, string commandText)
+        {
+            SQLiteDataReader dataReader = null;
+            SQLiteCommand command = CreateCommand(connection, commandText);
+            try
+            {
+                dataReader = command.ExecuteReader();
+            }
+            catch (Exception) { } 
+            return dataReader;
         }
         private static SQLiteCommand CreateCommand(SQLiteConnection connection, string commandText)
         {
@@ -34,22 +50,31 @@ namespace MD.Salary.Database
             command.CommandText = commandText;
             return command;
         }
-        private static List<EmployeeDB> ReadData(SQLiteDataReader dataReader)
+        private static List<EmployeeDB> GetEmployeeList(SQLiteDataReader dataReader)
         {
             var employeeList = new List<EmployeeDB> { };
-            while (dataReader.Read())
+            try
             {
-                var employee = new EmployeeDB();
-                for (int i = 0; i < dataReader.FieldCount; i++)
+                while (dataReader.Read())
                 {
-                    object value = dataReader.GetValue(i);
-                    string propertyName = dataReader.GetName(i);
-                    value = TransformValue(propertyName, value);
-                    SetPropertyValue(employee, propertyName, value);
+                    EmployeeDB employee = GetEmployee(dataReader);
+                    employeeList.Add(employee);
                 }
-                employeeList.Add(employee);
             }
+            catch (Exception) { }
             return employeeList;
+        }
+        private static EmployeeDB GetEmployee(SQLiteDataReader dataReader)
+        {
+            var employee = new EmployeeDB();
+            for (int i = 0; i < dataReader.FieldCount; i++)
+            {
+                object value = dataReader.GetValue(i);
+                string propertyName = dataReader.GetName(i);
+                value = TransformValue(propertyName, value);
+                SetPropertyValue(employee, propertyName, value);
+            }
+            return employee;
         }
         private static object TransformValue(string propertyName, object value)
         {
