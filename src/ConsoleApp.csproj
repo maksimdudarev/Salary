@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C717D9A4-16E3-493A-AFDF-D0BDC48D19AD}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>MD.Salary</RootNamespace>
-    <AssemblyName>MD.Salary</AssemblyName>
+    <RootNamespace>MD.Salary.ConsoleApp</RootNamespace>
+    <AssemblyName>MD.Salary.ConsoleApp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -125,7 +125,7 @@
     <Compile Include="Application.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Database.cs" />
-    <Compile Include="Model.cs" />
+    <Compile Include="Models.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

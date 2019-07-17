@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Salary", "src\Salary.csproj", "{C717D9A4-16E3-493A-AFDF-D0BDC48D19AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "src\ConsoleApp.csproj", "{C717D9A4-16E3-493A-AFDF-D0BDC48D19AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "api\Api.csproj", "{8D51F4BE-C1EA-4172-9677-71CCB2A51686}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "api\WebApi.csproj", "{8D51F4BE-C1EA-4172-9677-71CCB2A51686}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

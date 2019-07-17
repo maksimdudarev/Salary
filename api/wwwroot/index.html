@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>To-do CRUD</title>
+    <title>CRUD</title>
     <style>
         input[type='submit'], button, [aria-label] {
             cursor: pointer;
@@ -19,8 +19,9 @@
         }
 
         th {
-            background-color: #0066CC;
-            color: white;
+            border: 1px solid;
+            padding: 5px;
+            background-color: #BFDFFF;
         }
 
         td {
@@ -30,10 +31,10 @@
     </style>
 </head>
 <body>
-    <h1>To-do CRUD</h1>
+    <h1><!--CRUD--></h1>
     <h3>Add</h3>
     <form action="javascript:void(0);" method="POST" onsubmit="addItem()">
-        <input type="text" id="add-name" placeholder="New to-do">
+        <input type="text" id="add-name" placeholder="New item">
         <input type="submit" value="Add">
     </form>
 
@@ -53,6 +54,16 @@
     <table>
         <tr>
             <th>Is Complete</th>
+            <th>Name</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tbody id="todos"></tbody>
+    </table>
+
+    <table>
+        <tr>
+            <th>SalaryBase</th>
             <th>Name</th>
             <th></th>
             <th></th>

@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TodoApi.Models;
+using MD.Salary.WebApi.Models;
 
-namespace TodoApi
+namespace MD.Salary.WebApi
 {
     public class Startup
     {
@@ -23,6 +23,8 @@ namespace TodoApi
         {
             services.AddDbContext<TodoContext>(opt =>
                 opt.UseInMemoryDatabase("TodoList"));
+            services.AddDbContext<EmployeeContext>(opt =>
+                opt.UseInMemoryDatabase("EmployeeList"));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

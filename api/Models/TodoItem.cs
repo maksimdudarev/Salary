@@ -1,4 +1,4 @@
-﻿namespace TodoApi.Models
+﻿namespace MD.Salary.WebApi.Models
 {
     public class TodoItem
     {
