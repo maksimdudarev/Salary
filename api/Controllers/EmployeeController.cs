@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MD.Salary.WebApi.Models;
+using MD.Salary.ConsoleApp.Models;
 
 namespace MD.Salary.WebApi.Controllers
 {
@@ -21,20 +22,20 @@ namespace MD.Salary.WebApi.Controllers
             {
                 // Create a new EmployeeItem if collection is empty,
                 // which means you can't delete all EmployeeItems.
-                _context.EmployeeItems.Add(new EmployeeItem { Name = "Item1" });
+                _context.EmployeeItems.Add(new EmployeeDB { Name = "Item1" });
                 _context.SaveChanges();
             }
         }
         // GET: api/Employee
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeItem>>> GetEmployeeItems()
+        public async Task<ActionResult<IEnumerable<EmployeeDB>>> GetEmployeeItems()
         {
             return await _context.EmployeeItems.ToListAsync();
         }
 
         // GET: api/Employee/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<EmployeeItem>> GetEmployeeItem(long id)
+        public async Task<ActionResult<EmployeeDB>> GetEmployeeItem(long id)
         {
             var employeeItem = await _context.EmployeeItems.FindAsync(id);
 
@@ -47,7 +48,7 @@ namespace MD.Salary.WebApi.Controllers
         }
         // POST: api/Employee
         [HttpPost]
-        public async Task<ActionResult<EmployeeItem>> PostEmployeeItem(EmployeeItem item)
+        public async Task<ActionResult<EmployeeDB>> PostEmployeeItem(EmployeeDB item)
         {
             _context.EmployeeItems.Add(item);
             await _context.SaveChangesAsync();
@@ -56,7 +57,7 @@ namespace MD.Salary.WebApi.Controllers
         }
         // PUT: api/Employee/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployeeItem(long id, EmployeeItem item)
+        public async Task<IActionResult> PutEmployeeItem(long id, EmployeeDB item)
         {
             if (id != item.ID)
             {

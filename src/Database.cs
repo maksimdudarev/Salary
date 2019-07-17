@@ -5,7 +5,7 @@ using MD.Salary.ConsoleApp.Models;
 
 namespace MD.Salary.ConsoleApp.Database
 {
-    class DataRetriever
+    public class DataRetriever
     {
         public static List<EmployeeDB> GetData(string dataSource, string tableName)
         {

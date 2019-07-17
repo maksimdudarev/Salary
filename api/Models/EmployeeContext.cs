@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MD.Salary.ConsoleApp.Models;
 
 namespace MD.Salary.WebApi.Models
 {
@@ -9,6 +10,6 @@ namespace MD.Salary.WebApi.Models
         {
         }
 
-        public DbSet<EmployeeItem> EmployeeItems { get; set; }
+        public DbSet<EmployeeDB> EmployeeItems { get; set; }
     }
 }
