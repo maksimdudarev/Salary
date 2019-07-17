@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using MD.Salary.Model;
+using MD.Salary.ConsoleApp.Models;
 
-namespace MD.Salary.Database
+namespace MD.Salary.ConsoleApp.Database
 {
     class DataRetriever
     {
