@@ -123,9 +123,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="Models\Calculator.cs" />
+    <Compile Include="Models\CalculatorPersonal.cs" />
+    <Compile Include="Models\Employee.cs" />
+    <Compile Include="Models\EmployeeDB.cs" />
+    <Compile Include="Models\Factory.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Database.cs" />
-    <Compile Include="Models.cs" />
+    <Compile Include="Models\ICalculatorSub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

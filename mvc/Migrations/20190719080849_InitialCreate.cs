@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace WebMvc.Migrations
+namespace MD.Salary.WebMvc.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -22,6 +22,23 @@ namespace WebMvc.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    ID = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    HireDate = table.Column<long>(nullable: false),
+                    Group = table.Column<string>(nullable: true),
+                    SalaryBase = table.Column<decimal>(nullable: false),
+                    SuperiorID = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
@@ -29,7 +46,6 @@ namespace WebMvc.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(nullable: true),
                     Content = table.Column<string>(nullable: true),
-                    Number = table.Column<int>(nullable: false),
                     BlogId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -51,6 +67,9 @@ namespace WebMvc.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Employees");
+
             migrationBuilder.DropTable(
                 name: "Posts");
 

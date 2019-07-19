@@ -65,13 +65,12 @@ namespace MD.Salary.ConsoleApp.Database
         }
         private static EmployeeDB GetEmployee(SQLiteDataReader dataReader)
         {
-            Enum.TryParse(dataReader["group"].ToString(), out Group group);
             var employee = new EmployeeDB
             {
                 ID = (long)dataReader["id"],
                 Name = dataReader["name"].ToString(),
-                Group = group,
-                HireDate = DateTimeOffset.FromUnixTimeSeconds((long)dataReader["hiredate"]).UtcDateTime,
+                Group = dataReader["group"].ToString(),
+                HireDate = (long)dataReader["hiredate"],
                 SalaryBase = (decimal)dataReader["salarybase"],
                 SuperiorID = (long)dataReader["superiorid"]
             };
