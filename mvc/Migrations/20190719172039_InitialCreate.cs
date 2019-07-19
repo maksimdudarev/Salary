@@ -30,7 +30,7 @@ namespace MD.Salary.WebMvc.Migrations
                     Name = table.Column<string>(nullable: true),
                     HireDate = table.Column<long>(nullable: false),
                     Group = table.Column<string>(nullable: true),
-                    SalaryBase = table.Column<decimal>(nullable: false),
+                    SalaryBase = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
                     SuperiorID = table.Column<long>(nullable: false)
                 },
                 constraints: table =>

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MD.Salary.WebMvc.Migrations
 {
     [DbContext(typeof(EmployeeContext))]
-    [Migration("20190719080849_InitialCreate")]
+    [Migration("20190719172039_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,7 +32,8 @@ namespace MD.Salary.WebMvc.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<decimal>("SalaryBase");
+                    b.Property<decimal>("SalaryBase")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<long>("SuperiorID");
 

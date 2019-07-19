@@ -30,7 +30,8 @@ namespace MD.Salary.WebMvc.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<decimal>("SalaryBase");
+                    b.Property<decimal>("SalaryBase")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<long>("SuperiorID");
 
