@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MD.Salary.WebMvc.Models;
 
-namespace WebMvc.Controllers
+namespace MD.Salary.WebMvc.Controllers
 {
     public class BlogsController : Controller
     {
