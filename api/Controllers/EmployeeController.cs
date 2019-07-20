@@ -18,46 +18,46 @@ namespace MD.Salary.WebApi.Controllers
         {
             _context = context;
 
-            if (_context.EmployeeItems.Count() == 0)
+            if (_context.Employees.Count() == 0)
             {
-                // Create a new EmployeeItem if collection is empty,
-                // which means you can't delete all EmployeeItems.
-                _context.EmployeeItems.Add(new EmployeeDB { Name = "Item1" });
+                // Create a new Employee if collection is empty,
+                // which means you can't delete all Employees.
+                _context.Employees.Add(new EmployeeDB { Name = "Item1" });
                 _context.SaveChanges();
             }
         }
         // GET: api/Employee
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeDB>>> GetEmployeeItems()
+        public async Task<ActionResult<IEnumerable<EmployeeDB>>> GetEmployees()
         {
-            return await _context.EmployeeItems.ToListAsync();
+            return await _context.Employees.ToListAsync();
         }
 
         // GET: api/Employee/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<EmployeeDB>> GetEmployeeItem(long id)
+        public async Task<ActionResult<EmployeeDB>> GetEmployee(long id)
         {
-            var employeeItem = await _context.EmployeeItems.FindAsync(id);
+            var employee = await _context.Employees.FindAsync(id);
 
-            if (employeeItem == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return employeeItem;
+            return employee;
         }
         // POST: api/Employee
         [HttpPost]
-        public async Task<ActionResult<EmployeeDB>> PostEmployeeItem(EmployeeDB item)
+        public async Task<ActionResult<EmployeeDB>> PostEmployee(EmployeeDB item)
         {
-            _context.EmployeeItems.Add(item);
+            _context.Employees.Add(item);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetEmployeeItem), new { id = item.ID }, item);
+            return CreatedAtAction(nameof(GetEmployee), new { id = item.ID }, item);
         }
         // PUT: api/Employee/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployeeItem(long id, EmployeeDB item)
+        public async Task<IActionResult> PutEmployee(long id, EmployeeDB item)
         {
             if (id != item.ID)
             {
@@ -71,16 +71,16 @@ namespace MD.Salary.WebApi.Controllers
         }
         // DELETE: api/Employee/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployeeItem(long id)
+        public async Task<IActionResult> DeleteEmployee(long id)
         {
-            var employeeItem = await _context.EmployeeItems.FindAsync(id);
+            var employee = await _context.Employees.FindAsync(id);
 
-            if (employeeItem == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            _context.EmployeeItems.Remove(employeeItem);
+            _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
 
             return NoContent();

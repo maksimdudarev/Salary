@@ -24,7 +24,9 @@ namespace MD.Salary.WebApi
             services.AddDbContext<TodoContext>(opt =>
                 opt.UseInMemoryDatabase("TodoList"));
             services.AddDbContext<EmployeeContext>(opt =>
-                opt.UseInMemoryDatabase("EmployeeList"));
+                opt.UseSqlite("Data Source=Salary.db"));
+            services.AddDbContext<BloggingContext>(opt =>
+                opt.UseSqlite("Data Source=blogging.db"));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

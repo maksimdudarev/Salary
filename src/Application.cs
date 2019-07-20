@@ -11,8 +11,7 @@ namespace MD.Salary.ConsoleApp.Application
     {
         static void Main(string[] args)
         {
-            string tableName = "employees";
-            List<EmployeeDB> employeeListDB = DataRetriever.GetData(Environment.CurrentDirectory + "/" + tableName + ".db", tableName);
+            List<EmployeeDB> employeeListDB = DataRetriever.GetData(Environment.CurrentDirectory + "/" + "Salary.db", "Employees");
             var employeeList = new List<Employee> { };
             foreach (var employeeDB in employeeListDB) employeeList.Add(new Employee(employeeDB));
             foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
