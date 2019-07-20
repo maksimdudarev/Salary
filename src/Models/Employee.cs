@@ -37,7 +37,7 @@ namespace MD.Salary.ConsoleApp.Models
         public decimal GetSalary(DateTime salaryDate)
         {
             decimal salary = SalaryPersonal.GetSalary(SalaryBase, HireDate, salaryDate) + SalarySub.GetSalary(SubordinateList, salaryDate);
-            Program.SalaryCache.Add(ID, salary);
+            ConsoleAppProgram.SalaryCache.Add(ID, salary);
             return salary;
         }
     }

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MD.Salary.WebApi.Models;
+using MD.Salary.ConsoleApp.Application;
 
 namespace MD.Salary.WebApi
 {
@@ -24,9 +25,7 @@ namespace MD.Salary.WebApi
             services.AddDbContext<TodoContext>(opt =>
                 opt.UseInMemoryDatabase("TodoList"));
             services.AddDbContext<EmployeeContext>(opt =>
-                opt.UseSqlite("Data Source=Salary.db"));
-            services.AddDbContext<BloggingContext>(opt =>
-                opt.UseSqlite("Data Source=blogging.db"));
+                opt.UseSqlite("Data Source = " + ConsoleAppProgram.SalaryDB));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

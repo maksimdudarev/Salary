@@ -16,8 +16,8 @@ namespace MD.Salary.ConsoleApp.Models
         }
         public decimal GetSalaryDirect(List<Employee> subList, DateTime salaryDate)
         {
-            return subList.Sum(emp => Program.SalaryCache.ContainsKey(emp.ID) ?
-                                      Program.SalaryCache.GetValue(emp.ID) : emp.GetSalary(salaryDate));
+            return subList.Sum(emp => ConsoleAppProgram.SalaryCache.ContainsKey(emp.ID) ?
+                                      ConsoleAppProgram.SalaryCache.GetValue(emp.ID) : emp.GetSalary(salaryDate));
         }
     }
 }

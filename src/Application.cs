@@ -7,11 +7,11 @@ using MD.Salary.ConsoleApp.Utilities;
 
 namespace MD.Salary.ConsoleApp.Application
 {
-    static class Program
+    public static class ConsoleAppProgram
     {
         static void Main(string[] args)
         {
-            List<EmployeeDB> employeeListDB = DataRetriever.GetData(Environment.CurrentDirectory + "/" + "Salary.db", "Employees");
+            List<EmployeeDB> employeeListDB = DataRetriever.GetData("..\\..\\" + SalaryDB, "Employees");
             var employeeList = new List<Employee> { };
             foreach (var employeeDB in employeeListDB) employeeList.Add(new Employee(employeeDB));
             foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
@@ -35,5 +35,6 @@ namespace MD.Salary.ConsoleApp.Application
                 employee.HireDate.ToString("dd MMMM yyyy") + " salary = " + Round(SalaryCache.GetValue(employee.ID)));
         }
         public static MemoizationCache SalaryCache = new MemoizationCache();
+        public const string SalaryDB = "..\\db\\Salary.db";
     }
 }
