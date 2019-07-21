@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace MD.Salary.ConsoleApp.Utilities
 {
-    class MemoizationCache
+    public class MemoizationCache
     {
         private Dictionary<long, decimal> CacheCollection { get; set; }
         public MemoizationCache() { CacheCollection = new Dictionary<long, decimal> { }; }

@@ -1,6 +1,4 @@
-using System;
-
-namespace mvc.Models
+namespace MD.Salary.WebMvc.Models
 {
     public class ErrorViewModel
     {

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using EFGetStarted.AspNetCore.NewDb.Models;
+using MD.Salary.WebMvc.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace mvc
+namespace MD.Salary.WebMvc
 {
     public class Startup
     {
@@ -35,11 +30,11 @@ namespace mvc
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            var connection = @"Server=(localdb)\mssqllocaldb;Database=EFGetStarted.AspNetCore.NewDb;Trusted_Connection=True;ConnectRetryCount=0";
-            services.AddDbContext<BloggingContext>
+            var connection = @"Server=(localdb)\mssqllocaldb;Database=employee;Trusted_Connection=True;ConnectRetryCount=0";
+            services.AddDbContext<EmployeeContext>
                 (options => options.UseSqlServer(connection));
-            // BloggingContext requires
-            // using EFGetStarted.AspNetCore.NewDb.Models;
+            // EmployeeContext requires
+            // using MD.Salary.WebMvc.Models;
             // UseSqlServer requires
             // using Microsoft.EntityFrameworkCore;
         }

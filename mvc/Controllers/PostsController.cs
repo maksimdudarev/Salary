@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using EFGetStarted.AspNetCore.NewDb.Models;
+using MD.Salary.WebMvc.Models;
 
-namespace WebMvc.Controllers
+namespace MD.Salary.WebMvc.Controllers
 {
     public class PostsController : Controller
     {
-        private readonly BloggingContext _context;
+        private readonly EmployeeContext _context;
 
-        public PostsController(BloggingContext context)
+        public PostsController(EmployeeContext context)
         {
             _context = context;
         }
@@ -21,8 +21,8 @@ namespace WebMvc.Controllers
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            var bloggingContext = _context.Posts.Include(p => p.Blog);
-            return View(await bloggingContext.ToListAsync());
+            var EmployeeContext = _context.Posts.Include(p => p.Blog);
+            return View(await EmployeeContext.ToListAsync());
         }
 
         // GET: Posts/Details/5

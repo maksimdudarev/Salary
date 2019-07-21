@@ -5,89 +5,90 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MD.Salary.ConsoleApp.Models;
 using MD.Salary.WebMvc.Models;
 
 namespace MD.Salary.WebMvc.Controllers
 {
-    public class BlogsController : Controller
+    public class EmployeeDBsController : Controller
     {
         private readonly EmployeeContext _context;
 
-        public BlogsController(EmployeeContext context)
+        public EmployeeDBsController(EmployeeContext context)
         {
             _context = context;
         }
 
-        // GET: Blogs
+        // GET: EmployeeDBs
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Blogs.ToListAsync());
+            return View(await _context.Employees.ToListAsync());
         }
 
-        // GET: Blogs/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: EmployeeDBs/Details/5
+        public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var blog = await _context.Blogs
-                .FirstOrDefaultAsync(m => m.BlogId == id);
-            if (blog == null)
+            var employeeDB = await _context.Employees
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (employeeDB == null)
             {
                 return NotFound();
             }
 
-            return View(blog);
+            return View(employeeDB);
         }
 
-        // GET: Blogs/Create
+        // GET: EmployeeDBs/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Blogs/Create
+        // POST: EmployeeDBs/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BlogId,Url,Number")] Blog blog)
+        public async Task<IActionResult> Create([Bind("ID,Name,HireDate,Group,SalaryBase,SuperiorID")] EmployeeDB employeeDB)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(blog);
+                _context.Add(employeeDB);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(blog);
+            return View(employeeDB);
         }
 
-        // GET: Blogs/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: EmployeeDBs/Edit/5
+        public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var blog = await _context.Blogs.FindAsync(id);
-            if (blog == null)
+            var employeeDB = await _context.Employees.FindAsync(id);
+            if (employeeDB == null)
             {
                 return NotFound();
             }
-            return View(blog);
+            return View(employeeDB);
         }
 
-        // POST: Blogs/Edit/5
+        // POST: EmployeeDBs/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BlogId,Url,Number")] Blog blog)
+        public async Task<IActionResult> Edit(long id, [Bind("ID,Name,HireDate,Group,SalaryBase,SuperiorID")] EmployeeDB employeeDB)
         {
-            if (id != blog.BlogId)
+            if (id != employeeDB.ID)
             {
                 return NotFound();
             }
@@ -96,12 +97,12 @@ namespace MD.Salary.WebMvc.Controllers
             {
                 try
                 {
-                    _context.Update(blog);
+                    _context.Update(employeeDB);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BlogExists(blog.BlogId))
+                    if (!EmployeeDBExists(employeeDB.ID))
                     {
                         return NotFound();
                     }
@@ -112,41 +113,41 @@ namespace MD.Salary.WebMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(blog);
+            return View(employeeDB);
         }
 
-        // GET: Blogs/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: EmployeeDBs/Delete/5
+        public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var blog = await _context.Blogs
-                .FirstOrDefaultAsync(m => m.BlogId == id);
-            if (blog == null)
+            var employeeDB = await _context.Employees
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (employeeDB == null)
             {
                 return NotFound();
             }
 
-            return View(blog);
+            return View(employeeDB);
         }
 
-        // POST: Blogs/Delete/5
+        // POST: EmployeeDBs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var blog = await _context.Blogs.FindAsync(id);
-            _context.Blogs.Remove(blog);
+            var employeeDB = await _context.Employees.FindAsync(id);
+            _context.Employees.Remove(employeeDB);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BlogExists(int id)
+        private bool EmployeeDBExists(long id)
         {
-            return _context.Blogs.Any(e => e.BlogId == id);
+            return _context.Employees.Any(e => e.ID == id);
         }
     }
 }
