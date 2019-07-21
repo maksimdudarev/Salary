@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MD.Salary.WebApi.Models;
 using MD.Salary.ConsoleApp.Application;
+using MD.Salary.ConsoleApp.Models;
 
 namespace MD.Salary.WebApi
 {
@@ -25,7 +26,7 @@ namespace MD.Salary.WebApi
             services.AddDbContext<TodoContext>(opt =>
                 opt.UseInMemoryDatabase("TodoList"));
             services.AddDbContext<EmployeeContext>(opt =>
-                opt.UseSqlite("Data Source = " + ConsoleAppProgram.SalaryDB));
+                opt.UseSqlite("Data Source = " + ConsoleAppProgram.SalaryDBPathApi));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
