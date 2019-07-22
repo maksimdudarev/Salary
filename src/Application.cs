@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using static System.Math;
-using MD.Salary.Database;
-using MD.Salary.Model;
-using MD.Salary.Utilities;
+using MD.Salary.ConsoleApp.Database;
+using MD.Salary.ConsoleApp.Models;
+using MD.Salary.ConsoleApp.Utilities;
 
-namespace MD.Salary.Application
+namespace MD.Salary.ConsoleApp.Application
 {
     static class Program
     {

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using MD.Salary.Model;
+using MD.Salary.ConsoleApp.Models;
 
-namespace MD.Salary.Database
+namespace MD.Salary.ConsoleApp.Database
 {
-    class DataRetriever
+    public class DataRetriever
     {
         public static List<EmployeeDB> GetData(string dataSource, string tableName)
         {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using static System.Math;
-using MD.Salary.Application;
+using MD.Salary.ConsoleApp.Application;
 
-namespace MD.Salary.Model
+namespace MD.Salary.ConsoleApp.Models
 {
     public enum Group { Employee, Manager, Salesman }
     public class EmployeeDB
