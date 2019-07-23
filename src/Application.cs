@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using static System.Math;
-using MD.Salary.ConsoleApp.Database;
 using MD.Salary.ConsoleApp.Models;
 using MD.Salary.ConsoleApp.Utilities;
 
 namespace MD.Salary.ConsoleApp.Application
 {
-    static class Program
+    public static class ConsoleAppProgram
     {
         static void Main(string[] args)
         {
-            string tableName = "employees";
-            List<EmployeeDB> employeeListDB = DataRetriever.GetData(Environment.CurrentDirectory + "/" + tableName + ".db", tableName);
             var employeeList = new List<Employee> { };
-            foreach (var employeeDB in employeeListDB) employeeList.Add(new Employee(employeeDB));
+            using (var db = new EmployeeContextConsoleApp())
+            {
+                foreach (var employeeDB in db.Employees) employeeList.Add(new Employee(employeeDB));
+            }
             foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
             DateTime salaryDate = InputData();
             foreach (var employee in employeeList) employee.GetSalary(salaryDate);
@@ -36,5 +36,7 @@ namespace MD.Salary.ConsoleApp.Application
                 employee.HireDate.ToString("dd MMMM yyyy") + " salary = " + Round(SalaryCache.GetValue(employee.ID)));
         }
         public static MemoizationCache SalaryCache = new MemoizationCache();
+        public const string SalaryDBPathApi = "..\\db\\Salary.db";
+        public const string SalaryDBPathConsole = "..\\..\\" + SalaryDBPathApi;
     }
 }
