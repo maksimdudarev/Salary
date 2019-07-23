@@ -8,25 +8,25 @@ namespace MD.Salary.ConsoleApp.Models
     {
         decimal GetSalary(List<Employee> subList, DateTime salaryDate);
     }
-    class ICalculatorSubEmployee : Calculator, ICalculatorSub
+    class CalculatorSubEmployee : Calculator, ICalculatorSub
     {
-        public ICalculatorSubEmployee(decimal subordinateRate) : base(subordinateRate) { }
+        public CalculatorSubEmployee(decimal subordinateRate) : base(subordinateRate) { }
         public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
         {
             return 0;
         }
     }
-    class ICalculatorSubManager : Calculator, ICalculatorSub
+    class CalculatorSubManager : Calculator, ICalculatorSub
     {
-        public ICalculatorSubManager(decimal subordinateRate) : base(subordinateRate) { }
+        public CalculatorSubManager(decimal subordinateRate) : base(subordinateRate) { }
         public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
         {
             return SubordinateRate * GetSalaryDirect(subList, salaryDate);
         }
     }
-    class ICalculatorSubSalesman : Calculator, ICalculatorSub
+    class CalculatorSubSalesman : Calculator, ICalculatorSub
     {
-        public ICalculatorSubSalesman(decimal subordinateRate) : base(subordinateRate) { }
+        public CalculatorSubSalesman(decimal subordinateRate) : base(subordinateRate) { }
         public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
         {
             return SubordinateRate * (GetSalaryDirect(subList, salaryDate) + GetSalaryIndirect(subList, salaryDate));
