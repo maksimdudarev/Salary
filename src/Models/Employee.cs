@@ -25,9 +25,9 @@ namespace MD.Salary.ConsoleApp.Models
             Group = group;
             SalaryBase = employeeDB.SalaryBase;
             SuperiorID = employeeDB.SuperiorID;
-            var calculators = new Factory().GetCalculator(Group);
-            SalaryPersonal = calculators.Personal;
-            SalarySub = calculators.Sub;
+            var calculator = new Factory().GetCalculator(Group);
+            SalaryPersonal = calculator.Personal;
+            SalarySub = calculator.Sub;
         }
         public void CalculateSubordinate(List<Employee> employeeList)
         {

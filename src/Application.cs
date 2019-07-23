@@ -11,7 +11,7 @@ namespace MD.Salary.ConsoleApp.Application
         static void Main(string[] args)
         {
             var employeeList = new List<Employee> { };
-            using (var db = new EmployeeContextConsoleApp())
+            using (var db = new EmployeeContext())
             {
                 foreach (var employeeDB in db.Employees) employeeList.Add(new Employee(employeeDB));
             }
@@ -36,7 +36,5 @@ namespace MD.Salary.ConsoleApp.Application
                 employee.HireDate.ToString("dd MMMM yyyy") + " salary = " + Round(SalaryCache.GetValue(employee.ID)));
         }
         public static MemoizationCache SalaryCache = new MemoizationCache();
-        public const string SalaryDBPathApi = "..\\db\\Salary.db";
-        public const string SalaryDBPathConsole = "..\\..\\" + SalaryDBPathApi;
     }
 }

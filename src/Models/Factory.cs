@@ -2,7 +2,6 @@
 
 namespace MD.Salary.ConsoleApp.Models
 {
-    public enum Group { Employee, Manager, Salesman }
     public class Factory
     {
         public struct Calculators
@@ -14,14 +13,34 @@ namespace MD.Salary.ConsoleApp.Models
         public Factory()
         {
             SalaryDictionary = new Dictionary<Group, Calculators> {
-                {Group.Employee, new Calculators {Sub = new CalculatorSubEmployee(0), Personal = new CalculatorPersonal(3, 30) } },
-                {Group.Manager, new Calculators {Sub = new CalculatorSubManager(0.5m), Personal = new CalculatorPersonal(5, 40) } },
-                {Group.Salesman, new Calculators {Sub = new CalculatorSubSalesman(0.3m), Personal = new CalculatorPersonal(1, 35) } }
+                {Group.Employee, new Calculators {
+                    Sub = new CalculatorSubEmployee(
+                        Constants.Employee.SubordinateRate),
+                    Personal = new CalculatorsClass(
+                        Constants.Employee).Personal } },
+                {Group.Manager, new Calculators {
+                    Sub = new CalculatorSubManager(
+                        Constants.Manager.SubordinateRate),
+                    Personal = new CalculatorsClass(
+                        Constants.Manager).Personal } },
+                {Group.Salesman, new Calculators {
+                    Sub = new CalculatorSubSalesman(
+                        Constants.Salesman.SubordinateRate),
+                    Personal = new CalculatorsClass(
+                        Constants.Salesman).Personal } },
             };
         }
         public Calculators GetCalculator(Group group)
         {
             return SalaryDictionary[group];
+        }
+    }
+    class CalculatorsClass
+    {
+        public CalculatorPersonal Personal { get; set; }
+        public CalculatorsClass(ConstantsEmployee rates)
+        {
+            Personal = new CalculatorPersonal(rates.ExperienceRate, rates.LimitRate);
         }
     }
 }

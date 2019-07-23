@@ -7,9 +7,9 @@ namespace MD.Salary.ConsoleApp.Models
         public EmployeeContext()
         {
         }
-        public EmployeeContext(DbContextOptions<EmployeeContext> options)
-            : base(options)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.UseSqlite(Constants.ConnectionStringConsole);
         }
         public DbSet<EmployeeDB> Employees { get; set; }
     }

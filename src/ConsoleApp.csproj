@@ -209,15 +209,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="Models\Calculator.cs" />
-    <Compile Include="Models\CalculatorPersonal.cs" />
+    <Compile Include="Models\Calculators\Calculator.cs" />
+    <Compile Include="Models\Calculators\CalculatorPersonal.cs" />
+    <Compile Include="Models\Calculators\CalculatorSubEmployee.cs" />
+    <Compile Include="Models\Calculators\CalculatorSubManager.cs" />
+    <Compile Include="Models\Calculators\CalculatorSubSalesman.cs" />
+    <Compile Include="Models\Constants.cs" />
+    <Compile Include="Models\ConstantsEmployee.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\EmployeeContext.cs" />
-    <Compile Include="Models\EmployeeContextConsoleApp.cs" />
     <Compile Include="Models\EmployeeDB.cs" />
     <Compile Include="Models\Factory.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="Models\ICalculatorSub.cs" />
+    <Compile Include="Models\Calculators\ICalculatorSub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -228,6 +232,7 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.111.0\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

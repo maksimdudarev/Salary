@@ -7,8 +7,8 @@ namespace MD.Salary.ConsoleApp.Models
     {
         public CalculatorPersonal(decimal experienceRate, decimal limitRate) : base()
         {
-            ExperienceRate = experienceRate / UnitRate;
-            LimitRate = limitRate / UnitRate;
+            ExperienceRate = experienceRate / Constants.PercentRate;
+            LimitRate = limitRate / Constants.PercentRate;
         }
         private decimal ExperienceRate { get; set; }
         private decimal LimitRate { get; set; }
