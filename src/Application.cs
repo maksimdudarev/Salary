@@ -16,13 +16,13 @@ namespace MD.Salary.ConsoleApp.Application
                 foreach (var employeeDB in db.Employees) employeeList.Add(new Employee(employeeDB));
             }
             foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
-            DateTime salaryDate = InputData();
+            DateTime salaryDate = InputDate();
             foreach (var employee in employeeList) employee.GetSalary(salaryDate);
             foreach (var employee in employeeList) WriteSalary(employee);
             Console.WriteLine("\nTotal = " + Round(SalaryCache.GetSum()) + " Date = " + salaryDate);
             Console.ReadLine();
         }
-        public static DateTime InputData()
+        public static DateTime InputDate()
         {
             string inputDate = "17/1/7";
             Console.WriteLine("Input date (for ex., " + inputDate + "): ");

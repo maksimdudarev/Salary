@@ -216,9 +216,9 @@
     <Compile Include="Models\Calculators\CalculatorSubSalesman.cs" />
     <Compile Include="Models\Constants.cs" />
     <Compile Include="Models\ConstantsEmployee.cs" />
-    <Compile Include="Models\Employee.cs" />
-    <Compile Include="Models\EmployeeContext.cs" />
-    <Compile Include="Models\EmployeeDB.cs" />
+    <Compile Include="Models\Entities\Employee.cs" />
+    <Compile Include="Models\Entities\EmployeeContext.cs" />
+    <Compile Include="Models\Entities\EmployeeDB.cs" />
     <Compile Include="Models\Factory.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Models\Calculators\ICalculatorSub.cs" />

@@ -5,10 +5,10 @@ namespace MD.Salary.ConsoleApp.Models
 {
     public class CalculatorPersonal : Calculator
     {
-        public CalculatorPersonal(decimal experienceRate, decimal limitRate) : base()
+        public CalculatorPersonal(ConstantsEmployee rates) : base()
         {
-            ExperienceRate = experienceRate / Constants.PercentRate;
-            LimitRate = limitRate / Constants.PercentRate;
+            ExperienceRate = rates.ExperienceRate / Constants.PercentRate;
+            LimitRate = rates.LimitRate / Constants.PercentRate;
         }
         private decimal ExperienceRate { get; set; }
         private decimal LimitRate { get; set; }

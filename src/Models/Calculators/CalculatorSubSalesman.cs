@@ -6,9 +6,9 @@ namespace MD.Salary.ConsoleApp.Models
 {
     class CalculatorSubSalesman : Calculator, ICalculatorSub
     {
-        public CalculatorSubSalesman(decimal subordinateRate) : base()
+        public CalculatorSubSalesman(ConstantsEmployee rates) : base()
         {
-            SubordinateRate = subordinateRate / Constants.PercentRate;
+            SubordinateRate = rates.SubordinateRate / Constants.PercentRate;
         }
         public decimal SubordinateRate { get; set; }
         public decimal GetSalary(List<Employee> subList, DateTime salaryDate)
