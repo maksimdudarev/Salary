@@ -5,6 +5,13 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <AssemblyName>MD.Salary.WebMvc</AssemblyName>
     <RootNamespace>MD.Salary.WebMvc</RootNamespace>
+    <Configurations>Debug;Release;Test</Configurations>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|x64'">
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
+    <NoWarn>1701;1702</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,8 +21,8 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
   </ItemGroup>
 
