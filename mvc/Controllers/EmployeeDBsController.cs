@@ -12,9 +12,9 @@ namespace MD.Salary.WebMvc.Controllers
 {
     public class EmployeeDBsController : Controller
     {
-        private readonly EmployeeContext _context;
+        private readonly Models.EmployeeContext _context;
 
-        public EmployeeDBsController(EmployeeContext context)
+        public EmployeeDBsController(Models.EmployeeContext context)
         {
             _context = context;
         }
