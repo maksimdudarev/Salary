@@ -9,7 +9,7 @@
         public static decimal PercentRate { get; } = 100;
         public const string TypeNameDecimalColumn = "decimal(18, 2)";
         private static string SalaryDbPath { get; } = "..\\db\\Salary.db";
-        public static string ConnectionStringConsole { get; } = GetConnectionString("..\\..\\" + SalaryDbPath);
+        public static string ConnectionStringConsole { get; } = GetConnectionString("..\\..\\..\\" + SalaryDbPath);
         public static string ConnectionStringApi { get; } = GetConnectionString(SalaryDbPath);
         static string GetConnectionString(string path)
         {
