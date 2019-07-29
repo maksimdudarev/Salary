@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Design" Version="1.1.6" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist $(TargetDir)publish\ mkdir $(TargetDir)publish\&#xD;&#xA;xcopy $(SolutionDir)db\Salary.db $(TargetDir)publish\ /s /e /y&#xD;&#xA;xcopy $(SolutionDir)db\Salary.db $(TargetDir) /s /e /y" />
+  </Target>
+
 </Project>
