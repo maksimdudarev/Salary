@@ -8,9 +8,9 @@
         public static ConstantsEmployee Salesman { get; } = new ConstantsEmployee(1, 35, 0.3m);
         public static decimal PercentRate { get; } = 100;
         public const string TypeNameDecimalColumn = "decimal(18, 2)";
-        private static string SalaryDbPath { get; } = "..\\db\\Salary.db";
-        public static string ConnectionStringConsole { get; } = GetConnectionString("..\\..\\..\\" + SalaryDbPath);
-        public static string ConnectionStringApi { get; } = GetConnectionString(SalaryDbPath);
+        private static string SalaryDbPath { get; } = "Salary.db";
+        public static string ConnectionStringConsole { get; } = GetConnectionString(SalaryDbPath);
+        public static string ConnectionStringApi { get; } = GetConnectionString("..\\db\\" + SalaryDbPath);
         static string GetConnectionString(string path)
         {
             return "Data Source = " + path;
