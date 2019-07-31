@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MD.Salary.WebApi.Models;
 using MD.Salary.ConsoleApp.Models;
 
 namespace MD.Salary.WebApi.Controllers
@@ -12,9 +11,9 @@ namespace MD.Salary.WebApi.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private readonly EmployeeContext _context;
+        private readonly Models.EmployeeContext _context;
 
-        public EmployeeController(EmployeeContext context)
+        public EmployeeController(Models.EmployeeContext context)
         {
             _context = context;
 
