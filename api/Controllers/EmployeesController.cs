@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MD.Salary.ConsoleApp.Models;
+using MD.Salary.ConsoleApp.Application;
 using MD.Salary.WebApi.Models;
 
 namespace MD.Salary.WebApi.Controllers
@@ -17,20 +19,18 @@ namespace MD.Salary.WebApi.Controllers
         public EmployeesController(EmployeeContext context)
         {
             _context = context;
-
-            if (_context.Employees.Count() == 0)
-            {
-                // Create a new Employee if collection is empty,
-                // which means you can't delete all Employees.
-                _context.Employees.Add(new Employee { Name = "Item1" });
-                _context.SaveChanges();
-            }
         }
+
         // GET: api/Employee
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<Employee>>> Index(string searchString)
         {
-            return await _context.Employees.ToListAsync();
+            var items = from emp in _context.Employees select emp;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                items = items.Where(s => s.Name.Contains(searchString));
+            }
+            return await items.ToListAsync();
         }
 
         // GET: api/Employee/5
@@ -45,6 +45,23 @@ namespace MD.Salary.WebApi.Controllers
             }
 
             return employee;
+        }
+        // GET: api/Employee/Salary/5
+        [HttpGet("salary/{id}")]
+        public async Task<ActionResult<decimal>> GetSalary(long id, long salaryDate)
+        {
+            List<EmployeeFull> employeeList = ConsoleAppProgram.GetEmployeeListFromDB(_context.Employees);
+            foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
+            foreach (var employee in employeeList) employee.GetSalary(DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
+
+            var employee2 = await _context.Employees.FindAsync(id);
+
+            if (employee2 == null)
+            {
+                return NotFound();
+            }
+
+            return employee2.SalaryBase;
         }
         // POST: api/Employee
         [HttpPost]
