@@ -2,15 +2,15 @@
 
 namespace MD.Salary.ConsoleApp.Models
 {
-    public class EmployeeContext : DbContext
+    public class EmployeeFullContext : DbContext
     {
-        public EmployeeContext()
+        public EmployeeFullContext()
         {
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(Constants.ConnectionStringConsole);
         }
-        public DbSet<EmployeeDB> Employees { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }

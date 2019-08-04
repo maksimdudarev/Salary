@@ -4,16 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MD.Salary.ConsoleApp.Models;
+using MD.Salary.WebApi.Models;
 
 namespace MD.Salary.WebApi.Controllers
 {
     [Route("api/employee")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class EmployeesController : ControllerBase
     {
-        private readonly Models.EmployeeContext _context;
+        private readonly EmployeeContext _context;
 
-        public EmployeeController(Models.EmployeeContext context)
+        public EmployeesController(EmployeeContext context)
         {
             _context = context;
 
@@ -21,20 +22,20 @@ namespace MD.Salary.WebApi.Controllers
             {
                 // Create a new Employee if collection is empty,
                 // which means you can't delete all Employees.
-                _context.Employees.Add(new EmployeeDB { Name = "Item1" });
+                _context.Employees.Add(new Employee { Name = "Item1" });
                 _context.SaveChanges();
             }
         }
         // GET: api/Employee
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeDB>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
             return await _context.Employees.ToListAsync();
         }
 
         // GET: api/Employee/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<EmployeeDB>> GetEmployee(long id)
+        public async Task<ActionResult<Employee>> GetEmployee(long id)
         {
             var employee = await _context.Employees.FindAsync(id);
 
@@ -47,7 +48,7 @@ namespace MD.Salary.WebApi.Controllers
         }
         // POST: api/Employee
         [HttpPost]
-        public async Task<ActionResult<EmployeeDB>> PostEmployee(EmployeeDB item)
+        public async Task<ActionResult<Employee>> PostEmployee(Employee item)
         {
             _context.Employees.Add(item);
             await _context.SaveChangesAsync();
@@ -56,7 +57,7 @@ namespace MD.Salary.WebApi.Controllers
         }
         // PUT: api/Employee/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(long id, EmployeeDB item)
+        public async Task<IActionResult> PutEmployee(long id, Employee item)
         {
             if (id != item.ID)
             {

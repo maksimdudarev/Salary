@@ -10,10 +10,10 @@ namespace MD.Salary.ConsoleApp.Application
     {
         static void Main(string[] args)
         {
-            var employeeList = new List<Employee> { };
-            using (var db = new EmployeeContext())
+            var employeeList = new List<EmployeeFull> { };
+            using (var db = new EmployeeFullContext())
             {
-                foreach (var employeeDB in db.Employees) employeeList.Add(new Employee(employeeDB));
+                foreach (var employeeDB in db.Employees) employeeList.Add(new EmployeeFull(employeeDB));
             }
             foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
             DateTime salaryDate = InputDate();
@@ -30,7 +30,7 @@ namespace MD.Salary.ConsoleApp.Application
             if (!DateTime.TryParse(inputDate, out DateTime salaryDate)) salaryDate = DateTime.Today;
             return salaryDate;
         }
-        public static void WriteSalary(Employee employee)
+        public static void WriteSalary(EmployeeFull employee)
         {
             Console.WriteLine($"{employee.ID} {employee.Name} {employee.Group} " +
                 $"{employee.HireDate.ToString("dd MMMM yyyy")} salary = {Round(SalaryCache.GetValue(employee.ID))}");
