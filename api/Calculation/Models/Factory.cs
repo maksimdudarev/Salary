@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MD.Salary.ConsoleApp.Models
+namespace MD.Salary.WebApi.Models
 {
     public class Factory
     {

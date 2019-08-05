@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace MD.Salary.ConsoleApp.Utilities
+namespace MD.Salary.WebApi.Utilities
 {
     public class MemoizationCache
     {

@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MD.Salary.ConsoleApp.Models;
-using MD.Salary.ConsoleApp.Application;
 using MD.Salary.WebApi.Models;
+using MD.Salary.WebApi.Application;
 
 namespace MD.Salary.WebApi.Controllers
 {
@@ -51,8 +50,8 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<ActionResult<decimal>> GetSalary(long id, long salaryDate)
         {
             List<Employee> employee3 = await _context.Employees.ToListAsync();
-            List<EmployeeFull> employeeList = ConsoleAppProgram.GetEmployeeListFromDB(_context.Employees);
-            employeeList = ConsoleAppProgram.CalculateSalary(employeeList, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
+            List<EmployeeFull> employeeList = WebApiProgram.GetEmployeeListFromDB(_context.Employees);
+            employeeList = WebApiProgram.CalculateSalary(employeeList, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
             var employee = employeeList.FirstOrDefault(emp => emp.ID == id);
 
             if (employee == null)
@@ -60,7 +59,7 @@ namespace MD.Salary.WebApi.Controllers
                 return NotFound();
             }
 
-            return ConsoleAppProgram.GetSalary(employee);
+            return WebApiProgram.GetSalary(employee);
         }
         // POST: api/Employees
         [HttpPost]

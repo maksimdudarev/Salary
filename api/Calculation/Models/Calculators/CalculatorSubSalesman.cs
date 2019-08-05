@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MD.Salary.ConsoleApp.Models
+namespace MD.Salary.WebApi.Models
 {
     class CalculatorSubSalesman : Calculator, ICalculatorSub
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MD.Salary.ConsoleApp.Application;
+using MD.Salary.WebApi.Application;
 
-namespace MD.Salary.ConsoleApp.Models
+namespace MD.Salary.WebApi.Models
 {
     public class EmployeeFull
     {
@@ -37,7 +37,7 @@ namespace MD.Salary.ConsoleApp.Models
         public decimal GetSalary(DateTime salaryDate)
         {
             decimal salary = SalaryPersonal.GetSalary(SalaryBase, HireDate, salaryDate) + SalarySub.GetSalary(SubordinateList, salaryDate);
-            ConsoleAppProgram.SalaryCache.Add(ID, salary);
+            WebApiProgram.SalaryCache.Add(ID, salary);
             return salary;
         }
     }
