@@ -10,22 +10,22 @@ using MD.Salary.WebMvc.Models;
 
 namespace MD.Salary.WebMvc.Controllers
 {
-    public class EmployeeDBsController : Controller
+    public class EmployeesController : Controller
     {
-        private readonly Models.EmployeeContext _context;
+        private readonly EmployeeContext _context;
 
-        public EmployeeDBsController(Models.EmployeeContext context)
+        public EmployeesController(EmployeeContext context)
         {
             _context = context;
         }
 
-        // GET: EmployeeDBs
+        // GET: Employees
         public async Task<IActionResult> Index()
         {
             return View(await _context.Employees.ToListAsync());
         }
 
-        // GET: EmployeeDBs/Details/5
+        // GET: Employees/Details/5
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace MD.Salary.WebMvc.Controllers
                 return NotFound();
             }
 
-            var employeeDB = await _context.Employees
+            var employee = await _context.Employees
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (employeeDB == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return View(employeeDB);
+            return View(employee);
         }
 
-        // GET: EmployeeDBs/Create
+        // GET: Employees/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: EmployeeDBs/Create
+        // POST: Employees/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,HireDate,Group,SalaryBase,SuperiorID")] EmployeeDB employeeDB)
+        public async Task<IActionResult> Create([Bind("ID,Name,HireDate,Group,SalaryBase,SuperiorID")] Employee employee)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employeeDB);
+                _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(employeeDB);
+            return View(employee);
         }
 
-        // GET: EmployeeDBs/Edit/5
+        // GET: Employees/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace MD.Salary.WebMvc.Controllers
                 return NotFound();
             }
 
-            var employeeDB = await _context.Employees.FindAsync(id);
-            if (employeeDB == null)
+            var employee = await _context.Employees.FindAsync(id);
+            if (employee == null)
             {
                 return NotFound();
             }
-            return View(employeeDB);
+            return View(employee);
         }
 
-        // POST: EmployeeDBs/Edit/5
+        // POST: Employees/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("ID,Name,HireDate,Group,SalaryBase,SuperiorID")] EmployeeDB employeeDB)
+        public async Task<IActionResult> Edit(long id, [Bind("ID,Name,HireDate,Group,SalaryBase,SuperiorID")] Employee employee)
         {
-            if (id != employeeDB.ID)
+            if (id != employee.ID)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace MD.Salary.WebMvc.Controllers
             {
                 try
                 {
-                    _context.Update(employeeDB);
+                    _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeDBExists(employeeDB.ID))
+                    if (!EmployeeExists(employee.ID))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace MD.Salary.WebMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(employeeDB);
+            return View(employee);
         }
 
-        // GET: EmployeeDBs/Delete/5
+        // GET: Employees/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -124,28 +124,28 @@ namespace MD.Salary.WebMvc.Controllers
                 return NotFound();
             }
 
-            var employeeDB = await _context.Employees
+            var employee = await _context.Employees
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (employeeDB == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return View(employeeDB);
+            return View(employee);
         }
 
-        // POST: EmployeeDBs/Delete/5
+        // POST: Employees/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var employeeDB = await _context.Employees.FindAsync(id);
-            _context.Employees.Remove(employeeDB);
+            var employee = await _context.Employees.FindAsync(id);
+            _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EmployeeDBExists(long id)
+        private bool EmployeeExists(long id)
         {
             return _context.Employees.Any(e => e.ID == id);
         }

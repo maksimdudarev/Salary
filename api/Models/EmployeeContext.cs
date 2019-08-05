@@ -10,6 +10,6 @@ namespace MD.Salary.WebApi.Models
         {
         }
 
-        public DbSet<EmployeeDB> Employees { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }

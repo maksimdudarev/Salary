@@ -7,7 +7,7 @@ namespace MD.Salary.ConsoleApp.Models
 {
     public abstract class Calculator
     {
-        public decimal GetSalaryDirect(List<Employee> subList, DateTime salaryDate)
+        public decimal GetSalaryDirect(List<EmployeeFull> subList, DateTime salaryDate)
         {
             return subList.Sum(emp => ConsoleAppProgram.SalaryCache.ContainsKey(emp.ID) ?
                                       ConsoleAppProgram.SalaryCache.GetValue(emp.ID) : emp.GetSalary(salaryDate));

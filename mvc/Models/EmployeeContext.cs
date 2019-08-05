@@ -9,7 +9,7 @@ namespace MD.Salary.WebMvc.Models
             : base(options)
         { }
 
-        public DbSet<EmployeeDB> Employees { get; set; }
+        public DbSet<Employee> Employees { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Post> Posts { get; set; }
     }
