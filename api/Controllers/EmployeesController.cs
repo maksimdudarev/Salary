@@ -10,7 +10,7 @@ using MD.Salary.WebApi.Models;
 
 namespace MD.Salary.WebApi.Controllers
 {
-    [Route("api/employee")]
+    [Route("api/employees")]
     [ApiController]
     public class EmployeesController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace MD.Salary.WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/Employee
+        // GET: api/Employees
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> Index(string searchString)
         {
@@ -33,7 +33,7 @@ namespace MD.Salary.WebApi.Controllers
             return await items.ToListAsync();
         }
 
-        // GET: api/Employee/5
+        // GET: api/Employees/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(long id)
         {
@@ -46,24 +46,23 @@ namespace MD.Salary.WebApi.Controllers
 
             return employee;
         }
-        // GET: api/Employee/Salary/5
-        [HttpGet("salary/{id}")]
+        // GET: api/Employees/5/Salary
+        [HttpGet("{id}/salary")]
         public async Task<ActionResult<decimal>> GetSalary(long id, long salaryDate)
         {
+            List<Employee> employee3 = await _context.Employees.ToListAsync();
             List<EmployeeFull> employeeList = ConsoleAppProgram.GetEmployeeListFromDB(_context.Employees);
-            foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
-            foreach (var employee in employeeList) employee.GetSalary(DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
+            employeeList = ConsoleAppProgram.CalculateSalary(employeeList, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
+            var employee = employeeList.FirstOrDefault(emp => emp.ID == id);
 
-            var employee2 = await _context.Employees.FindAsync(id);
-
-            if (employee2 == null)
+            if (employee == null)
             {
                 return NotFound();
             }
 
-            return employee2.SalaryBase;
+            return ConsoleAppProgram.GetSalary(employee);
         }
-        // POST: api/Employee
+        // POST: api/Employees
         [HttpPost]
         public async Task<ActionResult<Employee>> PostEmployee(Employee item)
         {
@@ -72,7 +71,7 @@ namespace MD.Salary.WebApi.Controllers
 
             return CreatedAtAction(nameof(GetEmployee), new { id = item.ID }, item);
         }
-        // PUT: api/Employee/5
+        // PUT: api/Employees/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployee(long id, Employee item)
         {
@@ -86,7 +85,7 @@ namespace MD.Salary.WebApi.Controllers
 
             return NoContent();
         }
-        // DELETE: api/Employee/5
+        // DELETE: api/Employees/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(long id)
         {

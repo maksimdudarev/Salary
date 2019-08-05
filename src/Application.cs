@@ -14,11 +14,16 @@ namespace MD.Salary.ConsoleApp.Application
             List<EmployeeFull> employeeList;
             using (var db = new EmployeeFullContext()) employeeList = GetEmployeeListFromDB(db.Employees);
             DateTime salaryDate = InputDate();
-            foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
-            foreach (var employee in employeeList) employee.GetSalary(salaryDate);
+            employeeList = CalculateSalary(employeeList, salaryDate);
             foreach (var employee in employeeList) WriteSalary(employee);
             Console.WriteLine($"\nTotal = {Round(SalaryCache.GetSum())} Date = {salaryDate}");
             Console.ReadLine();
+        }
+        public static List<EmployeeFull> CalculateSalary(List<EmployeeFull> employeeList, DateTime salaryDate)
+        {
+            foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
+            foreach (var employee in employeeList) employee.GetSalary(salaryDate);
+            return employeeList;
         }
         public static List<EmployeeFull> GetEmployeeListFromDB(DbSet<Employee> EmployeeDbset)
         {
@@ -28,7 +33,7 @@ namespace MD.Salary.ConsoleApp.Application
         }
         public static DateTime InputDate()
         {
-            string inputDate = "17/1/7";
+            string inputDate = "17/1/7"; // timestamp = 1168981200
             Console.WriteLine($"Input date (for ex., {inputDate}): ");
             inputDate = Console.ReadLine();
             if (!DateTime.TryParse(inputDate, out DateTime salaryDate)) salaryDate = DateTime.Today;
