@@ -2,15 +2,15 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MD.Salary.WebApi.Models;
+using MD.Salary.WebMvc.Models;
 
 namespace MD.Salary.WebMvc.Controllers
 {
     public class EmployeesController : Controller
     {
-        private readonly Models.EmployeeContext _context;
+        private readonly EmployeeContext _context;
 
-        public EmployeesController(Models.EmployeeContext context)
+        public EmployeesController(EmployeeContext context)
         {
             _context = context;
         }
