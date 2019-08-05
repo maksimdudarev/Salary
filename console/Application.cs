@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using static System.Math;
-using MD.Salary.ConsoleApp.Models;
 using MD.Salary.WebApi.Application;
 using MD.Salary.WebApi.Models;
 
@@ -12,7 +11,7 @@ namespace MD.Salary.ConsoleApp.Application
         static void Main(string[] args)
         {
             List<EmployeeFull> employeeList;
-            using (var db = new EmployeeFullContext()) employeeList = WebApiProgram.GetEmployeeListFromDB(db.Employees);
+            using (var db = new Models.EmployeeContext()) employeeList = WebApiProgram.GetEmployeeListFromDB(db.Employees);
             DateTime salaryDate = InputDate();
             employeeList = WebApiProgram.CalculateSalary(employeeList, salaryDate);
             foreach (var employee in employeeList) WriteSalary(employee);

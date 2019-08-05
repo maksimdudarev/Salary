@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MD.Salary.ConsoleApp.Models;
-using MD.Salary.WebMvc.Models;
+using MD.Salary.WebApi.Models;
 
 namespace MD.Salary.WebMvc.Controllers
 {
     public class EmployeesController : Controller
     {
-        private readonly EmployeeContext _context;
+        private readonly Models.EmployeeContext _context;
 
-        public EmployeesController(EmployeeContext context)
+        public EmployeesController(Models.EmployeeContext context)
         {
             _context = context;
         }

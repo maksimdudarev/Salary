@@ -39,7 +39,7 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\src\ConsoleApp.csproj" />
+    <ProjectReference Include="..\api\WebApi.csproj" />
   </ItemGroup>
 
 </Project>

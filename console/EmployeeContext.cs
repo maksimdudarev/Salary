@@ -3,9 +3,9 @@ using MD.Salary.WebApi.Models;
 
 namespace MD.Salary.ConsoleApp.Models
 {
-    public class EmployeeFullContext : DbContext
+    public class EmployeeContext : DbContext
     {
-        public EmployeeFullContext()
+        public EmployeeContext()
         {
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
