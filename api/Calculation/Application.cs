@@ -9,6 +9,12 @@ namespace MD.Salary.WebApi.Application
 {
     public static class WebApiProgram
     {
+        public static List<EmployeeFull> GetSalaryFromContext(DbSet<Employee> EmployeeDbset, long salaryDate)
+        {
+            List<EmployeeFull> employeeList = GetEmployeeListFromDB(EmployeeDbset);
+            employeeList = CalculateSalary(employeeList, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
+            return employeeList;
+        }
         public static List<EmployeeFull> CalculateSalary(List<EmployeeFull> employeeList, DateTime salaryDate)
         {
             foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);

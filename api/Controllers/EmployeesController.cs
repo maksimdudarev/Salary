@@ -31,34 +31,39 @@ namespace MD.Salary.WebApi.Controllers
             }
             return await items.ToListAsync();
         }
+        // GET: api/Employees/Salary
+        [HttpGet("salary")]
+        public async Task<ActionResult<decimal>> IndexSalary(long salaryDate)
+        {
+            await _context.Employees.ToListAsync();
+            WebApiProgram.GetSalaryFromContext(_context.Employees, salaryDate);
+            var total = Math.Round(WebApiProgram.SalaryCache.GetSum());
+
+            return total;
+        }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(long id)
         {
             var employee = await _context.Employees.FindAsync(id);
-
             if (employee == null)
             {
                 return NotFound();
             }
-
             return employee;
         }
         // GET: api/Employees/5/Salary
         [HttpGet("{id}/salary")]
-        public async Task<ActionResult<decimal>> GetSalary(long id, long salaryDate)
+        public async Task<ActionResult<decimal>> GetEmployeeSalary(long id, long salaryDate)
         {
-            List<Employee> employee3 = await _context.Employees.ToListAsync();
-            List<EmployeeFull> employeeList = WebApiProgram.GetEmployeeListFromDB(_context.Employees);
-            employeeList = WebApiProgram.CalculateSalary(employeeList, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
+            await _context.Employees.ToListAsync();
+            List<EmployeeFull> employeeList = WebApiProgram.GetSalaryFromContext(_context.Employees, salaryDate);
             var employee = employeeList.FirstOrDefault(emp => emp.ID == id);
-
             if (employee == null)
             {
                 return NotFound();
             }
-
             return WebApiProgram.GetSalary(employee);
         }
         // POST: api/Employees
