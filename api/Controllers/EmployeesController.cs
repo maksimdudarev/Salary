@@ -37,7 +37,7 @@ namespace MD.Salary.WebApi.Controllers
         {
             await _context.Employees.ToListAsync();
             WebApiProgram.GetSalaryFromContext(_context.Employees, salaryDate);
-            var total = Math.Round(WebApiProgram.SalaryCache.GetSum());
+            var total = WebApiProgram.GetSalaryTotal();
 
             return total;
         }

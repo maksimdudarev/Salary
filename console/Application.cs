@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static System.Math;
 using MD.Salary.WebApi.Application;
 using MD.Salary.WebApi.Models;
 
@@ -15,7 +14,7 @@ namespace MD.Salary.ConsoleApp.Application
             DateTime salaryDate = InputDate();
             employeeList = WebApiProgram.CalculateSalary(employeeList, salaryDate);
             foreach (var employee in employeeList) WriteSalary(employee);
-            Console.WriteLine($"\nTotal = {Round(WebApiProgram.SalaryCache.GetSum())} Date = {salaryDate}");
+            Console.WriteLine($"\nTotal = {WebApiProgram.GetSalaryTotal()} Date = {salaryDate}");
             Console.ReadLine();
         }
         public static DateTime InputDate()

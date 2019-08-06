@@ -31,6 +31,10 @@ namespace MD.Salary.WebApi.Application
         {
             return Round(SalaryCache.GetValue(employee.ID));
         }
+        public static decimal GetSalaryTotal()
+        {
+            return Round(SalaryCache.GetSum());
+        }
         public static MemoizationCache SalaryCache = new MemoizationCache();
     }
 }
