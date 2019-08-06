@@ -18,7 +18,22 @@ namespace MD.Salary.WebMvc.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("MD.Salary.ConsoleApp.Models.EmployeeDB", b =>
+            modelBuilder.Entity("MD.Salary.WebMvc.Models.Blog", b =>
+                {
+                    b.Property<int>("BlogId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Number");
+
+                    b.Property<string>("Url");
+
+                    b.HasKey("BlogId");
+
+                    b.ToTable("Blogs");
+                });
+
+            modelBuilder.Entity("MD.Salary.WebMvc.Models.Employee", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -38,21 +53,6 @@ namespace MD.Salary.WebMvc.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("MD.Salary.WebMvc.Models.Blog", b =>
-                {
-                    b.Property<int>("BlogId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Number");
-
-                    b.Property<string>("Url");
-
-                    b.HasKey("BlogId");
-
-                    b.ToTable("Blogs");
                 });
 
             modelBuilder.Entity("MD.Salary.WebMvc.Models.Post", b =>
