@@ -1,4 +1,4 @@
-﻿using MD.Salary.ConsoleApp.Models;
+﻿using MD.Salary.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MD.Salary.WebApi.Models

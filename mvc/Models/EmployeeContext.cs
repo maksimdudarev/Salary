@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MD.Salary.ConsoleApp.Models;
 
 namespace MD.Salary.WebMvc.Models
 {

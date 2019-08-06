@@ -1,4 +1,4 @@
-﻿namespace MD.Salary.ConsoleApp.Models
+﻿namespace MD.Salary.WebApi.Models
 {
     public enum Group { Employee, Manager, Salesman }
     public static class Constants

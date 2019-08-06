@@ -4,9 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MD.Salary.ConsoleApp.Models;
-using MD.Salary.ConsoleApp.Application;
 using MD.Salary.WebApi.Models;
+using MD.Salary.WebApi.Application;
 
 namespace MD.Salary.WebApi.Controllers
 {
@@ -32,35 +31,42 @@ namespace MD.Salary.WebApi.Controllers
             }
             return await items.ToListAsync();
         }
+        // GET: api/Employees/Salary
+        [HttpGet("salary")]
+        public async Task<ActionResult<decimal>> IndexSalary(long salaryDate)
+        {
+            await _context.Employees.ToListAsync();
+            var program = new WebApiProgram();
+            program.GetSalaryFromContext(_context.Employees, salaryDate);
+            var total = program.GetSalaryTotal();
+
+            return total;
+        }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(long id)
         {
             var employee = await _context.Employees.FindAsync(id);
-
             if (employee == null)
             {
                 return NotFound();
             }
-
             return employee;
         }
         // GET: api/Employees/5/Salary
         [HttpGet("{id}/salary")]
-        public async Task<ActionResult<decimal>> GetSalary(long id, long salaryDate)
+        public async Task<ActionResult<decimal>> GetEmployeeSalary(long id, long salaryDate)
         {
-            List<Employee> employee3 = await _context.Employees.ToListAsync();
-            List<EmployeeFull> employeeList = ConsoleAppProgram.GetEmployeeListFromDB(_context.Employees);
-            employeeList = ConsoleAppProgram.CalculateSalary(employeeList, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
+            await _context.Employees.ToListAsync();
+            var program = new WebApiProgram();
+            List<EmployeeFull> employeeList = program.GetSalaryFromContext(_context.Employees, salaryDate);
             var employee = employeeList.FirstOrDefault(emp => emp.ID == id);
-
             if (employee == null)
             {
                 return NotFound();
             }
-
-            return ConsoleAppProgram.GetSalary(employee);
+            return program.GetSalary(employee);
         }
         // POST: api/Employees
         [HttpPost]

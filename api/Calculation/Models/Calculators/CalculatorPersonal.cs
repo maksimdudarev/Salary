@@ -1,7 +1,7 @@
 ﻿using System;
 using static System.Math;
 
-namespace MD.Salary.ConsoleApp.Models
+namespace MD.Salary.WebApi.Models
 {
     public class CalculatorPersonal : Calculator
     {

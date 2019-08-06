@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MD.Salary.ConsoleApp.Application;
+using MD.Salary.WebApi.Utilities;
 
-namespace MD.Salary.ConsoleApp.Models
+namespace MD.Salary.WebApi.Models
 {
     public class EmployeeFull
     {
@@ -34,10 +34,10 @@ namespace MD.Salary.ConsoleApp.Models
             List<long> subordinateID = employeeList.Where(emp => emp.SuperiorID == ID).Select(emp => emp.ID).ToList();
             SubordinateList = employeeList.Where(emp => subordinateID.Contains(emp.ID)).ToList();
         }
-        public decimal GetSalary(DateTime salaryDate)
+        public decimal GetSalary(DateTime salaryDate, MemoizationCache salaryCache)
         {
-            decimal salary = SalaryPersonal.GetSalary(SalaryBase, HireDate, salaryDate) + SalarySub.GetSalary(SubordinateList, salaryDate);
-            ConsoleAppProgram.SalaryCache.Add(ID, salary);
+            decimal salary = SalaryPersonal.GetSalary(SalaryBase, HireDate, salaryDate) + SalarySub.GetSalary(SubordinateList, salaryDate, salaryCache);
+            salaryCache.Add(ID, salary);
             return salary;
         }
     }
