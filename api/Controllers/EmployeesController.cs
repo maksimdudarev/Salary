@@ -36,8 +36,9 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<ActionResult<decimal>> IndexSalary(long salaryDate)
         {
             await _context.Employees.ToListAsync();
-            WebApiProgram.GetSalaryFromContext(_context.Employees, salaryDate);
-            var total = WebApiProgram.GetSalaryTotal();
+            var program = new WebApiProgram();
+            program.GetSalaryFromContext(_context.Employees, salaryDate);
+            var total = program.GetSalaryTotal();
 
             return total;
         }
@@ -58,13 +59,14 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<ActionResult<decimal>> GetEmployeeSalary(long id, long salaryDate)
         {
             await _context.Employees.ToListAsync();
-            List<EmployeeFull> employeeList = WebApiProgram.GetSalaryFromContext(_context.Employees, salaryDate);
+            var program = new WebApiProgram();
+            List<EmployeeFull> employeeList = program.GetSalaryFromContext(_context.Employees, salaryDate);
             var employee = employeeList.FirstOrDefault(emp => emp.ID == id);
             if (employee == null)
             {
                 return NotFound();
             }
-            return WebApiProgram.GetSalary(employee);
+            return program.GetSalary(employee);
         }
         // POST: api/Employees
         [HttpPost]

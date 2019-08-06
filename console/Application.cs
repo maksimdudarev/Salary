@@ -9,12 +9,13 @@ namespace MD.Salary.ConsoleApp.Application
     {
         static void Main(string[] args)
         {
+            var program = new WebApiProgram();
             List<EmployeeFull> employeeList;
-            using (var db = new Models.EmployeeContext()) employeeList = WebApiProgram.GetEmployeeListFromDB(db.Employees);
+            using (var db = new Models.EmployeeContext()) employeeList = program.GetEmployeeListFromDB(db.Employees);
             DateTime salaryDate = InputDate();
-            employeeList = WebApiProgram.CalculateSalary(employeeList, salaryDate);
-            foreach (var employee in employeeList) WriteSalary(employee);
-            Console.WriteLine($"\nTotal = {WebApiProgram.GetSalaryTotal()} Date = {salaryDate}");
+            employeeList = program.CalculateSalary(employeeList, salaryDate);
+            foreach (var employee in employeeList) WriteSalary(employee, program);
+            Console.WriteLine($"\nTotal = {program.GetSalaryTotal()} Date = {salaryDate}");
             Console.ReadLine();
         }
         public static DateTime InputDate()
@@ -25,10 +26,10 @@ namespace MD.Salary.ConsoleApp.Application
             if (!DateTime.TryParse(inputDate, out DateTime salaryDate)) salaryDate = DateTime.Today;
             return salaryDate;
         }
-        public static void WriteSalary(EmployeeFull employee)
+        public static void WriteSalary(EmployeeFull employee, WebApiProgram program)
         {
             Console.WriteLine($"{employee.ID} {employee.Name} {employee.Group} " +
-                $"{employee.HireDate.ToString("dd MMMM yyyy")} salary = {WebApiProgram.GetSalary(employee)}");
+                $"{employee.HireDate.ToString("dd MMMM yyyy")} salary = {program.GetSalary(employee)}");
         }
     }
 }
