@@ -18,6 +18,21 @@ namespace MD.Salary.WebMvc.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("MD.Salary.WebMvc.Models.Blog", b =>
+                {
+                    b.Property<int>("BlogId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Number");
+
+                    b.Property<string>("Url");
+
+                    b.HasKey("BlogId");
+
+                    b.ToTable("Blogs");
+                });
+
             modelBuilder.Entity("MD.Salary.WebMvc.Models.Employee", b =>
                 {
                     b.Property<long>("ID")
@@ -38,6 +53,33 @@ namespace MD.Salary.WebMvc.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("MD.Salary.WebMvc.Models.Post", b =>
+                {
+                    b.Property<int>("PostId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BlogId");
+
+                    b.Property<string>("Content");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("PostId");
+
+                    b.HasIndex("BlogId");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("MD.Salary.WebMvc.Models.Post", b =>
+                {
+                    b.HasOne("MD.Salary.WebMvc.Models.Blog", "Blog")
+                        .WithMany("Posts")
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
