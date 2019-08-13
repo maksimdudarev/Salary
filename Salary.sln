@@ -7,13 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "api\WebApi.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebMvc", "mvc\WebMvc.csproj", "{154D439A-5129-4DE5-86E0-7D712CE365E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvcMovie", "MvcMovie\MvcMovie.csproj", "{16D9EA5B-5E1A-4A78-BC15-4A2FC2E61ADF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvcMovie", "tutorial\MvcMovie\MvcMovie.csproj", "{16D9EA5B-5E1A-4A78-BC15-4A2FC2E61ADF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "console\ConsoleApp.csproj", "{195759F9-C759-4F08-B02D-303C2F524F6C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingControllersSample", "test\TestingControllersSample\src\TestingControllersSample\TestingControllersSample.csproj", "{15B80694-DB00-471A-B28A-D230833C376B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingControllersSample", "tutorial\TestingControllersSample\src\TestingControllersSample\TestingControllersSample.csproj", "{15B80694-DB00-471A-B28A-D230833C376B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingControllersSample.Tests", "test\TestingControllersSample\tests\TestingControllersSample.Tests\TestingControllersSample.Tests.csproj", "{F63862B7-35F4-4A7A-A07F-1A30D0EC8793}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingControllersSample.Tests", "tutorial\TestingControllersSample\tests\TestingControllersSample.Tests\TestingControllersSample.Tests.csproj", "{F63862B7-35F4-4A7A-A07F-1A30D0EC8793}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
