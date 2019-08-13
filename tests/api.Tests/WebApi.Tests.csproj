@@ -22,7 +22,8 @@
   </Target>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TestingControllersSample\TestingControllersSample.csproj" />
+    <ProjectReference Include="..\..\api\WebApi.csproj" />
+    <ProjectReference Include="..\..\tutorial\TestingControllersSample\src\TestingControllersSample\TestingControllersSample.csproj" />
   </ItemGroup>
 
   <ItemGroup>
