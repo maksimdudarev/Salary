@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvcMovie", "MvcMovie\MvcMov
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "console\ConsoleApp.csproj", "{195759F9-C759-4F08-B02D-303C2F524F6C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingControllersSample", "test\TestingControllersSample\src\TestingControllersSample\TestingControllersSample.csproj", "{15B80694-DB00-471A-B28A-D230833C376B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingControllersSample.Tests", "test\TestingControllersSample\tests\TestingControllersSample.Tests\TestingControllersSample.Tests.csproj", "{F63862B7-35F4-4A7A-A07F-1A30D0EC8793}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{195759F9-C759-4F08-B02D-303C2F524F6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{195759F9-C759-4F08-B02D-303C2F524F6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{195759F9-C759-4F08-B02D-303C2F524F6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15B80694-DB00-471A-B28A-D230833C376B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15B80694-DB00-471A-B28A-D230833C376B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15B80694-DB00-471A-B28A-D230833C376B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15B80694-DB00-471A-B28A-D230833C376B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F63862B7-35F4-4A7A-A07F-1A30D0EC8793}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F63862B7-35F4-4A7A-A07F-1A30D0EC8793}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F63862B7-35F4-4A7A-A07F-1A30D0EC8793}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F63862B7-35F4-4A7A-A07F-1A30D0EC8793}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
