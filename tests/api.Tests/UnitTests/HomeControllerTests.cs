@@ -8,10 +8,36 @@ using TestingControllersSample.Controllers;
 using TestingControllersSample.Core.Interfaces;
 using TestingControllersSample.Core.Model;
 using TestingControllersSample.ViewModels;
+using MD.Salary.WebApi.Controllers;
+using MD.Salary.WebApi.Models;
 using Xunit;
 
 namespace TestingControllersSample.Tests.UnitTests
 {
+    public interface IFoo
+    {
+        Bar Bar { get; set; }
+        string Name { get; set; }
+        int Value { get; set; }
+        bool DoSomething(string value);
+        bool DoSomething(int number, string value);
+        string DoSomethingStringy(string value);
+        bool TryParse(string value, out string outputValue);
+        bool Submit(ref Bar bar);
+        int GetCount();
+        bool Add(int value);
+    }
+
+    public class Bar
+    {
+        public virtual Baz Baz { get; set; }
+        public virtual bool Submit() { return false; }
+    }
+
+    public class Baz
+    {
+        public virtual string Name { get; set; }
+    }
     public class HomeControllerTests
     {
         #region snippet_Index_ReturnsAViewResult_WithAListOfBrainstormSessions
@@ -19,16 +45,26 @@ namespace TestingControllersSample.Tests.UnitTests
         public async Task Index_ReturnsAViewResult_WithAListOfBrainstormSessions()
         {
             // Arrange
-            var mockRepo = new Mock<IBrainstormSessionRepository>();
-            mockRepo.Setup(repo => repo.ListAsync())
+            var mockRepo_old = new Mock<IBrainstormSessionRepository>();
+            mockRepo_old.Setup(repo => repo.ListAsync())
                 .ReturnsAsync(GetTestSessions());
-            var controller = new HomeController(mockRepo.Object);
+            var controller_old = new HomeController(mockRepo_old.Object);
+
+            var mockRepo = new Mock<EmployeeContext>();
+            mockRepo.Setup(repo => repo.Employees.ToList())
+                .Returns(GetTestEmployees());
+            var controller = new EmployeesController(mockRepo.Object);
+
+            var mock = new Mock<IFoo>();
+            mock.Setup(foo => foo.Name).Returns("bar");
+
 
             // Act
-            var result = await controller.Index();
+            var result_old = await controller_old.Index();
+            var result = await controller.Index("");
 
             // Assert
-            var viewResult = Assert.IsType<ViewResult>(result);
+            var viewResult = Assert.IsType<ViewResult>(result_old);
             var model = Assert.IsAssignableFrom<IEnumerable<StormSessionViewModel>>(
                 viewResult.ViewData.Model);
             Assert.Equal(2, model.Count());
@@ -97,6 +133,28 @@ namespace TestingControllersSample.Tests.UnitTests
                 Name = "Test Two"
             });
             return sessions;
+        }
+        #endregion
+
+        #region snippet_GetTestEmployees
+        private List<Employee> GetTestEmployees()
+        {
+            var employees = new List<Employee>();
+            DateTimeOffset dateTimeOffset1 = new DateTime(2016, 7, 2);
+            DateTimeOffset dateTimeOffset2 = new DateTime(2016, 7, 1);
+            employees.Add(new Employee()
+            {
+                HireDate = dateTimeOffset1.ToUnixTimeSeconds(),
+                ID = 1,
+                Name = "Test One"
+            });
+            employees.Add(new Employee()
+            {
+                HireDate = dateTimeOffset2.ToUnixTimeSeconds(),
+                ID = 2,
+                Name = "Test Two"
+            });
+            return employees;
         }
         #endregion
     }

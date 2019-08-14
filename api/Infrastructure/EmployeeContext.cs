@@ -1,7 +1,7 @@
-﻿using MD.Salary.WebApi.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using MD.Salary.WebApi.Models;
 
-namespace MD.Salary.WebApi.Models
+namespace MD.Salary.WebApi.Infrastructure
 {
     public class EmployeeContext : DbContext
     {
