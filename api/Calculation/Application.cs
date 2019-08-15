@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using static System.Math;
 using MD.Salary.WebApi.Models;
 using MD.Salary.WebApi.Utilities;
+using MD.Salary.WebApi.Core.Models;
 
 namespace MD.Salary.WebApi.Application
 {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MD.Salary.WebApi.Core.Interfaces;
-using MD.Salary.WebApi.Models;
+using MD.Salary.WebApi.Core.Models;
 
 namespace MD.Salary.WebApi.Infrastructure
 {

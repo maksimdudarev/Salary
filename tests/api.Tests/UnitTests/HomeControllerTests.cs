@@ -9,7 +9,8 @@ using TestingControllersSample.Core.Interfaces;
 using TestingControllersSample.Core.Model;
 using TestingControllersSample.ViewModels;
 using MD.Salary.WebApi.Controllers;
-using MD.Salary.WebApi.Models;
+using MD.Salary.WebApi.Core.Interfaces;
+using MD.Salary.WebApi.Core.Models;
 using Xunit;
 
 namespace TestingControllersSample.Tests.UnitTests
@@ -50,23 +51,23 @@ namespace TestingControllersSample.Tests.UnitTests
                 .ReturnsAsync(GetTestSessions());
             var controller_old = new HomeController(mockRepo_old.Object);
 
-            var mockRepo = new Mock<EmployeeContext>();
-            mockRepo.Setup(repo => repo.Employees.ToList())
-                .Returns(GetTestEmployees());
+            var mockRepo = new Mock<IEmployeeRepository>();
+            mockRepo.Setup(repo => repo.ListAsync())
+                .ReturnsAsync(GetTestEmployees());
             var controller = new EmployeesController(mockRepo.Object);
-
-            var mock = new Mock<IFoo>();
-            mock.Setup(foo => foo.Name).Returns("bar");
-
 
             // Act
             var result_old = await controller_old.Index();
             var result = await controller.Index("");
 
             // Assert
-            var viewResult = Assert.IsType<ViewResult>(result_old);
-            var model = Assert.IsAssignableFrom<IEnumerable<StormSessionViewModel>>(
-                viewResult.ViewData.Model);
+            var viewResult_old = Assert.IsType<ViewResult>(result_old);
+            var model_old = Assert.IsAssignableFrom<IEnumerable<StormSessionViewModel>>(
+                viewResult_old.ViewData.Model);
+            Assert.Equal(2, model_old.Count());
+            var okObjectResult = Assert.IsType<OkObjectResult>(result);
+            //var model = Assert.IsAssignableFrom<List<Employee>>(okObjectResult.DeclaredType);
+            var model = Assert.IsType<List<Employee>>(okObjectResult.Value);
             Assert.Equal(2, model.Count());
         }
         #endregion

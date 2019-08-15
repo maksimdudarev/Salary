@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MD.Salary.WebApi.Models;
+using MD.Salary.WebApi.Core.Models;
 
 namespace MD.Salary.WebApi.Core.Interfaces
 {

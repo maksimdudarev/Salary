@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MD.Salary.WebApi.Models;
 using MD.Salary.WebApi.Application;
 using MD.Salary.WebApi.Core.Interfaces;
+using MD.Salary.WebApi.Core.Models;
 
 namespace MD.Salary.WebApi.Controllers
 {
