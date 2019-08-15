@@ -11,7 +11,12 @@ namespace MD.Salary.ConsoleApp.Application
         {
             var program = new WebApiProgram();
             List<EmployeeFull> employeeList;
-            using (var db = new Models.EmployeeContext()) employeeList = program.GetEmployeeListFromDB(db.Employees);
+            using (var db = new Models.EmployeeContext())
+            {
+                var employeeListDB = new List<Employee>();
+                foreach (var employeeDB in db.Employees) employeeListDB.Add(employeeDB);
+                employeeList = program.GetEmployeeListFromDB(employeeListDB);
+            }
             DateTime salaryDate = InputDate();
             employeeList = program.CalculateSalary(employeeList, salaryDate);
             foreach (var employee in employeeList) WriteSalary(employee, program);

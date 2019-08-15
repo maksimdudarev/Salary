@@ -6,9 +6,11 @@ namespace MD.Salary.WebApi.Core.Interfaces
 {
     public interface IEmployeeRepository
     {
-        Task<Employee> GetByIdAsync(int id);
+        Task<Employee> GetByIdAsync(long id);
         Task<List<Employee>> ListAsync();
+        Task<List<Employee>> ListBySearhstringAsync(string searchString);
         Task AddAsync(Employee item);
         Task UpdateAsync(Employee item);
+        Task DeleteAsync(Employee item);
     }
 }

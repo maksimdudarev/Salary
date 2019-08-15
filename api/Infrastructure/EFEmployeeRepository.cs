@@ -16,18 +16,28 @@ namespace MD.Salary.WebApi.Infrastructure
             _dbContext = dbContext;
         }
 
-        public Task<Employee> GetByIdAsync(int id)
+        public Task<Employee> GetByIdAsync(long id)
         {
             return _dbContext.Employees
                 //.Include(s => s.Ideas)
                 .FirstOrDefaultAsync(s => s.ID == id);
         }
 
+        public Task<List<Employee>> ListBySearhstringAsync(string searchString)
+        {
+            var items = from i in _dbContext.Employees select i;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                items = items.Where(s => s.Name.Contains(searchString));
+            }
+            return items.ToListAsync();
+        }
+
         public Task<List<Employee>> ListAsync()
         {
             return _dbContext.Employees
                 //.Include(s => s.Ideas)
-                .OrderByDescending(s => s.HireDate)
+                //.OrderByDescending(s => s.HireDate)
                 .ToListAsync();
         }
 
@@ -40,6 +50,12 @@ namespace MD.Salary.WebApi.Infrastructure
         public Task UpdateAsync(Employee item)
         {
             _dbContext.Entry(item).State = EntityState.Modified;
+            return _dbContext.SaveChangesAsync();
+        }
+
+        public Task DeleteAsync(Employee item)
+        {
+            _dbContext.Employees.Remove(item);
             return _dbContext.SaveChangesAsync();
         }
     }

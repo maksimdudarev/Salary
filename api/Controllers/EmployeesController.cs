@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MD.Salary.WebApi.Models;
 using MD.Salary.WebApi.Application;
+using MD.Salary.WebApi.Core.Interfaces;
 
 namespace MD.Salary.WebApi.Controllers
 {
@@ -13,68 +12,65 @@ namespace MD.Salary.WebApi.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly EmployeeContext _context;
+        private readonly IEmployeeRepository _repository;
 
-        public EmployeesController(EmployeeContext context)
+        public EmployeesController(IEmployeeRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/Employees
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString)
         {
-            var items = from emp in _context.Employees select emp;
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                items = items.Where(s => s.Name.Contains(searchString));
-            }
-            return await items.ToListAsync();
+            var items = await _repository.ListBySearhstringAsync(searchString);
+            return Ok(items);
         }
         // GET: api/Employees/Salary
         [HttpGet("salary")]
-        public async Task<ActionResult<decimal>> IndexSalary(long salaryDate)
+        public async Task<IActionResult> IndexSalary(long salaryDate)
         {
-            await _context.Employees.ToListAsync();
+            var items = await _repository.ListAsync();
             var program = new WebApiProgram();
-            program.GetSalaryFromContext(_context.Employees, salaryDate);
-            var total = program.GetSalaryTotal();
-
-            return total;
+            program.GetSalaryFromContext(items, salaryDate);
+            return Ok(program.GetSalaryTotal());
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(long id)
+        public async Task<IActionResult> GetEmployee(long id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-            if (employee == null)
+            var item = await _repository.GetByIdAsync(id);
+            if (item == null)
             {
                 return NotFound();
             }
-            return employee;
+            return Ok(item);
         }
         // GET: api/Employees/5/Salary
         [HttpGet("{id}/salary")]
-        public async Task<ActionResult<decimal>> GetEmployeeSalary(long id, long salaryDate)
+        public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
         {
-            await _context.Employees.ToListAsync();
+            var items = await _repository.ListAsync();
             var program = new WebApiProgram();
-            List<EmployeeFull> employeeList = program.GetSalaryFromContext(_context.Employees, salaryDate);
-            var employee = employeeList.FirstOrDefault(emp => emp.ID == id);
-            if (employee == null)
+            List<EmployeeFull> employeeList = program.GetSalaryFromContext(items, salaryDate);
+            var item = employeeList.FirstOrDefault(emp => emp.ID == id);
+            if (item == null)
             {
                 return NotFound();
             }
-            return program.GetSalary(employee);
+            return Ok(program.GetSalary(item));
         }
         // POST: api/Employees
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee item)
+        public async Task<IActionResult> PostEmployee(Employee item)
         {
-            _context.Employees.Add(item);
-            await _context.SaveChangesAsync();
-
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            await _repository.AddAsync(item);
+            //return RedirectToAction(nameof(Index));
             return CreatedAtAction(nameof(GetEmployee), new { id = item.ID }, item);
         }
         // PUT: api/Employees/5
@@ -85,27 +81,20 @@ namespace MD.Salary.WebApi.Controllers
             {
                 return BadRequest();
             }
-
-            _context.Entry(item).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            await _repository.UpdateAsync(item);
+            return RedirectToAction(nameof(Index));
         }
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(long id)
         {
-            var employee = await _context.Employees.FindAsync(id);
-
-            if (employee == null)
+            var item = await _repository.GetByIdAsync(id);
+            if (item == null)
             {
                 return NotFound();
             }
-
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            await _repository.DeleteAsync(item);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
