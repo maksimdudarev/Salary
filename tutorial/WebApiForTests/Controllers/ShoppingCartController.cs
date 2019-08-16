@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApiForTests.Contracts;
+using WebApiForTests.Model;
 
 namespace WebApiForTests.Controllers
 {
@@ -11,36 +10,61 @@ namespace WebApiForTests.Controllers
     [ApiController]
     public class ShoppingCartController : ControllerBase
     {
-        // GET: api/ShoppingCart
+        private readonly IShoppingCartService _service;
+
+        public ShoppingCartController(IShoppingCartService service)
+        {
+            _service = service;
+        }
+
+        // GET api/shoppingcart
         [HttpGet]
-        public IEnumerable<string> Get()
+        public ActionResult<IEnumerable<ShoppingItem>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var items = _service.GetAllItems();
+            return Ok(items);
         }
 
-        // GET: api/ShoppingCart/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        // GET api/shoppingcart/5
+        [HttpGet("{id}")]
+        public ActionResult<ShoppingItem> Get(Guid id)
         {
-            return "value";
+            var item = _service.GetById(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(item);
         }
 
-        // POST: api/ShoppingCart
+        // POST api/shoppingcart
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post([FromBody] ShoppingItem value)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var item = _service.Add(value);
+            return CreatedAtAction("Get", new { id = item.Id }, item);
         }
 
-        // PUT: api/ShoppingCart/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
+        // DELETE api/shoppingcart/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Remove(Guid id)
         {
+            var existingItem = _service.GetById(id);
+
+            if (existingItem == null)
+            {
+                return NotFound();
+            }
+
+            _service.Remove(id);
+            return Ok();
         }
     }
 }
