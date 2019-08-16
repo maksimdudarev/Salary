@@ -59,16 +59,40 @@ namespace TestingControllersSample.Tests.UnitTests
             // Act
             var result_old = await controller_old.Index();
             var result = await controller.Index("");
+            //IActionResult result2 = await controller.Index("");
 
             // Assert
             var viewResult_old = Assert.IsType<ViewResult>(result_old);
             var model_old = Assert.IsAssignableFrom<IEnumerable<StormSessionViewModel>>(
                 viewResult_old.ViewData.Model);
             Assert.Equal(2, model_old.Count());
+            /*
+            OkObjectResult okObjectResult2 = Assert.IsType<OkObjectResult>(result2);
+            List<Employee> model2 = Assert.IsType<List<Employee>>(okObjectResult2.Value);
+            Assert.Equal(2, model2.Count);
+            */
             var okObjectResult = Assert.IsType<OkObjectResult>(result);
             //var model = Assert.IsAssignableFrom<List<Employee>>(okObjectResult.DeclaredType);
             var model = Assert.IsType<List<Employee>>(okObjectResult.Value);
             Assert.Equal(2, model.Count());
+            
+            //Arrange
+            /*var expected = "test";
+            var controllerR = new EmployeesController(mockRepo.Object);
+
+            //Act
+            var actionResult = await controllerR.Index("");
+
+            //Assert
+            var okObjectResult = actionResult as OkObjectResult;
+            Assert.NotNull(okObjectResult);
+
+            var model = okObjectResult.Value as List<Employee>;
+            Assert.NotNull(model);
+            
+            var actual = model.Description;
+            Assert.Equal(expected, actual);
+            */
         }
         #endregion
 
