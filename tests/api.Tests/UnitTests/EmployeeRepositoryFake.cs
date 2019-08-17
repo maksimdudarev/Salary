@@ -21,7 +21,7 @@ namespace MD.Salary.WebApi.Tests
             };
         }
 
-        public IEnumerable<Employee> GetAllItems()
+        public List<Employee> GetAllItems()
         {
             return _employees;
         }
