@@ -47,45 +47,6 @@ namespace TestingControllersSample.Tests.UnitTests
             _employeesController = new EmployeesController(_employeeRepository.Object);
         }
 
-        [Fact]
-        public void IndexSync_WhenCalled_ReturnsOkResult()
-        {
-            // Act
-            var okResult = _controllerE.IndexSync();
-
-            // Assert
-            Assert.IsType<OkObjectResult>(okResult.Result);
-        }
-        [Fact]
-        public void IndexSync_WhenCalled_ReturnsAllItems()
-        {
-            // Act
-            var okResult = _controllerE.IndexSync().Result as OkObjectResult;
-
-            // Assert
-            var items = Assert.IsType<List<Employee>>(okResult.Value);
-            Assert.Equal(3, items.Count);
-        }
-        [Fact]
-        public void Get_WhenCalled_ReturnsOkResult()
-        {
-            // Act
-            var okResult = _controller.Get();
-
-            // Assert
-            Assert.IsType<OkObjectResult>(okResult.Result);
-        }
-
-        [Fact]
-        public void Get_WhenCalled_ReturnsAllItems()
-        {
-            // Act
-            var okResult = _controller.Get().Result as OkObjectResult;
-
-            // Assert
-            var items = Assert.IsType<List<ShoppingItem>>(okResult.Value);
-            Assert.Equal(3, items.Count);
-        }
         #region snippet_Index_ReturnsAViewResult_WithAListOfBrainstormSessions
         [Fact]
         public async Task Index_ReturnsOkObjectResult()
@@ -97,15 +58,30 @@ namespace TestingControllersSample.Tests.UnitTests
             Assert.IsType<OkObjectResult>(okObjectResult);
         }
         [Fact]
+        public async Task IndexStrong_ReturnsAllItems()
+        {
+            // Act
+            var okObjectResult = await _employeesController.IndexStrong("");
+            var okResult = okObjectResult.Result as OkObjectResult;
+
+            // Assert
+            var items = Assert.IsType<List<Employee>>(okResult.Value);
+            Assert.Equal(3, items.Count);
+        }
+        [Fact]
         public async Task Index_ReturnsAllItems()
         {
             // Act
             var okResult = _controller.Get().Result as OkObjectResult;
 
             var viewResult = await _homeController.Index() as ViewResult;
+            var model = viewResult.ViewData.Model as IEnumerable<StormSessionViewModel>;
             var okObjectResult = await _employeesController.Index("") as OkObjectResult;
+            var actResult = await _employeesController.IndexStrong("");
+            var okResult2 = actResult.Result as OkObjectResult;
 
             // Assert
+            Assert.Equal(2, model.Count());
             var items = Assert.IsType<List<ShoppingItem>>(okResult.Value);
             Assert.Equal(3, items.Count);
 
@@ -196,40 +172,54 @@ namespace TestingControllersSample.Tests.UnitTests
 
         #region snippet_ShoppingCartOther
         [Fact]
-        public void GetById_UnknownGuidPassed_ReturnsNotFoundResult()
+        public async Task IndexAsync_WhenCalled_ReturnsOkResult()
         {
             // Act
-            var notFoundResult = _controller.Get(Guid.NewGuid());
-
+            var okResult = await _controllerE.IndexAsync();
+            // Assert
+            Assert.IsType<OkObjectResult>(okResult.Result);
+        }
+        [Fact]
+        public async Task IndexAsync_WhenCalled_ReturnsAllItems()
+        {
+            // Act
+            var okResult = await _controllerE.IndexAsync();
+            var okObjectResult = okResult.Result as OkObjectResult;
+            // Assert
+            var items = Assert.IsType<List<Employee>>(okObjectResult.Value);
+            Assert.Equal(3, items.Count);
+        }
+        [Fact]
+        public async Task GetEmployeeAsync_UnknownGuidPassed_ReturnsNotFoundResult()
+        {
+            // Act
+            var notFoundResult = await _controllerE.GetEmployeeAsync(2000);
             // Assert
             Assert.IsType<NotFoundResult>(notFoundResult.Result);
         }
 
         [Fact]
-        public void GetById_ExistingGuidPassed_ReturnsOkResult()
+        public async Task GetEmployeeAsync_ExistingGuidPassed_ReturnsOkResult()
         {
             // Arrange
-            var testGuid = new Guid("ab2bd817-98cd-4cf3-a80a-53ea0cd9c200");
-
+            var testGuid = 1001;
             // Act
-            var okResult = _controller.Get(testGuid);
-
+            var okResult = await _controllerE.GetEmployeeAsync(testGuid);
             // Assert
             Assert.IsType<OkObjectResult>(okResult.Result);
         }
 
         [Fact]
-        public void GetById_ExistingGuidPassed_ReturnsRightItem()
+        public async Task GetEmployeeAsync_ExistingGuidPassed_ReturnsRightItem()
         {
             // Arrange
-            var testGuid = new Guid("ab2bd817-98cd-4cf3-a80a-53ea0cd9c200");
-
+            var testGuid = 1001;
             // Act
-            var okResult = _controller.Get(testGuid).Result as OkObjectResult;
-
+            var okResult = await _controllerE.GetEmployeeAsync(testGuid);
+            var okObjectResult = okResult.Result as OkObjectResult;
             // Assert
-            Assert.IsType<ShoppingItem>(okResult.Value);
-            Assert.Equal(testGuid, (okResult.Value as ShoppingItem).Id);
+            Assert.IsType<Employee>(okObjectResult.Value);
+            Assert.Equal(testGuid, (okObjectResult.Value as Employee).ID);
         }
 
         [Fact]

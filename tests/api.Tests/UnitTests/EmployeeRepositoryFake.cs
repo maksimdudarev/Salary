@@ -21,8 +21,9 @@ namespace MD.Salary.WebApi.Tests
             };
         }
 
-        public List<Employee> GetAllItems()
+        public async Task<List<Employee>> GetAllItemsAsync()
         {
+            await Task.Delay(1000);
             return _employees;
         }
 
@@ -33,8 +34,9 @@ namespace MD.Salary.WebApi.Tests
             return newItem;
         }
 
-        public Employee GetById(long id)
+        public async Task<Employee> GetByIdAsync(long id)
         {
+            await Task.Delay(1000);
             return _employees.Where(a => a.ID == id)
                 .FirstOrDefault();
         }
@@ -43,11 +45,6 @@ namespace MD.Salary.WebApi.Tests
         {
             var existing = _employees.First(a => a.ID == id);
             _employees.Remove(existing);
-        }
-
-        public Task<Employee> GetByIdAsync(long id)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<List<Employee>> ListAsync()

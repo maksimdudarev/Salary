@@ -59,7 +59,7 @@ namespace MD.Salary.WebApi.Infrastructure
             return _dbContext.SaveChangesAsync();
         }
 
-        public List<Employee> GetAllItems()
+        public Task<List<Employee>> GetAllItemsAsync()
         {
             throw new System.NotImplementedException();
         }

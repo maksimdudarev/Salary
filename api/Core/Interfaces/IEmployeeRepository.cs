@@ -9,7 +9,7 @@ namespace MD.Salary.WebApi.Core.Interfaces
         Task<Employee> GetByIdAsync(long id);
         Task<List<Employee>> ListAsync();
         Task<List<Employee>> ListBySearhstringAsync(string searchString);
-        List<Employee> GetAllItems();
+        Task<List<Employee>> GetAllItemsAsync();
         Task AddAsync(Employee item);
         Task UpdateAsync(Employee item);
         Task DeleteAsync(Employee item);

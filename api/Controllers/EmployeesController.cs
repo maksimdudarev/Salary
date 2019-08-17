@@ -22,9 +22,15 @@ namespace MD.Salary.WebApi.Controllers
 
         // GET: api/Employees
         [HttpGet]
-        public ActionResult<IEnumerable<Employee>> IndexSync()
+        public async Task<ActionResult<List<Employee>>> IndexAsync()
         {
-            var items = _repository.GetAllItems();
+            var items = await _repository.GetAllItemsAsync();
+            return Ok(items);
+        }
+        [HttpGet]
+        public async Task<ActionResult<List<Employee>>> IndexStrong(string searchString)
+        {
+            var items = await _repository.ListBySearhstringAsync(searchString);
             return Ok(items);
         }
         [HttpGet]
@@ -44,6 +50,16 @@ namespace MD.Salary.WebApi.Controllers
         }
 
         // GET: api/Employees/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Employee>> GetEmployeeAsync(long id)
+        {
+            var item = await _repository.GetByIdAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            return Ok(item);
+        }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployee(long id)
         {
