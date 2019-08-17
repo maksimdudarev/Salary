@@ -58,5 +58,10 @@ namespace MD.Salary.WebApi.Infrastructure
             _dbContext.Employees.Remove(item);
             return _dbContext.SaveChangesAsync();
         }
+
+        public IEnumerable<Employee> GetAllItems()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

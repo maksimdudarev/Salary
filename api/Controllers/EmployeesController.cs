@@ -22,6 +22,12 @@ namespace MD.Salary.WebApi.Controllers
 
         // GET: api/Employees
         [HttpGet]
+        public ActionResult<IEnumerable<Employee>> IndexSync()
+        {
+            var items = _repository.GetAllItems();
+            return Ok(items);
+        }
+        [HttpGet]
         public async Task<IActionResult> Index(string searchString)
         {
             var items = await _repository.ListBySearhstringAsync(searchString);
