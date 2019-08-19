@@ -56,9 +56,9 @@ namespace WebApiForTests.Controllers
         [HttpDelete("{id}")]
         public ActionResult Remove(Guid id)
         {
-            var existingItem = _service.GetById(id);
+            var item = _service.GetById(id);
 
-            if (existingItem == null)
+            if (item == null)
             {
                 return NotFound();
             }

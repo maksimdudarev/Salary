@@ -11,21 +11,12 @@ using TestingControllersSample.ViewModels;
 using MD.Salary.WebApi.Controllers;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
-using MD.Salary.WebApi.Tests;
 using Xunit;
-using WebApiForTests.Contracts;
-using WebApiForTests.Controllers;
-using WebApiForTests.Model;
-using WebApiForTests.Tests;
 
 namespace TestingControllersSample.Tests.UnitTests
 {
     public class HomeControllerTests
     {
-        ShoppingCartController _controller;
-        IShoppingCartService _service;
-        EmployeesController _controllerE;
-        IEmployeeRepository _serviceE;
         HomeController _homeController;
         Mock<IBrainstormSessionRepository> _repositoryBrainstormSession;
         EmployeesController _employeesController;
@@ -33,10 +24,6 @@ namespace TestingControllersSample.Tests.UnitTests
 
         public HomeControllerTests()
         {
-            _service = new ShoppingCartServiceFake();
-            _controller = new ShoppingCartController(_service);
-            _serviceE = new EmployeeRepositoryFake();
-            _controllerE = new EmployeesController(_serviceE);
             _repositoryBrainstormSession = new Mock<IBrainstormSessionRepository>();
             _repositoryBrainstormSession.
                 Setup(repo => repo.ListAsync()).ReturnsAsync(GetTestSessions());
@@ -72,8 +59,6 @@ namespace TestingControllersSample.Tests.UnitTests
         public async Task Index_ReturnsAllItems()
         {
             // Act
-            var okResult = _controller.Get().Result as OkObjectResult;
-
             var viewResult = await _homeController.Index() as ViewResult;
             var model = viewResult.ViewData.Model as IEnumerable<StormSessionViewModel>;
             var okObjectResult = await _employeesController.Index("") as OkObjectResult;
@@ -82,8 +67,6 @@ namespace TestingControllersSample.Tests.UnitTests
 
             // Assert
             Assert.Equal(2, model.Count());
-            var items = Assert.IsType<List<ShoppingItem>>(okResult.Value);
-            Assert.Equal(3, items.Count);
 
             var items2 = Assert.IsAssignableFrom<IEnumerable<StormSessionViewModel>>(okObjectResult.Value);
             Assert.Equal(2, items2.Count());
@@ -167,155 +150,6 @@ namespace TestingControllersSample.Tests.UnitTests
             var actual = model.Description;
             Assert.Equal(expected, actual);
             */
-        }
-        #endregion
-
-        #region snippet_ShoppingCartOther
-        [Fact]
-        public async Task IndexAsync_WhenCalled_ReturnsOkResult()
-        {
-            // Act
-            var okResult = await _controllerE.IndexAsync();
-            // Assert
-            Assert.IsType<OkObjectResult>(okResult.Result);
-        }
-        [Fact]
-        public async Task IndexAsync_WhenCalled_ReturnsAllItems()
-        {
-            // Act
-            var okResult = await _controllerE.IndexAsync();
-            var okObjectResult = okResult.Result as OkObjectResult;
-            // Assert
-            var items = Assert.IsType<List<Employee>>(okObjectResult.Value);
-            Assert.Equal(3, items.Count);
-        }
-        [Fact]
-        public async Task GetEmployeeAsync_UnknownGuidPassed_ReturnsNotFoundResult()
-        {
-            // Act
-            var notFoundResult = await _controllerE.GetEmployeeAsync(2000);
-            // Assert
-            Assert.IsType<NotFoundResult>(notFoundResult.Result);
-        }
-
-        [Fact]
-        public async Task GetEmployeeAsync_ExistingGuidPassed_ReturnsOkResult()
-        {
-            // Arrange
-            var testGuid = 1001;
-            // Act
-            var okResult = await _controllerE.GetEmployeeAsync(testGuid);
-            // Assert
-            Assert.IsType<OkObjectResult>(okResult.Result);
-        }
-
-        [Fact]
-        public async Task GetEmployeeAsync_ExistingGuidPassed_ReturnsRightItem()
-        {
-            // Arrange
-            var testGuid = 1001;
-            // Act
-            var okResult = await _controllerE.GetEmployeeAsync(testGuid);
-            var okObjectResult = okResult.Result as OkObjectResult;
-            // Assert
-            Assert.IsType<Employee>(okObjectResult.Value);
-            Assert.Equal(testGuid, (okObjectResult.Value as Employee).ID);
-        }
-
-        [Fact]
-        public void Add_InvalidObjectPassed_ReturnsBadRequest()
-        {
-            // Arrange
-            var nameMissingItem = new ShoppingItem()
-            {
-                Manufacturer = "Guinness",
-                Price = 12.00M
-            };
-            _controller.ModelState.AddModelError("Name", "Required");
-
-            // Act
-            var badResponse = _controller.Post(nameMissingItem);
-
-            // Assert
-            Assert.IsType<BadRequestObjectResult>(badResponse);
-        }
-
-
-        [Fact]
-        public void Add_ValidObjectPassed_ReturnsCreatedResponse()
-        {
-            // Arrange
-            ShoppingItem testItem = new ShoppingItem()
-            {
-                Name = "Guinness Original 6 Pack",
-                Manufacturer = "Guinness",
-                Price = 12.00M
-            };
-
-            // Act
-            var createdResponse = _controller.Post(testItem);
-
-            // Assert
-            Assert.IsType<CreatedAtActionResult>(createdResponse);
-        }
-
-
-        [Fact]
-        public void Add_ValidObjectPassed_ReturnedResponseHasCreatedItem()
-        {
-            // Arrange
-            var testItem = new ShoppingItem()
-            {
-                Name = "Guinness Original 6 Pack",
-                Manufacturer = "Guinness",
-                Price = 12.00M
-            };
-
-            // Act
-            var createdResponse = _controller.Post(testItem) as CreatedAtActionResult;
-            var item = createdResponse.Value as ShoppingItem;
-
-            // Assert
-            Assert.IsType<ShoppingItem>(item);
-            Assert.Equal("Guinness Original 6 Pack", item.Name);
-        }
-
-        [Fact]
-        public void Remove_NotExistingGuidPassed_ReturnsNotFoundResponse()
-        {
-            // Arrange
-            var notExistingGuid = Guid.NewGuid();
-
-            // Act
-            var badResponse = _controller.Remove(notExistingGuid);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(badResponse);
-        }
-
-        [Fact]
-        public void Remove_ExistingGuidPassed_ReturnsOkResult()
-        {
-            // Arrange
-            var existingGuid = new Guid("ab2bd817-98cd-4cf3-a80a-53ea0cd9c200");
-
-            // Act
-            var okResponse = _controller.Remove(existingGuid);
-
-            // Assert
-            Assert.IsType<OkResult>(okResponse);
-        }
-        [Fact]
-        public void Remove_ExistingGuidPassed_RemovesOneItem()
-        {
-            // Arrange
-            var existingGuid = new Guid("ab2bd817-98cd-4cf3-a80a-53ea0cd9c200");
-
-            // Act
-            var okResponse = _controller.Remove(existingGuid);
-
-            // Assert
-            Assert.Equal(2, _service.GetAllItems().Count());
         }
         #endregion
 
@@ -403,6 +237,19 @@ namespace TestingControllersSample.Tests.UnitTests
                 Name = "Test Two"
             });
             return employees;
+        }
+        #endregion
+
+        #region snippet_GetTestEmployees2
+        public static List<Employee> GetTestEmployees2()
+        {
+            var items = new List<Employee>
+            {
+                new Employee() { ID = 1001, Name = "Orange Juice", Group="Orange Tree", SalaryBase = 5.00M },
+                new Employee() { ID = 1002, Name = "Diary Milk", Group="Cow", SalaryBase = 4.00M },
+                new Employee() { ID = 1003, Name = "Frozen Pizza", Group="Uncle Mickey", SalaryBase = 12.00M }
+            };
+            return items;
         }
         #endregion
     }

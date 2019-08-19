@@ -22,12 +22,6 @@ namespace MD.Salary.WebApi.Controllers
 
         // GET: api/Employees
         [HttpGet]
-        public async Task<ActionResult<List<Employee>>> IndexAsync()
-        {
-            var items = await _repository.GetAllItemsAsync();
-            return Ok(items);
-        }
-        [HttpGet]
         public async Task<ActionResult<List<Employee>>> IndexStrong(string searchString)
         {
             var items = await _repository.ListBySearhstringAsync(searchString);
@@ -39,6 +33,7 @@ namespace MD.Salary.WebApi.Controllers
             var items = await _repository.ListBySearhstringAsync(searchString);
             return Ok(items);
         }
+
         // GET: api/Employees/Salary
         [HttpGet("salary")]
         public async Task<IActionResult> IndexSalary(long salaryDate)
@@ -51,7 +46,7 @@ namespace MD.Salary.WebApi.Controllers
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployeeAsync(long id)
+        public async Task<ActionResult<Employee>> GetEmployee(long id)
         {
             var item = await _repository.GetByIdAsync(id);
             if (item == null)
@@ -60,16 +55,7 @@ namespace MD.Salary.WebApi.Controllers
             }
             return Ok(item);
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployee(long id)
-        {
-            var item = await _repository.GetByIdAsync(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            return Ok(item);
-        }
+
         // GET: api/Employees/5/Salary
         [HttpGet("{id}/salary")]
         public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
@@ -84,9 +70,10 @@ namespace MD.Salary.WebApi.Controllers
             }
             return Ok(program.GetSalary(item));
         }
+
         // POST: api/Employees
         [HttpPost]
-        public async Task<IActionResult> PostEmployee(Employee item)
+        public async Task<IActionResult> PostEmployee([FromBody] Employee item)
         {
             if (!ModelState.IsValid)
             {
@@ -96,6 +83,18 @@ namespace MD.Salary.WebApi.Controllers
             //return RedirectToAction(nameof(Index));
             return CreatedAtAction(nameof(GetEmployee), new { id = item.ID }, item);
         }
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] Employee item)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _repository.AddAsync(item);
+            return CreatedAtAction(nameof(GetEmployee), new { id = item.ID }, item);
+        }
+
         // PUT: api/Employees/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployee(long id, Employee item)
@@ -107,6 +106,7 @@ namespace MD.Salary.WebApi.Controllers
             await _repository.UpdateAsync(item);
             return RedirectToAction(nameof(Index));
         }
+
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(long id)

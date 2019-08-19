@@ -11,20 +11,32 @@ namespace MD.Salary.WebApi.Tests
     {
         private readonly List<Employee> _employees;
 
-        public EmployeeRepositoryFake()
+        public EmployeeRepositoryFake(List<Employee> employees)
         {
-            _employees = new List<Employee>()
-            {
-                new Employee() { ID = 1001, Name = "Orange Juice", Group="Orange Tree", SalaryBase = 5.00M },
-                new Employee() { ID = 1002, Name = "Diary Milk", Group="Cow", SalaryBase = 4.00M },
-                new Employee() { ID = 1003, Name = "Frozen Pizza", Group="Uncle Mickey", SalaryBase = 12.00M }
-            };
+            _employees = employees;
         }
 
-        public async Task<List<Employee>> GetAllItemsAsync()
+        public async Task<List<Employee>> ListAsync()
         {
             await Task.Delay(1000);
             return _employees;
+        }
+
+        public async Task<List<Employee>> ListBySearhstringAsync(string searchString)
+        {
+            var items = from i in _employees select i;
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                items = items.Where(s => s.Name.Contains(searchString));
+            }
+            await Task.Delay(1000);
+            return items.ToList();
+        }
+
+        public async Task<Employee> GetByIdAsync(long id)
+        {
+            await Task.Delay(1000);
+            return _employees.FirstOrDefault(s => s.ID == id);
         }
 
         public Employee Add(Employee newItem)
@@ -32,29 +44,6 @@ namespace MD.Salary.WebApi.Tests
             //newItem.ID = Guid.NewGuid();
             _employees.Add(newItem);
             return newItem;
-        }
-
-        public async Task<Employee> GetByIdAsync(long id)
-        {
-            await Task.Delay(1000);
-            return _employees.Where(a => a.ID == id)
-                .FirstOrDefault();
-        }
-
-        public void Remove(long id)
-        {
-            var existing = _employees.First(a => a.ID == id);
-            _employees.Remove(existing);
-        }
-
-        public Task<List<Employee>> ListAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Employee>> ListBySearhstringAsync(string searchString)
-        {
-            throw new NotImplementedException();
         }
 
         public Task AddAsync(Employee item)
@@ -65,6 +54,12 @@ namespace MD.Salary.WebApi.Tests
         public Task UpdateAsync(Employee item)
         {
             throw new NotImplementedException();
+        }
+
+        public void Remove(long id)
+        {
+            var existing = _employees.First(s => s.ID == id);
+            _employees.Remove(existing);
         }
 
         public Task DeleteAsync(Employee item)
