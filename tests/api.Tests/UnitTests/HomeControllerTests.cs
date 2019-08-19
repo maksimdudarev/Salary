@@ -34,16 +34,7 @@ namespace TestingControllersSample.Tests.UnitTests
             _employeesController = new EmployeesController(_employeeRepository.Object);
         }
 
-        #region snippet_Index_ReturnsAViewResult_WithAListOfBrainstormSessions
-        [Fact]
-        public async Task IndexStrong_ReturnsOkObjectResult()
-        {
-            // Act
-            var okObjectResult = await _employeesController.IndexStrong("");
-
-            // Assert
-            Assert.IsType<OkObjectResult>(okObjectResult.Result);
-        }
+        #region snippet_Index
         [Fact]
         public async Task Index_ReturnsOkObjectResult()
         {
@@ -53,17 +44,7 @@ namespace TestingControllersSample.Tests.UnitTests
             // Assert
             Assert.IsType<OkObjectResult>(okObjectResult);
         }
-        [Fact]
-        public async Task IndexStrong_ReturnsAllItems()
-        {
-            // Act
-            var okResult = await _employeesController.IndexStrong("");
-            var okObjectResult = okResult.Result as OkObjectResult;
 
-            // Assert
-            var items = Assert.IsType<List<Employee>>(okObjectResult.Value);
-            Assert.Equal(3, items.Count);
-        }
         [Fact]
         public async Task Index_ReturnsAllItems()
         {
@@ -74,102 +55,18 @@ namespace TestingControllersSample.Tests.UnitTests
             var items = Assert.IsType<List<Employee>>(okObjectResult.Value);
             Assert.Equal(3, items.Count());
         }
-        [Fact]
-        public async Task Index_ReturnsViewResult()
-        {
-            // Act
-            var viewResult = await _homeController.Index();
-
-            // Assert
-            Assert.IsType<ViewResult>(viewResult);
-        }
-        [Fact]
-        public async Task Index_ReturnsIEnumerableStormSessionViewModel()
-        {
-            // Act
-            var viewResult = await _homeController.Index() as ViewResult;
-
-            // Assert
-            Assert.IsAssignableFrom<IEnumerable<StormSessionViewModel>>(viewResult.ViewData.Model);
-        }
-        [Fact]
-        public async Task Index_ReturnsListOfBrainstormSessions()
-        {
-            // Act
-            var viewResult = await _homeController.Index() as ViewResult;
-            var model = viewResult.ViewData.Model as IEnumerable<StormSessionViewModel>;
-
-            // Assert
-            Assert.Equal(2, model.Count());
-        }
-        [Fact]
-        public async Task Index_ReturnsAViewResult_WithAListOfBrainstormSessions()
-        {
-            // Arrange
-            var mockRepo_old = new Mock<IBrainstormSessionRepository>();
-            mockRepo_old.Setup(repo => repo.ListAsync())
-                .ReturnsAsync(GetTestSessions());
-            var controller_old = new HomeController(mockRepo_old.Object);
-            /*
-            var mockRepo = new Mock<IEmployeeRepository>();
-            mockRepo.Setup(repo => repo.ListAsync())
-                .ReturnsAsync(GetTestEmployees());
-            var controller = new EmployeesController(mockRepo.Object);
-            */
-            // Act
-            var result_old = await controller_old.Index();
-            //var result = await controller.Index("");
-            //IActionResult result2 = await controller.Index("");
-
-            // Assert
-            var viewResult_old = Assert.IsType<ViewResult>(result_old);
-            var model_old = Assert.IsAssignableFrom<IEnumerable<StormSessionViewModel>>(
-                viewResult_old.ViewData.Model);
-            Assert.Equal(2, model_old.Count());
-            /*
-            OkObjectResult okObjectResult2 = Assert.IsType<OkObjectResult>(result2);
-            List<Employee> model2 = Assert.IsType<List<Employee>>(okObjectResult2.Value);
-            Assert.Equal(2, model2.Count);
-            
-            var okObjectResult = Assert.IsType<OkObjectResult>(result);
-            //var model = Assert.IsAssignableFrom<List<Employee>>(okObjectResult.DeclaredType);
-            var model = Assert.IsType<List<Employee>>(okObjectResult.Value);
-            Assert.Equal(2, model.Count());
-            */
-            //Arrange
-            /*var expected = "test";
-            var controllerR = new EmployeesController(mockRepo.Object);
-
-            //Act
-            var actionResult = await controllerR.Index("");
-
-            //Assert
-            var okObjectResult = actionResult as OkObjectResult;
-            Assert.NotNull(okObjectResult);
-
-            var model = okObjectResult.Value as List<Employee>;
-            Assert.NotNull(model);
-            
-            var actual = model.Description;
-            Assert.Equal(expected, actual);
-            */
-        }
         #endregion
 
-        #region snippet_ModelState_ValidOrInvalid
+        #region snippet_AddEmployee
         [Fact]
-        public async Task IndexPost_ReturnsBadRequestResult_WhenModelStateIsInvalid()
+        public async Task AddEmployee_ReturnsBadRequestResult_WhenModelStateIsInvalid()
         {
             // Arrange
-            var mockRepo = new Mock<IBrainstormSessionRepository>();
-            mockRepo.Setup(repo => repo.ListAsync())
-                .ReturnsAsync(GetTestSessions());
-            var controller = new HomeController(mockRepo.Object);
-            controller.ModelState.AddModelError("SessionName", "Required");
+            _homeController.ModelState.AddModelError("SessionName", "Required");
             var newSession = new HomeController.NewSessionModel();
 
             // Act
-            var result = await controller.Index(newSession);
+            var result = await _homeController.Index(newSession);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -177,7 +74,7 @@ namespace TestingControllersSample.Tests.UnitTests
         }
 
         [Fact]
-        public async Task IndexPost_ReturnsARedirectAndAddsSession_WhenModelStateIsValid()
+        public async Task AddEmployee_ReturnsARedirectAndAddsSession_WhenModelStateIsValid()
         {
             // Arrange
             var mockRepo = new Mock<IBrainstormSessionRepository>();

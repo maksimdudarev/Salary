@@ -22,12 +22,6 @@ namespace MD.Salary.WebApi.Controllers
 
         // GET: api/Employees
         [HttpGet]
-        public async Task<ActionResult<List<Employee>>> IndexStrong(string searchString)
-        {
-            var items = await _repository.ListBySearhstringAsync(searchString);
-            return Ok(items);
-        }
-        [HttpGet]
         public async Task<IActionResult> Index(string searchString)
         {
             var items = await _repository.ListBySearhstringAsync(searchString);
@@ -46,7 +40,7 @@ namespace MD.Salary.WebApi.Controllers
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(long id)
+        public async Task<IActionResult> GetEmployee(long id)
         {
             var item = await _repository.GetByIdAsync(id);
             if (item == null)
@@ -73,7 +67,7 @@ namespace MD.Salary.WebApi.Controllers
 
         // POST: api/Employees
         [HttpPost]
-        public async Task<IActionResult> PostEmployee([FromBody] Employee item)
+        public async Task<IActionResult> AddEmployee([FromBody] Employee item)
         {
             if (!ModelState.IsValid)
             {
@@ -81,17 +75,6 @@ namespace MD.Salary.WebApi.Controllers
             }
             await _repository.AddAsync(item);
             //return RedirectToAction(nameof(Index));
-            return CreatedAtAction(nameof(GetEmployee), new { id = item.ID }, item);
-        }
-        [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Employee item)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            await _repository.AddAsync(item);
             return CreatedAtAction(nameof(GetEmployee), new { id = item.ID }, item);
         }
 

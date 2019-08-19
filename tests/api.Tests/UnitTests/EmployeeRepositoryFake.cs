@@ -33,16 +33,12 @@ namespace MD.Salary.WebApi.Tests
             return _employees.FirstOrDefault(s => s.ID == id);
         }
 
-        public Employee Add(Employee newItem)
+        public async Task AddAsync(Employee item)
         {
-            //newItem.ID = Guid.NewGuid();
-            _employees.Add(newItem);
-            return newItem;
-        }
-
-        public Task AddAsync(Employee item)
-        {
-            throw new NotImplementedException();
+            await Task.Delay(1000);
+            item.ID = 5000;
+            _employees.Add(item);
+            return;
         }
 
         public Task UpdateAsync(Employee item)

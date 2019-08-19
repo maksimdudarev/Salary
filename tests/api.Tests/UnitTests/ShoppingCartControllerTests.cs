@@ -30,27 +30,26 @@ namespace TestingControllersSample.Tests.UnitTests
             _controllerE = new EmployeesController(_serviceE);
         }
 
-        #region snippet_IndexStrong
+        #region snippet_Index
         [Fact]
-        public async Task IndexStrong_WhenCalled_ReturnsOkResult()
+        public async Task Index_WhenCalled_ReturnsOkObjectResult()
         {
             // Act
-            var okResult = await _controllerE.IndexStrong("");
+            var okObjectResult = await _controllerE.Index("");
 
             // Assert
-            Assert.IsType<OkObjectResult>(okResult.Result);
+            Assert.IsType<OkObjectResult>(okObjectResult);
         }
 
         [Fact]
-        public async Task IndexStrong_WhenCalled_ReturnsAllItems()
+        public async Task Index_WhenCalled_ReturnsAllItems()
         {
             // Act
-            var okResult = await _controllerE.IndexStrong("");
-            var okObjectResult = okResult.Result as OkObjectResult;
+            var okObjectResult = await _controllerE.Index("") as OkObjectResult;
 
             // Assert
             var items = Assert.IsType<List<Employee>>(okObjectResult.Value);
-            Assert.Equal(3, items.Count);
+            Assert.Equal(3, items.Count());
         }
         #endregion
 
@@ -66,25 +65,24 @@ namespace TestingControllersSample.Tests.UnitTests
             var notFoundResult = await _controllerE.GetEmployee(NotExistingId);
 
             // Assert
-            Assert.IsType<NotFoundResult>(notFoundResult.Result);
+            Assert.IsType<NotFoundResult>(notFoundResult);
         }
 
         [Fact]
-        public async Task GetEmployee_ExistingIdPassed_ReturnsOkResult()
+        public async Task GetEmployee_ExistingIdPassed_ReturnsOkObjectResult()
         {
             // Act
-            var okResult = await _controllerE.GetEmployee(ExistingId);
+            var okObjectResult = await _controllerE.GetEmployee(ExistingId);
 
             // Assert
-            Assert.IsType<OkObjectResult>(okResult.Result);
+            Assert.IsType<OkObjectResult>(okObjectResult);
         }
 
         [Fact]
         public async Task GetEmployee_ExistingIdPassed_ReturnsRightItem()
         {
             // Act
-            var okResult = await _controllerE.GetEmployee(ExistingId);
-            var okObjectResult = okResult.Result as OkObjectResult;
+            var okObjectResult = await _controllerE.GetEmployee(ExistingId) as OkObjectResult;
 
             // Assert
             Assert.IsType<Employee>(okObjectResult.Value);
@@ -92,12 +90,12 @@ namespace TestingControllersSample.Tests.UnitTests
         }
         #endregion
 
-        #region snippet_Post
+        #region snippet_AddEmployee
         // Arrange
-        readonly ShoppingItem nameMissingItem = new ShoppingItem()
+        readonly Employee nameMissingItemE = new Employee()
         {
-            Manufacturer = "Guinness",
-            Price = 12.00M
+            Group = "Guinness",
+            SalaryBase = 12.00M
         };
         readonly static string nameCreatedItem = "Guinness Original 6 Pack";
         readonly ShoppingItem createdItem = new ShoppingItem()
@@ -106,32 +104,38 @@ namespace TestingControllersSample.Tests.UnitTests
             Manufacturer = "Guinness",
             Price = 12.00M
         };
+        readonly Employee createdItemE = new Employee()
+        {
+            Name = nameCreatedItem,
+            Group = "Guinness",
+            SalaryBase = 12.00M
+        };
 
         [Fact]
-        public void Post_InvalidObjectPassed_ReturnsBadRequestResult()
+        public async Task AddEmployee_InvalidObjectPassed_ReturnsBadRequestObjectResult()
         {
             // Arrange
-            _controller.ModelState.AddModelError("Name", "Required");
+            _controllerE.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var badRequestResult = _controller.Post(nameMissingItem);
+            var badRequestObjectResultE = await _controllerE.AddEmployee(nameMissingItemE);
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(badRequestResult);
+            Assert.IsType<BadRequestObjectResult>(badRequestObjectResultE);
         }
 
         [Fact]
-        public void Post_ValidObjectPassed_ReturnsCreatedResponse()
+        public async Task AddEmployee_ValidObjectPassed_ReturnsCreatedAtActionResult()
         {
             // Act
-            var createdResponse = _controller.Post(createdItem);
+            var createdResponseE = await _controllerE.AddEmployee(createdItemE);
 
             // Assert
-            Assert.IsType<CreatedAtActionResult>(createdResponse);
+            Assert.IsType<CreatedAtActionResult>(createdResponseE);
         }
 
         [Fact]
-        public void Post_ValidObjectPassed_ReturnedResponseHasCreatedItem()
+        public void AddEmployee_ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
             // Act
             var createdResponse = _controller.Post(createdItem) as CreatedAtActionResult;
