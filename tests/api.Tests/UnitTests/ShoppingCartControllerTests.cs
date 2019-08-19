@@ -26,7 +26,7 @@ namespace TestingControllersSample.Tests.UnitTests
         {
             _service = new ShoppingCartServiceFake();
             _controller = new ShoppingCartController(_service);
-            _serviceE = new EmployeeRepositoryFake(HomeControllerTests.GetTestEmployees2());
+            _serviceE = new EmployeeRepositoryFake(HomeControllerTests.GetTestEmployees());
             _controllerE = new EmployeesController(_serviceE);
         }
 

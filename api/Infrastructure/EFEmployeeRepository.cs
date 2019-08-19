@@ -33,14 +33,6 @@ namespace MD.Salary.WebApi.Infrastructure
             return items.ToListAsync();
         }
 
-        public Task<List<Employee>> ListAsync()
-        {
-            return _dbContext.Employees
-                //.Include(s => s.Ideas)
-                //.OrderByDescending(s => s.HireDate)
-                .ToListAsync();
-        }
-
         public Task AddAsync(Employee item)
         {
             _dbContext.Employees.Add(item);

@@ -30,11 +30,20 @@ namespace TestingControllersSample.Tests.UnitTests
             _homeController = new HomeController(_repositoryBrainstormSession.Object);
             _employeeRepository = new Mock<IEmployeeRepository>();
             _employeeRepository.
-                Setup(repo => repo.ListAsync()).ReturnsAsync(GetTestEmployees());
+                Setup(repo => repo.ListBySearhstringAsync("")).ReturnsAsync(GetTestEmployees());
             _employeesController = new EmployeesController(_employeeRepository.Object);
         }
 
         #region snippet_Index_ReturnsAViewResult_WithAListOfBrainstormSessions
+        [Fact]
+        public async Task IndexStrong_ReturnsOkObjectResult()
+        {
+            // Act
+            var okObjectResult = await _employeesController.IndexStrong("");
+
+            // Assert
+            Assert.IsType<OkObjectResult>(okObjectResult.Result);
+        }
         [Fact]
         public async Task Index_ReturnsOkObjectResult()
         {
@@ -48,28 +57,22 @@ namespace TestingControllersSample.Tests.UnitTests
         public async Task IndexStrong_ReturnsAllItems()
         {
             // Act
-            var okObjectResult = await _employeesController.IndexStrong("");
-            var okResult = okObjectResult.Result as OkObjectResult;
+            var okResult = await _employeesController.IndexStrong("");
+            var okObjectResult = okResult.Result as OkObjectResult;
 
             // Assert
-            var items = Assert.IsType<List<Employee>>(okResult.Value);
+            var items = Assert.IsType<List<Employee>>(okObjectResult.Value);
             Assert.Equal(3, items.Count);
         }
         [Fact]
         public async Task Index_ReturnsAllItems()
         {
             // Act
-            var viewResult = await _homeController.Index() as ViewResult;
-            var model = viewResult.ViewData.Model as IEnumerable<StormSessionViewModel>;
             var okObjectResult = await _employeesController.Index("") as OkObjectResult;
-            var actResult = await _employeesController.IndexStrong("");
-            var okResult2 = actResult.Result as OkObjectResult;
 
             // Assert
-            Assert.Equal(2, model.Count());
-
-            var items2 = Assert.IsAssignableFrom<IEnumerable<StormSessionViewModel>>(okObjectResult.Value);
-            Assert.Equal(2, items2.Count());
+            var items = Assert.IsType<List<Employee>>(okObjectResult.Value);
+            Assert.Equal(3, items.Count());
         }
         [Fact]
         public async Task Index_ReturnsViewResult()
@@ -219,29 +222,7 @@ namespace TestingControllersSample.Tests.UnitTests
         #endregion
 
         #region snippet_GetTestEmployees
-        private List<Employee> GetTestEmployees()
-        {
-            var employees = new List<Employee>();
-            DateTimeOffset dateTimeOffset1 = new DateTime(2016, 7, 2);
-            DateTimeOffset dateTimeOffset2 = new DateTime(2016, 7, 1);
-            employees.Add(new Employee()
-            {
-                HireDate = dateTimeOffset1.ToUnixTimeSeconds(),
-                ID = 1,
-                Name = "Test One"
-            });
-            employees.Add(new Employee()
-            {
-                HireDate = dateTimeOffset2.ToUnixTimeSeconds(),
-                ID = 2,
-                Name = "Test Two"
-            });
-            return employees;
-        }
-        #endregion
-
-        #region snippet_GetTestEmployees2
-        public static List<Employee> GetTestEmployees2()
+        public static List<Employee> GetTestEmployees()
         {
             var items = new List<Employee>
             {

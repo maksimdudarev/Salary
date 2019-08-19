@@ -16,12 +16,6 @@ namespace MD.Salary.WebApi.Tests
             _employees = employees;
         }
 
-        public async Task<List<Employee>> ListAsync()
-        {
-            await Task.Delay(1000);
-            return _employees;
-        }
-
         public async Task<List<Employee>> ListBySearhstringAsync(string searchString)
         {
             var items = from i in _employees select i;

@@ -38,7 +38,7 @@ namespace MD.Salary.WebApi.Controllers
         [HttpGet("salary")]
         public async Task<IActionResult> IndexSalary(long salaryDate)
         {
-            var items = await _repository.ListAsync();
+            var items = await _repository.ListBySearhstringAsync();
             var program = new WebApiProgram();
             program.GetSalaryFromContext(items, salaryDate);
             return Ok(program.GetSalaryTotal());
@@ -60,7 +60,7 @@ namespace MD.Salary.WebApi.Controllers
         [HttpGet("{id}/salary")]
         public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
         {
-            var items = await _repository.ListAsync();
+            var items = await _repository.ListBySearhstringAsync();
             var program = new WebApiProgram();
             List<EmployeeFull> employeeList = program.GetSalaryFromContext(items, salaryDate);
             var item = employeeList.FirstOrDefault(emp => emp.ID == id);
