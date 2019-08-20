@@ -7,8 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Infrastructure;
 using MD.Salary.WebApi.Models;
-using WebApiForTests.Contracts;
-using WebApiForTests.Services;
 
 namespace MD.Salary.WebApi
 {
@@ -29,7 +27,6 @@ namespace MD.Salary.WebApi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddScoped<IEmployeeRepository,
                 EFEmployeeRepository>();
-            services.AddScoped<IShoppingCartService, ShoppingCartService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
