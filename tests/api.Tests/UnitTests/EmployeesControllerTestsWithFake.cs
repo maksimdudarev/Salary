@@ -84,7 +84,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests
             _controller.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var badRequestObjectResult = await _controller.AddEmployee(ConstantsTests.nameMissingItem);
+            var badRequestObjectResult = await _controller.AddEmployee(ConstantsTests.NameMissingItem);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(badRequestObjectResult);
@@ -94,22 +94,55 @@ namespace MD.Salary.WebApi.Tests.UnitTests
         public async Task AddEmployee_ValidObjectPassed_ReturnsCreatedAtActionResult()
         {
             // Act
-            var createdResponse = await _controller.AddEmployee(ConstantsTests.createdItem);
+            var actResult = await _controller.AddEmployee(ConstantsTests.CreatedItem);
 
             // Assert
-            Assert.IsType<CreatedAtActionResult>(createdResponse);
+            Assert.IsType<CreatedAtActionResult>(actResult);
         }
 
         [Fact]
         public async Task AddEmployee_ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
             // Act
-            var createdResponse = await _controller.AddEmployee(ConstantsTests.createdItem) as CreatedAtActionResult;
-            var item = createdResponse.Value as Employee;
+            var createdAtActionResult = await _controller.AddEmployee(ConstantsTests.CreatedItem) as CreatedAtActionResult;
+            var item = createdAtActionResult.Value as Employee;
 
             // Assert
             Assert.IsType<Employee>(item);
-            Assert.Equal(ConstantsTests.createdItemName, item.Name);
+            Assert.Equal(ConstantsTests.CreatedItemName, item.Name);
+        }
+        #endregion
+
+        #region snippet_UpdateEmployee
+        [Fact]
+        public async Task UpdateEmployee_InvalidObjectPassed_ReturnsBadRequestResult()
+        {
+            // Act
+            var badRequestResult = await _controller.UpdateEmployee(ConstantsTests.NotExistingId, ConstantsTests.CreatedItem);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(badRequestResult);
+        }
+
+        [Fact]
+        public async Task UpdateEmployee_ValidObjectPassed_ReturnsRedirectToActionResult()
+        {
+            // Act
+            var actResult = await _controller.UpdateEmployee(ConstantsTests.CreatedItemId, ConstantsTests.CreatedItem);
+
+            // Assert
+            Assert.IsType<RedirectToActionResult>(actResult);
+        }
+
+        [Fact]
+        public async Task UpdateEmployee_ValidObjectPassed_ReturnedResponseHasUpdatedItem()
+        {
+            // Act
+            await _controller.UpdateEmployee(ConstantsTests.ExistingId, ConstantsTests.ExistingItem);
+            var item = await _service.GetByIdAsync(ConstantsTests.ExistingId);
+
+            // Assert
+            Assert.Equal(ConstantsTests.CreatedItemName, item.Name);
         }
         #endregion
 

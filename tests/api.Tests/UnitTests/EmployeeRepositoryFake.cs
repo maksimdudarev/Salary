@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MD.Salary.WebApi.Core.Interfaces;
@@ -36,14 +35,16 @@ namespace MD.Salary.WebApi.Tests
         public async Task AddAsync(Employee item)
         {
             await Task.Delay(1000);
-            item.ID = 5000;
             _employees.Add(item);
             return;
         }
 
-        public Task UpdateAsync(Employee item)
+        public async Task UpdateAsync(Employee item)
         {
-            throw new NotImplementedException();
+            await Task.Delay(1000);
+            var obj = _employees.FirstOrDefault(s => s.ID == item.ID);
+            if (obj != null) obj.Name = item.Name;
+            return;
         }
 
         public async Task DeleteAsync(Employee item)

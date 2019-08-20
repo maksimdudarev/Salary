@@ -54,7 +54,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests
             _controller.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var actResult = await _controller.AddEmployee(ConstantsTests.nameMissingItem);
+            var actResult = await _controller.AddEmployee(ConstantsTests.NameMissingItem);
 
             // Assert
             var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actResult);
@@ -70,7 +70,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests
                 .Verifiable();
 
             // Act
-            var actResult = await _controller.AddEmployee(ConstantsTests.createdItem);
+            var actResult = await _controller.AddEmployee(ConstantsTests.CreatedItem);
 
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(actResult);
