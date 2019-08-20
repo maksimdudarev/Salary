@@ -114,6 +114,38 @@ namespace MD.Salary.WebApi.Tests.UnitTests
             _repository.Verify();
         }
         #endregion
+
+        #region snippet_DeleteEmployee
+        [Fact]
+        public async Task DeleteEmployee_NotExistingIdPassed_ReturnsNotFoundResult()
+        {
+            // Act
+            var notFoundResult = await _controller.DeleteEmployee(ConstantsTests.NotExistingId);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(notFoundResult);
+        }
+
+        [Fact]
+        public async Task DeleteEmployee_ExistingIdPassed_ReturnsRedirectToActionResult()
+        {
+            // Act
+            var redirectToActionResult = await _controller.DeleteEmployee(ConstantsTests.ExistingId);
+
+            // Assert
+            Assert.IsType<RedirectToActionResult>(redirectToActionResult);
+        }
+        [Fact]
+        public async Task DeleteEmployee_ExistingIdPassed_DeletesOneItem()
+        {
+            // Act
+            await _controller.DeleteEmployee(ConstantsTests.ExistingId);
+            //var items = await _service.ListBySearhstringAsync();
+
+            // Assert
+            //Assert.Equal(2, items.Count());
+        }
+        #endregion
     }
     public interface IFoo
     {
