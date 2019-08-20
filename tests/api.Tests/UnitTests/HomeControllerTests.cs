@@ -13,7 +13,7 @@ using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
 using Xunit;
 
-namespace TestingControllersSample.Tests.UnitTests
+namespace MD.Salary.WebApi.Tests.UnitTests
 {
     public class HomeControllerTests
     {

@@ -46,15 +46,12 @@ namespace MD.Salary.WebApi.Tests
             throw new NotImplementedException();
         }
 
-        public void Remove(long id)
+        public async Task DeleteAsync(Employee item)
         {
-            var existing = _employees.First(s => s.ID == id);
-            _employees.Remove(existing);
+            await Task.Delay(1000);
+            _employees.Remove(item);
+            return;
         }
 
-        public Task DeleteAsync(Employee item)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
