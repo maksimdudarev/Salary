@@ -12,14 +12,16 @@ namespace MD.Salary.WebApi.Tests.UnitTests
 {
     public class EmployeesControllerTestsWithMoq
     {
-        EmployeesController _controller;
-        Mock<IEmployeeRepository> _repository;
+        readonly EmployeesController _controller;
+        readonly Mock<IEmployeeRepository> _repository;
 
         public EmployeesControllerTestsWithMoq()
         {
             _repository = new Mock<IEmployeeRepository>();
             _repository.
                 Setup(repo => repo.ListBySearhstringAsync("")).ReturnsAsync(ConstantsTests.GetTestEmployees());
+            _repository.
+                Setup(repo => repo.GetByIdAsync(ConstantsTests.ExistingId)).ReturnsAsync(ConstantsTests.ExistingItem);
             _controller = new EmployeesController(_repository.Object);
         }
 
@@ -43,6 +45,39 @@ namespace MD.Salary.WebApi.Tests.UnitTests
             // Assert
             var items = Assert.IsType<List<Employee>>(okObjectResult.Value);
             Assert.Equal(3, items.Count());
+        }
+        #endregion
+
+        #region snippet_GetEmployee
+        [Fact]
+        public async Task GetEmployee_NotExistingIdPassed_ReturnsNotFoundResult()
+        {
+            // Act
+            var notFoundResult = await _controller.GetEmployee(ConstantsTests.NotExistingId);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(notFoundResult);
+        }
+
+        [Fact]
+        public async Task GetEmployee_ExistingIdPassed_ReturnsOkObjectResult()
+        {
+            // Act
+            var okObjectResult = await _controller.GetEmployee(ConstantsTests.ExistingId);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(okObjectResult);
+        }
+
+        [Fact]
+        public async Task GetEmployee_ExistingIdPassed_ReturnsRightItem()
+        {
+            // Act
+            var okObjectResult = await _controller.GetEmployee(ConstantsTests.ExistingId) as OkObjectResult;
+
+            // Assert
+            Assert.IsType<Employee>(okObjectResult.Value);
+            Assert.Equal(ConstantsTests.ExistingId, (okObjectResult.Value as Employee).ID);
         }
         #endregion
 
