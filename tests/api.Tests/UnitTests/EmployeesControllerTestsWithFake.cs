@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using MD.Salary.WebApi.Controllers;
+﻿using MD.Salary.WebApi.Controllers;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace MD.Salary.WebApi.Tests.UnitTests
@@ -22,20 +23,20 @@ namespace MD.Salary.WebApi.Tests.UnitTests
 
         #region snippet_Index
         [Fact]
-        public async Task Index_WhenCalled_ReturnsOkObjectResult()
+        public void Index_WhenCalled_ReturnsOkObjectResult()
         {
             // Act
-            var okObjectResult = await _controller.Index("");
+            var okObjectResult = GetAsyncActionResult(() => _controller.Index(""));
 
             // Assert
             Assert.IsType<OkObjectResult>(okObjectResult);
         }
 
         [Fact]
-        public async Task Index_WhenCalled_ReturnsAllItems()
+        public void Index_WhenCalled_ReturnsAllItems()
         {
             // Act
-            var okObjectResult = await _controller.Index("") as OkObjectResult;
+            var okObjectResult = GetAsyncActionResult(() => _controller.Index("")) as OkObjectResult;
 
             // Assert
             var items = Assert.IsType<List<Employee>>(okObjectResult.Value);
@@ -45,30 +46,30 @@ namespace MD.Salary.WebApi.Tests.UnitTests
 
         #region snippet_GetEmployee
         [Fact]
-        public async Task GetEmployee_NotExistingIdPassed_ReturnsNotFoundResult()
+        public void GetEmployee_NotExistingIdPassed_ReturnsNotFoundResult()
         {
             // Act
-            var notFoundResult = await _controller.GetEmployee(ConstantsTests.NotExistingId);
+            var notFoundResult = GetAsyncActionResult(() => _controller.GetEmployee(ConstantsTests.NotExistingId));
 
             // Assert
             Assert.IsType<NotFoundResult>(notFoundResult);
         }
 
         [Fact]
-        public async Task GetEmployee_ExistingIdPassed_ReturnsOkObjectResult()
+        public void GetEmployee_ExistingIdPassed_ReturnsOkObjectResult()
         {
             // Act
-            var okObjectResult = await _controller.GetEmployee(ConstantsTests.ExistingId);
+            var okObjectResult = GetAsyncActionResult(() => _controller.GetEmployee(ConstantsTests.ExistingId));
 
             // Assert
             Assert.IsType<OkObjectResult>(okObjectResult);
         }
 
         [Fact]
-        public async Task GetEmployee_ExistingIdPassed_ReturnsRightItem()
+        public void GetEmployee_ExistingIdPassed_ReturnsRightItem()
         {
             // Act
-            var okObjectResult = await _controller.GetEmployee(ConstantsTests.ExistingId) as OkObjectResult;
+            var okObjectResult = GetAsyncActionResult(() => _controller.GetEmployee(ConstantsTests.ExistingId)) as OkObjectResult;
 
             // Assert
             Assert.IsType<Employee>(okObjectResult.Value);
@@ -78,33 +79,33 @@ namespace MD.Salary.WebApi.Tests.UnitTests
 
         #region snippet_AddEmployee
         [Fact]
-        public async Task AddEmployee_InvalidObjectPassed_ReturnsBadRequestObjectResult()
+        public void AddEmployee_InvalidObjectPassed_ReturnsBadRequestObjectResult()
         {
             // Arrange
             _controller.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var badRequestObjectResult = await _controller.AddEmployee(ConstantsTests.NameMissingItem);
+            var badRequestObjectResult = GetAsyncActionResult(() => _controller.AddEmployee(ConstantsTests.NameMissingItem));
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(badRequestObjectResult);
         }
 
         [Fact]
-        public async Task AddEmployee_ValidObjectPassed_ReturnsCreatedAtActionResult()
+        public void AddEmployee_ValidObjectPassed_ReturnsCreatedAtActionResult()
         {
             // Act
-            var actResult = await _controller.AddEmployee(ConstantsTests.CreatedItem);
+            var actResult = GetAsyncActionResult(() => _controller.AddEmployee(ConstantsTests.CreatedItem));
 
             // Assert
             Assert.IsType<CreatedAtActionResult>(actResult);
         }
 
         [Fact]
-        public async Task AddEmployee_ValidObjectPassed_ReturnedResponseHasCreatedItem()
+        public void AddEmployee_ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
             // Act
-            var createdAtActionResult = await _controller.AddEmployee(ConstantsTests.CreatedItem) as CreatedAtActionResult;
+            var createdAtActionResult = GetAsyncActionResult(() => _controller.AddEmployee(ConstantsTests.CreatedItem)) as CreatedAtActionResult;
             var item = createdAtActionResult.Value as Employee;
 
             // Assert
@@ -115,31 +116,31 @@ namespace MD.Salary.WebApi.Tests.UnitTests
 
         #region snippet_UpdateEmployee
         [Fact]
-        public async Task UpdateEmployee_InvalidObjectPassed_ReturnsBadRequestResult()
+        public void UpdateEmployee_InvalidObjectPassed_ReturnsBadRequestResult()
         {
             // Act
-            var badRequestResult = await _controller.UpdateEmployee(ConstantsTests.NotExistingId, ConstantsTests.CreatedItem);
+            var badRequestResult = GetAsyncActionResult(() => _controller.UpdateEmployee(ConstantsTests.NotExistingId, ConstantsTests.CreatedItem));
 
             // Assert
             Assert.IsType<BadRequestResult>(badRequestResult);
         }
 
         [Fact]
-        public async Task UpdateEmployee_ValidObjectPassed_ReturnsRedirectToActionResult()
+        public void UpdateEmployee_ValidObjectPassed_ReturnsRedirectToActionResult()
         {
             // Act
-            var actResult = await _controller.UpdateEmployee(ConstantsTests.CreatedItemId, ConstantsTests.CreatedItem);
+            var actResult = GetAsyncActionResult(() => _controller.UpdateEmployee(ConstantsTests.CreatedItemId, ConstantsTests.CreatedItem));
 
             // Assert
             Assert.IsType<RedirectToActionResult>(actResult);
         }
 
         [Fact]
-        public async Task UpdateEmployee_ValidObjectPassed_ReturnedResponseHasUpdatedItem()
+        public void UpdateEmployee_ValidObjectPassed_ReturnedResponseHasUpdatedItem()
         {
             // Act
-            await _controller.UpdateEmployee(ConstantsTests.ExistingId, ConstantsTests.ExistingItem);
-            var item = await _service.GetByIdAsync(ConstantsTests.ExistingId);
+            GetAsyncActionResult(() => _controller.UpdateEmployee(ConstantsTests.ExistingId, ConstantsTests.ExistingItem));
+            var item = GetAsyncActionResult(() => _service.GetByIdAsync(ConstantsTests.ExistingId));
 
             // Assert
             Assert.Equal(ConstantsTests.CreatedItemName, item.Name);
@@ -148,34 +149,42 @@ namespace MD.Salary.WebApi.Tests.UnitTests
 
         #region snippet_DeleteEmployee
         [Fact]
-        public async Task DeleteEmployee_NotExistingIdPassed_ReturnsNotFoundResult()
+        public void DeleteEmployee_NotExistingIdPassed_ReturnsNotFoundResult()
         {
             // Act
-            var notFoundResult = await _controller.DeleteEmployee(ConstantsTests.NotExistingId);
+            var notFoundResult = GetAsyncActionResult(() => _controller.DeleteEmployee(ConstantsTests.NotExistingId));
 
             // Assert
             Assert.IsType<NotFoundResult>(notFoundResult);
         }
 
         [Fact]
-        public async Task DeleteEmployee_ExistingIdPassed_ReturnsRedirectToActionResult()
+        public void DeleteEmployee_ExistingIdPassed_ReturnsRedirectToActionResult()
         {
             // Act
-            var redirectToActionResult = await _controller.DeleteEmployee(ConstantsTests.ExistingId);
+            var redirectToActionResult = GetAsyncActionResult(() => _controller.DeleteEmployee(ConstantsTests.ExistingId));
 
             // Assert
             Assert.IsType<RedirectToActionResult>(redirectToActionResult);
         }
+
         [Fact]
-        public async Task DeleteEmployee_ExistingIdPassed_DeletesOneItem()
+        public void DeleteEmployee_ExistingIdPassed_DeletesOneItem()
         {
             // Act
-            await _controller.DeleteEmployee(ConstantsTests.ExistingId);
-            var items = await _service.ListBySearhstringAsync();
+            GetAsyncActionResult(() => _controller.DeleteEmployee(ConstantsTests.ExistingId));
+            var items = GetAsyncActionResult(() => _service.ListBySearhstringAsync());
 
             // Assert
             Assert.Equal(2, items.Count());
         }
         #endregion
+
+        private T GetAsyncActionResult<T>(Func<Task<T>> func)
+        {
+            var task = func();
+            task.Wait();
+            return task.Result;
+        }
     }
 }
