@@ -3,7 +3,7 @@ using MD.Salary.WebApi.Core.Models;
 
 namespace MD.Salary.WebApi.Tests.UnitTests
 {
-    public static class ConstantsTests
+    public static class Constants
     {
         // Arrange
         public static readonly long NotExistingId = 2000;
