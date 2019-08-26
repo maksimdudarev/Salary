@@ -1,24 +1,30 @@
-﻿using MD.Salary.WebApi.Controllers;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using MD.Salary.WebApi.Controllers;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using static MD.Salary.WebApi.Tests.UnitTests.Asyncs;
 using static MD.Salary.WebApi.Tests.UnitTests.Constants;
 
-namespace MD.Salary.WebApi.Tests.UnitTests
+namespace MD.Salary.WebApi.Tests.UnitTests.Moq
 {
-    public class EmployeesControllerTestsWithFake
+    public class EmployeesControllerTestsWithMoq
     {
         readonly EmployeesController _controller;
-        readonly IEmployeeRepository _service;
+        readonly Mock<IEmployeeRepository> _repository;
 
-        public EmployeesControllerTestsWithFake()
+        public EmployeesControllerTestsWithMoq()
         {
-            _service = new EmployeeRepositoryFake(GetTestEmployees());
-            _controller = new EmployeesController(_service);
+            _repository = new Mock<IEmployeeRepository>();
+            _repository.
+                Setup(repo => repo.ListBySearhstringAsync("")).ReturnsAsync(GetTestEmployees());
+            _repository.
+                Setup(repo => repo.GetByIdAsync(ExistingId)).ReturnsAsync(ExistingItem);
+            _controller = new EmployeesController(_repository.Object);
         }
 
         #region snippet_Index
@@ -85,65 +91,29 @@ namespace MD.Salary.WebApi.Tests.UnitTests
             _controller.ModelState.AddModelError("Name", "Required");
 
             // Act
-            var badRequestObjectResult = GetAsyncActionResult(() => _controller.AddEmployee(NameMissingItem));
+            var actResult = GetAsyncActionResult(() => _controller.AddEmployee(NameMissingItem));
 
             // Assert
-            Assert.IsType<BadRequestObjectResult>(badRequestObjectResult);
-        }
-
-        [Fact]
-        public void AddEmployee_ValidObjectPassed_ReturnsCreatedAtActionResult()
-        {
-            // Act
-            var actResult = GetAsyncActionResult(() => _controller.AddEmployee(CreatedItem));
-
-            // Assert
-            Assert.IsType<CreatedAtActionResult>(actResult);
+            var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(actResult);
+            Assert.IsType<SerializableError>(badRequestObjectResult.Value);
         }
 
         [Fact]
         public void AddEmployee_ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
+            // Arrange
+            _repository.Setup(repo => repo.AddAsync(It.IsAny<Employee>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
             // Act
-            var createdAtActionResult = GetAsyncActionResult(() => _controller.AddEmployee(CreatedItem)) as CreatedAtActionResult;
-            var item = createdAtActionResult.Value as Employee;
+            var actResult = GetAsyncActionResult(() => _controller.AddEmployee(CreatedItem));
 
             // Assert
-            Assert.IsType<Employee>(item);
-            Assert.Equal(CreatedItemName, item.Name);
-        }
-        #endregion
-
-        #region snippet_UpdateEmployee
-        [Fact]
-        public void UpdateEmployee_InvalidObjectPassed_ReturnsBadRequestResult()
-        {
-            // Act
-            var badRequestResult = GetAsyncActionResult(() => _controller.UpdateEmployee(NotExistingId, CreatedItem));
-
-            // Assert
-            Assert.IsType<BadRequestResult>(badRequestResult);
-        }
-
-        [Fact]
-        public void UpdateEmployee_ValidObjectPassed_ReturnsRedirectToActionResult()
-        {
-            // Act
-            var actResult = GetAsyncActionResult(() => _controller.UpdateEmployee(CreatedItemId, CreatedItem));
-
-            // Assert
-            Assert.IsType<RedirectToActionResult>(actResult);
-        }
-
-        [Fact]
-        public void UpdateEmployee_ValidObjectPassed_ReturnedResponseHasUpdatedItem()
-        {
-            // Act
-            GetAsyncActionResult(() => _controller.UpdateEmployee(ExistingId, ExistingItem));
-            var item = GetAsyncActionResult(() => _service.GetByIdAsync(ExistingId));
-
-            // Assert
-            Assert.Equal(CreatedItemName, item.Name);
+            var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(actResult);
+            Assert.Null(createdAtActionResult.ControllerName);
+            Assert.Equal("GetEmployee", createdAtActionResult.ActionName);
+            _repository.Verify();
         }
         #endregion
 
@@ -167,17 +137,38 @@ namespace MD.Salary.WebApi.Tests.UnitTests
             // Assert
             Assert.IsType<RedirectToActionResult>(redirectToActionResult);
         }
-
         [Fact]
         public void DeleteEmployee_ExistingIdPassed_DeletesOneItem()
         {
             // Act
             GetAsyncActionResult(() => _controller.DeleteEmployee(ExistingId));
-            var items = GetAsyncActionResult(() => _service.ListBySearhstringAsync());
+            //var items = GetAsyncActionResult(() => _service.ListBySearhstringAsync());
 
             // Assert
-            Assert.Equal(2, items.Count());
+            //Assert.Equal(2, items.Count());
         }
         #endregion
+    }
+    public interface IFoo
+    {
+        Bar Bar { get; set; }
+        string Name { get; set; }
+        int Value { get; set; }
+        bool DoSomething(string value);
+        bool DoSomething(int number, string value);
+        string DoSomethingStringy(string value);
+        bool TryParse(string value, out string outputValue);
+        bool Submit(ref Bar bar);
+        int GetCount();
+        bool Add(int value);
+    }
+    public class Bar
+    {
+        public virtual Baz Baz { get; set; }
+        public virtual bool Submit() { return false; }
+    }
+    public class Baz
+    {
+        public virtual string Name { get; set; }
     }
 }
