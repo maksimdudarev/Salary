@@ -6,6 +6,7 @@ using MD.Salary.WebApi.Core.Models;
 using Xunit;
 using static MD.Salary.WebApi.Tests.UnitTests.Asyncs;
 using static MD.Salary.WebApi.Tests.UnitTests.Constants;
+using MD.Salary.WebApi.Core.Interfaces;
 
 namespace MD.Salary.WebApi.Tests.UnitTests.Moq
 {
@@ -41,6 +42,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
             // Assert
             Assert.IsType<RedirectToActionResult>(redirectToActionResult);
         }
+
         [Fact]
         public void ExistingIdPassed_DeletesOneItem()
         {
