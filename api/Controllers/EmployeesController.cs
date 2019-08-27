@@ -74,7 +74,6 @@ namespace MD.Salary.WebApi.Controllers
                 return BadRequest(ModelState);
             }
             await _repository.AddAsync(item);
-            //return RedirectToAction(nameof(Index));
             return CreatedAtAction(nameof(GetEmployee), new { id = item.ID }, item);
         }
 
