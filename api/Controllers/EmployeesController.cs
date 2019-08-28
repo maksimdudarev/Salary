@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using MD.Salary.WebApi.Models;
 using MD.Salary.WebApi.Application;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
@@ -34,8 +31,7 @@ namespace MD.Salary.WebApi.Controllers
         {
             var items = await _repository.ListBySearhstringAsync();
             var program = new WebApiProgram();
-            program.GetSalaryFromContext(items, salaryDate);
-            return Ok(program.GetSalaryTotal());
+            return Ok(program.GetSalaryForEndpoint(items, salaryDate).Item1);
         }
 
         // GET: api/Employees/5
@@ -56,13 +52,12 @@ namespace MD.Salary.WebApi.Controllers
         {
             var items = await _repository.ListBySearhstringAsync();
             var program = new WebApiProgram();
-            List<EmployeeFull> employeeList = program.GetSalaryFromContext(items, salaryDate);
-            var item = employeeList.FirstOrDefault(emp => emp.ID == id);
-            if (item == null)
+            var salaryCalc = program.GetSalaryForEndpoint(items, salaryDate, id: id);
+            if (salaryCalc.Item2 == null)
             {
                 return NotFound();
             }
-            return Ok(program.GetSalary(item));
+            return Ok(salaryCalc.Item1);
         }
 
         // POST: api/Employees

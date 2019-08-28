@@ -4,12 +4,29 @@ using static System.Math;
 using MD.Salary.WebApi.Models;
 using MD.Salary.WebApi.Utilities;
 using MD.Salary.WebApi.Core.Models;
+using System.Linq;
 
 namespace MD.Salary.WebApi.Application
 {
     public class WebApiProgram
     {
-        public List<EmployeeFull> GetSalaryFromContext(List<Employee> EmployeeListDB, long salaryDate)
+        public Tuple<decimal, EmployeeFull> GetSalaryForEndpoint(List<Employee> items, long salaryDate, long id = 0)
+        {
+            List<EmployeeFull> employeeList = GetSalaryFromContext(items, salaryDate);
+            decimal salary;
+            EmployeeFull item = employeeList.FirstOrDefault(emp => emp.ID == id);
+            if (item == null)
+            {
+                salary = GetSalaryTotal();
+            }
+            else
+            {
+                salary = GetSalary(item);
+            }
+            return new Tuple<decimal, EmployeeFull>(salary, item);
+        }
+
+        private List<EmployeeFull> GetSalaryFromContext(List<Employee> EmployeeListDB, long salaryDate)
         {
             List<EmployeeFull> employeeList = GetEmployeeListFromDB(EmployeeListDB);
             employeeList = CalculateSalary(employeeList, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
