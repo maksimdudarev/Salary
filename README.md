@@ -1,6 +1,6 @@
 # Salary
 
-Для запуска программы на чистой Windows необходимо:
+Для запуска консольного приложения на чистой Windows необходимо:
 1. Установить .NET Core Runtime 2.2 — https://dotnet.microsoft.com/download/thank-you/dotnet-runtime-2.2.6-windows-hosting-bundle-installer
 2. Установить, при необходимости, дополнительные пакеты для .NET Core в соотв. с требованиями — https://docs.microsoft.com/en-us/dotnet/core/windows-prerequisites?tabs=netcore2x
 
@@ -52,7 +52,7 @@
 [*]	Тесты	0	1			0			
 [-]	Форма логина	0	2	Пароль хранится не в открытом виде		0			
 [+]	Использование ORM	0	1			1			
-[web?]	Использование DI	0	1			0			
+[web]	Использование DI	0	1			0			
 [mvc]	Валидация вставляемых данных	0	1			0			
 [*]	Создание БД	0	2	+1 балл за наполнение данных		1			
 [web]	Редактирование объектов	0	3	Добавление, редактирование, удаление		3			
@@ -64,7 +64,16 @@
 
 [web] авто развертывание бд с миграцией
 [web] использование каких либо паттернов (MVVM/MVC/MVP)
-[-] ассинхронность;
+[*] ассинхронность;
+
+1.6
+
+- add unit tests by fake class & moq framework
+- change db context to repository in controller
+- add repository di in startup
+- add db migrations
+- split db read to console & api methods
+- delete tutorial parts of api & mvc
 
 1.5
 
