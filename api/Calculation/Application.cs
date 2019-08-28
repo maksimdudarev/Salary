@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using static System.Math;
 using MD.Salary.WebApi.Models;
 using MD.Salary.WebApi.Utilities;
-using Microsoft.EntityFrameworkCore;
+using MD.Salary.WebApi.Core.Models;
 
 namespace MD.Salary.WebApi.Application
 {
     public class WebApiProgram
     {
-        public List<EmployeeFull> GetSalaryFromContext(DbSet<Employee> EmployeeDbset, long salaryDate)
+        public List<EmployeeFull> GetSalaryFromContext(List<Employee> EmployeeListDB, long salaryDate)
         {
-            List<EmployeeFull> employeeList = GetEmployeeListFromDB(EmployeeDbset);
+            List<EmployeeFull> employeeList = GetEmployeeListFromDB(EmployeeListDB);
             employeeList = CalculateSalary(employeeList, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
             return employeeList;
         }
@@ -21,10 +21,10 @@ namespace MD.Salary.WebApi.Application
             foreach (var employee in employeeList) employee.GetSalary(salaryDate, SalaryCache);
             return employeeList;
         }
-        public List<EmployeeFull> GetEmployeeListFromDB(DbSet<Employee> EmployeeDbset)
+        public List<EmployeeFull> GetEmployeeListFromDB(List<Employee> employeeListDB)
         {
-            var employeeList = new List<EmployeeFull> { };
-            foreach (var employeeDB in EmployeeDbset) employeeList.Add(new EmployeeFull(employeeDB));
+            var employeeList = new List<EmployeeFull>();
+            foreach (var employeeDB in employeeListDB) employeeList.Add(new EmployeeFull(employeeDB));
             return employeeList;
         }
         public decimal GetSalary(EmployeeFull employee)

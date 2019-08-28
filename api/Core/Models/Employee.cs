@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using MD.Salary.WebApi.Models;
 
-namespace MD.Salary.WebApi.Models
+namespace MD.Salary.WebApi.Core.Models
 {
     public class Employee
     {
         public long ID { get; set; }
+        [Required]
         public string Name { get; set; }
         public long HireDate { get; set; }
         public string Group { get; set; }
