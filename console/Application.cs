@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MD.Salary.WebApi.Application;
+using MD.Salary.WebApi.Core.Models;
 using MD.Salary.WebApi.Models;
 
 namespace MD.Salary.ConsoleApp.Application
