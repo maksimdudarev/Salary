@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MD.Salary.WebApi.Utilities;
+using MD.Salary.WebApi.Core.Models;
 
 namespace MD.Salary.WebApi.Models
 {
