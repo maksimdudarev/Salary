@@ -13,7 +13,6 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
             _repository.Setup(repo => repo.ListBySearhstringAsync("")).ReturnsAsync(GetTestEmployees());
         }
 
-
         [Fact]
         public void ReturnsNotFoundResult()
         {

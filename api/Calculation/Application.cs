@@ -10,39 +10,49 @@ namespace MD.Salary.WebApi.Application
 {
     public class WebApiProgram
     {
-        public Tuple<decimal, EmployeeFull> GetSalaryForEndpoint(List<Employee> items, long salaryDate, long id = 0)
+        public List<Employee> GetSubs(long id, List<Employee> employeesDB)
         {
-            List<EmployeeFull> employeeList = GetSalaryFromContext(items, salaryDate);
+            return employeesDB;
+        }
+
+        public Tuple<decimal, EmployeeFull> GetSalaryForEndpoint(List<Employee> employeesDB, long salaryDate, long id = 0)
+        {
+            List<EmployeeFull> employees = GetSalaryFromDB(employeesDB, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
             decimal salary;
-            EmployeeFull item = employeeList.FirstOrDefault(emp => emp.ID == id);
-            if (item == null)
+            EmployeeFull employee = employees.FirstOrDefault(emp => emp.ID == id);
+            if (employee == null)
             {
                 salary = GetSalaryTotal();
             }
             else
             {
-                salary = GetSalary(item);
+                salary = GetSalary(employee);
             }
-            return new Tuple<decimal, EmployeeFull>(salary, item);
+            return new Tuple<decimal, EmployeeFull>(salary, employee);
         }
 
-        private List<EmployeeFull> GetSalaryFromContext(List<Employee> EmployeeListDB, long salaryDate)
+        public List<EmployeeFull> GetSalaryFromDB(List<Employee> employeesDB, DateTime salaryDate)
         {
-            List<EmployeeFull> employeeList = GetEmployeeListFromDB(EmployeeListDB);
-            employeeList = CalculateSalary(employeeList, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
-            return employeeList;
+            List<EmployeeFull> employees = GetEmployeesFromDB(employeesDB);
+            employees = CalculateSubordinate(employees);
+            employees = CalculateSalary(employees, salaryDate);
+            return employees;
         }
-        public List<EmployeeFull> CalculateSalary(List<EmployeeFull> employeeList, DateTime salaryDate)
+        private List<EmployeeFull> CalculateSubordinate(List<EmployeeFull> employees)
         {
-            foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
-            foreach (var employee in employeeList) employee.GetSalary(salaryDate, SalaryCache);
-            return employeeList;
+            foreach (var employee in employees) employee.CalculateSubordinate(employees);
+            return employees;
         }
-        public List<EmployeeFull> GetEmployeeListFromDB(List<Employee> employeeListDB)
+        private List<EmployeeFull> CalculateSalary(List<EmployeeFull> employees, DateTime salaryDate)
         {
-            var employeeList = new List<EmployeeFull>();
-            foreach (var employeeDB in employeeListDB) employeeList.Add(new EmployeeFull(employeeDB));
-            return employeeList;
+            foreach (var employee in employees) employee.GetSalary(salaryDate, SalaryCache);
+            return employees;
+        }
+        private List<EmployeeFull> GetEmployeesFromDB(List<Employee> employeesDB)
+        {
+            var employees = new List<EmployeeFull>();
+            foreach (var employeeDB in employeesDB) employees.Add(new EmployeeFull(employeeDB));
+            return employees;
         }
         public decimal GetSalary(EmployeeFull employee)
         {
