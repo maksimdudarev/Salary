@@ -31,7 +31,7 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<IActionResult> IndexSalary(long salaryDate)
         {
             var items = await _repository.ListBySearhstringAsync();
-            return Ok(_program.GetSalaryForEndpoint(items, salaryDate).Item1);
+            return Ok(_program.GetSalary(items, salaryDate).Item1);
         }
 
         // GET: api/Employees/5
@@ -51,7 +51,7 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
         {
             var items = await _repository.ListBySearhstringAsync();
-            var salaryCalc = _program.GetSalaryForEndpoint(items, salaryDate, id: id);
+            var salaryCalc = _program.GetSalary(items, salaryDate, id: id);
             if (salaryCalc.Item2 == null)
             {
                 return NotFound();
@@ -61,10 +61,15 @@ namespace MD.Salary.WebApi.Controllers
 
         // GET: api/Employees/5/Subs
         [HttpGet("{id}/subs")]
-        public async Task<IActionResult> GetEmployeeSubs(long id)
+        public async Task<IActionResult> GetEmployeeSubs(long id, long salaryDate)
         {
             var items = await _repository.ListBySearhstringAsync();
-            return Ok(_program.GetSubs(id, items));
+            var salaryCalc = _program.GetSubordinate(items, salaryDate, id);
+            if (salaryCalc.Item2 == null)
+            {
+                return NotFound();
+            }
+            return Ok(salaryCalc.Item1);
         }
 
         // POST: api/Employees

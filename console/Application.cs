@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using MD.Salary.WebApi.Application;
 using MD.Salary.WebApi.Core.Models;
-using MD.Salary.WebApi.Models;
 using MD.Salary.ConsoleApp.Database;
 
 namespace MD.Salary.ConsoleApp.Application
@@ -14,8 +13,8 @@ namespace MD.Salary.ConsoleApp.Application
             DateTime salaryDate = Input.ReadDate();
             var program = new WebApiProgram();
             List<Employee> employeesDB = DatabaseAccess.ReadEmployees();
-            List<EmployeeFull> employees = program.GetSalaryFromDB(employeesDB, salaryDate);
-            Output.WriteSalary(employees, program, salaryDate);
+            Employees employees = program.GetSalaryFromDB(employeesDB, salaryDate);
+            Output.WriteSalary(employees, salaryDate);
         }
     }
 }
