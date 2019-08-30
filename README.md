@@ -86,6 +86,10 @@ MVC - веб-приложение с БД MSSQL, сделанное для:
 1.7
 
 - add endpoint & unit tests for subs salary
+- add unit tests for salary endpoints
+- edit api frontend
+- repair console
+- delete movie mvc tutorial
 
 1.6
 

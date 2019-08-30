@@ -1,11 +1,11 @@
-const uri = "api/todo";
-let todos = null;
+const uri = "api/employees";
+let employees = null;
 function getCount(data) {
   const el = $("#counter");
-  let name = "to-do";
+    let name = "employee";
   if (data) {
     if (data > 1) {
-      name = "to-dos";
+        name = "employees";
     }
     el.text(data + " " + name);
   } else {
@@ -23,7 +23,7 @@ function getData() {
     url: uri,
     cache: false,
     success: function(data) {
-      const tBody = $("#todos");
+        const tBody = $("#employees");
 
       $(tBody).empty();
 
@@ -59,7 +59,7 @@ function getData() {
         tr.appendTo(tBody);
       });
 
-      todos = data;
+        employees = data;
     }
   });
 }
@@ -97,7 +97,7 @@ function deleteItem(id) {
 }
 
 function editItem(id) {
-  $.each(todos, function(key, item) {
+    $.each(employees, function(key, item) {
     if (item.id === id) {
       $("#edit-name").val(item.name);
       $("#edit-id").val(item.id);
