@@ -11,10 +11,9 @@ namespace MD.Salary.ConsoleApp.Application
         static void Main(string[] args)
         {
             DateTime salaryDate = Input.ReadDate();
-            var program = new WebApiProgram();
-            List<Employee> employeesDB = DatabaseAccess.ReadEmployees();
-            Employees employees = program.GetSalaryFromDB(employeesDB, salaryDate);
-            Output.WriteSalary(employees, salaryDate);
+            List<Employee> items = DatabaseAccess.ReadEmployees();
+            var program = new WebApiProgram(items, ((DateTimeOffset)salaryDate).ToUnixTimeSeconds());
+            Output.WriteSalary(program.Employees, salaryDate);
         }
     }
 }

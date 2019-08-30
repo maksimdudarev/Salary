@@ -11,7 +11,6 @@ namespace MD.Salary.WebApi.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeRepository _repository;
-        private readonly WebApiProgram _program = new WebApiProgram();
 
         public EmployeesController(IEmployeeRepository repository)
         {
@@ -31,7 +30,8 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<IActionResult> IndexSalary(long salaryDate)
         {
             var items = await _repository.ListBySearhstringAsync();
-            return Ok(_program.GetSalary(items, salaryDate).Item1);
+            var program = new WebApiProgram(items, salaryDate);
+            return Ok(program.Employees.GetSalaryTotal());
         }
 
         // GET: api/Employees/5
@@ -51,12 +51,13 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
         {
             var items = await _repository.ListBySearhstringAsync();
-            var salaryCalc = _program.GetSalary(items, salaryDate, id: id);
-            if (salaryCalc.Item2 == null)
+            var program = new WebApiProgram(items, salaryDate, id);
+            var salary = program.GetSalaryById();
+            if (salary == null)
             {
                 return NotFound();
             }
-            return Ok(salaryCalc.Item1);
+            return Ok(salary);
         }
 
         // GET: api/Employees/5/Subs
@@ -64,12 +65,13 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<IActionResult> GetEmployeeSubs(long id, long salaryDate)
         {
             var items = await _repository.ListBySearhstringAsync();
-            var salaryCalc = _program.GetSubordinate(items, salaryDate, id);
-            if (salaryCalc.Item2 == null)
+            var program = new WebApiProgram(items, salaryDate, id);
+            var salary = program.GetSubordinate();
+            if (salary == null)
             {
                 return NotFound();
             }
-            return Ok(salaryCalc.Item1);
+            return Ok(salary);
         }
 
         // POST: api/Employees
