@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using MD.Salary.WebApi.Models;
 using MD.Salary.WebApi.Application;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
@@ -33,9 +30,8 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<IActionResult> IndexSalary(long salaryDate)
         {
             var items = await _repository.ListBySearhstringAsync();
-            var program = new WebApiProgram();
-            program.GetSalaryFromContext(items, salaryDate);
-            return Ok(program.GetSalaryTotal());
+            var program = new WebApiProgram(items, salaryDate);
+            return Ok(program.Employees.GetSalaryTotal());
         }
 
         // GET: api/Employees/5
@@ -55,14 +51,27 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
         {
             var items = await _repository.ListBySearhstringAsync();
-            var program = new WebApiProgram();
-            List<EmployeeFull> employeeList = program.GetSalaryFromContext(items, salaryDate);
-            var item = employeeList.FirstOrDefault(emp => emp.ID == id);
-            if (item == null)
+            var program = new WebApiProgram(items, salaryDate, id);
+            var salary = program.GetSalaryById();
+            if (salary == null)
             {
                 return NotFound();
             }
-            return Ok(program.GetSalary(item));
+            return Ok(salary);
+        }
+
+        // GET: api/Employees/5/Subs
+        [HttpGet("{id}/subs")]
+        public async Task<IActionResult> GetEmployeeSubs(long id, long salaryDate)
+        {
+            var items = await _repository.ListBySearhstringAsync();
+            var program = new WebApiProgram(items, salaryDate, id);
+            var salary = program.GetSubordinate();
+            if (salary == null)
+            {
+                return NotFound();
+            }
+            return Ok(salary);
         }
 
         // POST: api/Employees

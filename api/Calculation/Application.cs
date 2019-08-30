@@ -1,40 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using static System.Math;
 using MD.Salary.WebApi.Models;
-using MD.Salary.WebApi.Utilities;
 using MD.Salary.WebApi.Core.Models;
+using System.Linq;
 
 namespace MD.Salary.WebApi.Application
 {
     public class WebApiProgram
     {
-        public List<EmployeeFull> GetSalaryFromContext(List<Employee> EmployeeListDB, long salaryDate)
+        public Employees Employees { get; set; }
+        public EmployeeFull EmployeeById { get; set; }
+        public WebApiProgram(List<Employee> items, long salaryDate)
         {
-            List<EmployeeFull> employeeList = GetEmployeeListFromDB(EmployeeListDB);
-            employeeList = CalculateSalary(employeeList, DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
-            return employeeList;
+            Employees = new Employees(items);
+            Employees.CalculateSubordinate();
+            Employees.CalculateSalary(DateTimeOffset.FromUnixTimeSeconds(salaryDate).UtcDateTime);
         }
-        public List<EmployeeFull> CalculateSalary(List<EmployeeFull> employeeList, DateTime salaryDate)
+        public WebApiProgram(List<Employee> items, long salaryDate, long id) : this(items, salaryDate)
         {
-            foreach (var employee in employeeList) employee.CalculateSubordinate(employeeList);
-            foreach (var employee in employeeList) employee.GetSalary(salaryDate, SalaryCache);
-            return employeeList;
+            EmployeeById = Employees.Items.FirstOrDefault(emp => emp.ID == id);
         }
-        public List<EmployeeFull> GetEmployeeListFromDB(List<Employee> employeeListDB)
+
+        public decimal? GetSalaryById()
         {
-            var employeeList = new List<EmployeeFull>();
-            foreach (var employeeDB in employeeListDB) employeeList.Add(new EmployeeFull(employeeDB));
-            return employeeList;
+            decimal? salary = null;
+            if (EmployeeById != null) salary = Employees.GetSalaryEmployee(EmployeeById.ID);
+            return salary;
         }
-        public decimal GetSalary(EmployeeFull employee)
+
+        public List<Tuple<long, decimal>> GetSubordinate()
         {
-            return Round(SalaryCache.GetValue(employee.ID));
+            List<Tuple<long, decimal>> salary = null;
+            if (EmployeeById != null)
+            {
+                salary = EmployeeById.SubordinateList.Select(sub => new Tuple<long, decimal> (
+                    sub.ID,
+                    Employees.GetSalaryEmployee(sub.ID)
+                )).ToList();
+            }
+            return salary;
         }
-        public decimal GetSalaryTotal()
-        {
-            return Round(SalaryCache.GetSum());
-        }
-        public MemoizationCache SalaryCache = new MemoizationCache();
     }
 }

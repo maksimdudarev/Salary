@@ -10,6 +10,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests
         public static readonly long ExistingId = 1001;
         readonly static string Group = "Guinness";
         readonly static decimal SalaryBase = 12.00M;
+        public static readonly long SalaryDate = 1564952400;
         public static readonly Employee NameMissingItem = new Employee()
         {
             Group = Group,
