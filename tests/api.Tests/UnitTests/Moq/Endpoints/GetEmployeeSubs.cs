@@ -6,9 +6,9 @@ using static MD.Salary.WebApi.Tests.UnitTests.Constants;
 
 namespace MD.Salary.WebApi.Tests.UnitTests.Moq
 {
-    public class GetEmployeeSalary : EmployeesControllerTests
+    public class GetEmployeeSubs : EmployeesControllerTests
     {
-        public GetEmployeeSalary()
+        public GetEmployeeSubs()
         {
             _repository.Setup(repo => repo.ListBySearhstringAsync("")).ReturnsAsync(GetTestEmployees());
         }
@@ -17,7 +17,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
         public void ReturnsNotFoundResult()
         {
             // Act
-            var actResult = GetAsyncActionResult(() => _controller.GetEmployeeSalary(NotExistingId, SalaryDate));
+            var actResult = GetAsyncActionResult(() => _controller.GetEmployeeSubs(NotExistingId, SalaryDate));
 
             // Assert
             Assert.IsType<NotFoundResult>(actResult);
@@ -27,7 +27,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
         public void ReturnsOkObjectResult()
         {
             // Act
-            var actResult = GetAsyncActionResult(() => _controller.GetEmployeeSalary(ExistingId, SalaryDate));
+            var actResult = GetAsyncActionResult(() => _controller.GetEmployeeSubs(ExistingId, SalaryDate));
 
             // Assert
             Assert.IsType<OkObjectResult>(actResult);
