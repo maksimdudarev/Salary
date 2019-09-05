@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ContactManager.Models;
 
 namespace ContactManager.Data
 {
@@ -12,5 +13,6 @@ namespace ContactManager.Data
             : base(options)
         {
         }
+        public DbSet<ContactManager.Models.Contact> Contact { get; set; }
     }
 }
