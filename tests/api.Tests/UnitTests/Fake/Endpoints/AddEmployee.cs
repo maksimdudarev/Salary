@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using static MD.Salary.WebApi.Tests.UnitTests.Asyncs;
-using static MD.Salary.WebApi.Tests.UnitTests.Constants;
 
 namespace MD.Salary.WebApi.Tests.UnitTests.Fake
 {
@@ -13,9 +12,14 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         {
             // Arrange
             _controller.ModelState.AddModelError("Name", "Required");
+            Employee nameMissingItem = new Employee()
+            {
+                Group = "TestGroup",
+                SalaryBase = 12.00M
+            };
 
             // Act
-            var badRequestObjectResult = GetAsyncActionResult(() => _controller.AddEmployee(NameMissingItem));
+            var badRequestObjectResult = GetAsyncActionResult(() => _controller.AddEmployee(nameMissingItem));
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(badRequestObjectResult);
@@ -24,8 +28,17 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         [Fact]
         public void ValidObjectPassed_ReturnsCreatedAtActionResult()
         {
+            // Arrange
+            Employee createdItem = new Employee()
+            {
+                ID = 5000,
+                Name = "CreatedItemName",
+                Group = "TestGroup",
+                SalaryBase = 12.00M
+            };
+
             // Act
-            var actResult = GetAsyncActionResult(() => _controller.AddEmployee(CreatedItem));
+            var actResult = GetAsyncActionResult(() => _controller.AddEmployee(createdItem));
 
             // Assert
             Assert.IsType<CreatedAtActionResult>(actResult);
@@ -34,13 +47,22 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         [Fact]
         public void ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
+            // Arrange
+            Employee createdItem = new Employee()
+            {
+                ID = 5000,
+                Name = "CreatedItemName",
+                Group = "TestGroup",
+                SalaryBase = 12.00M
+            };
+
             // Act
-            var createdAtActionResult = GetAsyncActionResult(() => _controller.AddEmployee(CreatedItem)) as CreatedAtActionResult;
+            var createdAtActionResult = GetAsyncActionResult(() => _controller.AddEmployee(createdItem)) as CreatedAtActionResult;
             var item = createdAtActionResult.Value as Employee;
 
             // Assert
             Assert.IsType<Employee>(item);
-            Assert.Equal(CreatedItemName, item.Name);
+            Assert.Equal("CreatedItemName", item.Name);
         }
     }
 }

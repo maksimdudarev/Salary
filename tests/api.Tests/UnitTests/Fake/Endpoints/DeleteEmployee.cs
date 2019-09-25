@@ -2,7 +2,6 @@
 using System.Linq;
 using Xunit;
 using static MD.Salary.WebApi.Tests.UnitTests.Asyncs;
-using static MD.Salary.WebApi.Tests.UnitTests.Constants;
 
 namespace MD.Salary.WebApi.Tests.UnitTests.Fake
 {
@@ -12,7 +11,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         public void NotExistingIdPassed_ReturnsNotFoundResult()
         {
             // Act
-            var notFoundResult = GetAsyncActionResult(() => _controller.DeleteEmployee(NotExistingId));
+            var notFoundResult = GetAsyncActionResult(() => _controller.DeleteEmployee(2000));
 
             // Assert
             Assert.IsType<NotFoundResult>(notFoundResult);
@@ -22,7 +21,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         public void ExistingIdPassed_ReturnsRedirectToActionResult()
         {
             // Act
-            var redirectToActionResult = GetAsyncActionResult(() => _controller.DeleteEmployee(ExistingId));
+            var redirectToActionResult = GetAsyncActionResult(() => _controller.DeleteEmployee(1001));
 
             // Assert
             Assert.IsType<RedirectToActionResult>(redirectToActionResult);
@@ -32,7 +31,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         public void ExistingIdPassed_DeletesOneItem()
         {
             // Act
-            GetAsyncActionResult(() => _controller.DeleteEmployee(ExistingId));
+            GetAsyncActionResult(() => _controller.DeleteEmployee(1001));
             var items = GetAsyncActionResult(() => _service.ListBySearhstringAsync());
 
             // Assert

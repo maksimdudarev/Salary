@@ -3,7 +3,6 @@ using Moq;
 using MD.Salary.WebApi.Core.Models;
 using Xunit;
 using static MD.Salary.WebApi.Tests.UnitTests.Asyncs;
-using static MD.Salary.WebApi.Tests.UnitTests.Constants;
 
 namespace MD.Salary.WebApi.Tests.UnitTests.Moq
 {
@@ -11,14 +10,19 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
     {
         public GetEmployee()
         {
-            _repository.Setup(repo => repo.GetByIdAsync(ExistingId)).ReturnsAsync(ExistingItem);
+            Employee existingItem = new Employee()
+            {
+                ID = 1001,
+                Name = "CreatedItemName",
+            };
+            _repository.Setup(repo => repo.GetByIdAsync(1001)).ReturnsAsync(existingItem);
         }
 
         [Fact]
         public void ReturnsNotFoundResult()
         {
             // Act
-            var actResult = GetAsyncActionResult(() => _controller.GetEmployee(NotExistingId));
+            var actResult = GetAsyncActionResult(() => _controller.GetEmployee(2000));
 
             // Assert
             Assert.IsType<NotFoundResult>(actResult);
@@ -28,7 +32,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
         public void ReturnsOkObjectResult()
         {
             // Act
-            var actResult = GetAsyncActionResult(() => _controller.GetEmployee(ExistingId));
+            var actResult = GetAsyncActionResult(() => _controller.GetEmployee(1001));
 
             // Assert
             Assert.IsType<OkObjectResult>(actResult);

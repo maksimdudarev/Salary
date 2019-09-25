@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MD.Salary.WebApi.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using static MD.Salary.WebApi.Tests.UnitTests.Asyncs;
-using static MD.Salary.WebApi.Tests.UnitTests.Constants;
 
 namespace MD.Salary.WebApi.Tests.UnitTests.Fake
 {
@@ -10,8 +10,17 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         [Fact]
         public void InvalidObjectPassed_ReturnsBadRequestResult()
         {
+            // Arrange
+            Employee createdItem = new Employee()
+            {
+                ID = 5000,
+                Name = "CreatedItemName",
+                Group = "TestGroup",
+                SalaryBase = 12.00M
+            };
+
             // Act
-            var badRequestResult = GetAsyncActionResult(() => _controller.UpdateEmployee(NotExistingId, CreatedItem));
+            var badRequestResult = GetAsyncActionResult(() => _controller.UpdateEmployee(2000, createdItem));
 
             // Assert
             Assert.IsType<BadRequestResult>(badRequestResult);
@@ -20,8 +29,17 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         [Fact]
         public void ValidObjectPassed_ReturnsRedirectToActionResult()
         {
+            // Arrange
+            Employee createdItem = new Employee()
+            {
+                ID = 5000,
+                Name = "CreatedItemName",
+                Group = "TestGroup",
+                SalaryBase = 12.00M
+            };
+
             // Act
-            var actResult = GetAsyncActionResult(() => _controller.UpdateEmployee(CreatedItemId, CreatedItem));
+            var actResult = GetAsyncActionResult(() => _controller.UpdateEmployee(5000, createdItem));
 
             // Assert
             Assert.IsType<RedirectToActionResult>(actResult);
@@ -30,12 +48,19 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         [Fact]
         public void ValidObjectPassed_ReturnedResponseHasUpdatedItem()
         {
+            // Arrange
+            Employee existingItem = new Employee()
+            {
+                ID = 1001,
+                Name = "CreatedItemName",
+            };
+
             // Act
-            GetAsyncActionResult(() => _controller.UpdateEmployee(ExistingId, ExistingItem));
-            var item = GetAsyncActionResult(() => _service.GetByIdAsync(ExistingId));
+            GetAsyncActionResult(() => _controller.UpdateEmployee(1001, existingItem));
+            var item = GetAsyncActionResult(() => _service.GetByIdAsync(1001));
 
             // Assert
-            Assert.Equal(CreatedItemName, item.Name);
+            Assert.Equal("CreatedItemName", item.Name);
         }
     }
 }

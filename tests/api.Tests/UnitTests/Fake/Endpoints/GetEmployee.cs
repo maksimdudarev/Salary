@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using static MD.Salary.WebApi.Tests.UnitTests.Asyncs;
-using static MD.Salary.WebApi.Tests.UnitTests.Constants;
 
 namespace MD.Salary.WebApi.Tests.UnitTests.Fake
 {
@@ -12,7 +11,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         public void NotExistingIdPassed_ReturnsNotFoundResult()
         {
             // Act
-            var notFoundResult = GetAsyncActionResult(() => _controller.GetEmployee(NotExistingId));
+            var notFoundResult = GetAsyncActionResult(() => _controller.GetEmployee(2000));
 
             // Assert
             Assert.IsType<NotFoundResult>(notFoundResult);
@@ -22,7 +21,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         public void ExistingIdPassed_ReturnsOkObjectResult()
         {
             // Act
-            var okObjectResult = GetAsyncActionResult(() => _controller.GetEmployee(ExistingId));
+            var okObjectResult = GetAsyncActionResult(() => _controller.GetEmployee(1001));
 
             // Assert
             Assert.IsType<OkObjectResult>(okObjectResult);
@@ -32,11 +31,11 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Fake
         public void ExistingIdPassed_ReturnsRightItem()
         {
             // Act
-            var okObjectResult = GetAsyncActionResult(() => _controller.GetEmployee(ExistingId)) as OkObjectResult;
+            var okObjectResult = GetAsyncActionResult(() => _controller.GetEmployee(1001)) as OkObjectResult;
 
             // Assert
             Assert.IsType<Employee>(okObjectResult.Value);
-            Assert.Equal(ExistingId, (okObjectResult.Value as Employee).ID);
+            Assert.Equal(1001, (okObjectResult.Value as Employee).ID);
         }
     }
 }
