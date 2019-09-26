@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+
 using MD.Salary.WebMvc.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace MD.Salary.WebMvc
 {
@@ -28,15 +30,12 @@ namespace MD.Salary.WebMvc
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             var connection = @"Server=(localdb)\mssqllocaldb;Database=employee;Trusted_Connection=True;ConnectRetryCount=0";
-            services.AddDbContext<EmployeeContext>
-                (options => options.UseSqlServer(connection));
-            // EmployeeContext requires
-            // using MD.Salary.WebMvc.Models;
-            // UseSqlServer requires
-            // using Microsoft.EntityFrameworkCore;
+            services.AddDbContext<EmployeeContext>(options => 
+                options.UseSqlServer(connection));
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,12 +48,14 @@ namespace MD.Salary.WebMvc
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                // The default HSTS value is 30 days. You may want to change this for 
+                // production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+
             app.UseStaticFiles();
+            app.UseHttpsRedirection();
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>
