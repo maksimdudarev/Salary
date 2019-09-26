@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Tests", "tests\api.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContactManager", "tutorial\Autorization\starter2.1\ContactManager.csproj", "{7547C22C-E2FF-4999-B92E-3E6BB3762330}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JWT", "tutorial\JWT\JWT.csproj", "{EEEA364F-A144-47BB-B0F9-52EDC24D4F11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7547C22C-E2FF-4999-B92E-3E6BB3762330}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7547C22C-E2FF-4999-B92E-3E6BB3762330}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7547C22C-E2FF-4999-B92E-3E6BB3762330}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEEA364F-A144-47BB-B0F9-52EDC24D4F11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEEA364F-A144-47BB-B0F9-52EDC24D4F11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEEA364F-A144-47BB-B0F9-52EDC24D4F11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEEA364F-A144-47BB-B0F9-52EDC24D4F11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
