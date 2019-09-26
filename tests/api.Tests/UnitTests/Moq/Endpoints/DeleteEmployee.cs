@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MD.Salary.WebApi.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
 using static MD.Salary.WebApi.Tests.UnitTests.Asyncs;
-using static MD.Salary.WebApi.Tests.UnitTests.Constants;
 
 namespace MD.Salary.WebApi.Tests.UnitTests.Moq
 {
@@ -12,7 +12,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
         public void ReturnsNotFoundResult()
         {
             // Act
-            var actResult = GetAsyncActionResult(() => _controller.DeleteEmployee(NotExistingId));
+            var actResult = GetAsyncActionResult(() => _controller.DeleteEmployee(2000));
 
             // Assert
             Assert.IsType<NotFoundResult>(actResult);
@@ -22,10 +22,15 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
         public void ReturnsRedirectToActionResult()
         {
             // Arrange
-            _repository.Setup(repo => repo.GetByIdAsync(ExistingId)).ReturnsAsync(ExistingItem);
+            Employee existingItem = new Employee()
+            {
+                ID = 1001,
+                Name = "CreatedItemName",
+            };
+            _repository.Setup(repo => repo.GetByIdAsync(1001)).ReturnsAsync(existingItem);
 
             // Act
-            var actResult = GetAsyncActionResult(() => _controller.DeleteEmployee(ExistingId));
+            var actResult = GetAsyncActionResult(() => _controller.DeleteEmployee(1001));
 
             // Assert
             Assert.IsType<RedirectToActionResult>(actResult);
