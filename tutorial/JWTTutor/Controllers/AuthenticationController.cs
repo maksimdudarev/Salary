@@ -31,6 +31,7 @@ namespace JWTTutor.Controllers
                 issuer: "DemoApp",
                 audience: "DemoAppClient",
                 claims: claims,
+                notBefore: DateTime.Now,
                 expires: DateTime.Now.AddMinutes(5),
                 signingCredentials: new SigningCredentials(
                         signingEncodingKey.GetKey(),
