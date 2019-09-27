@@ -9,6 +9,8 @@ namespace MD.Salary.WebApi.Controllers
     {
         public void Authentication(User user)
         {
+            var password = user.Password;
+            var pbkdf2Hash = CryptographyService.HashPasswordUsingPBKDF2(password);
 
         }
     }
