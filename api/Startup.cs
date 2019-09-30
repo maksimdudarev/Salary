@@ -25,8 +25,8 @@ namespace MD.Salary.WebApi
             services.AddDbContext<EmployeeContext>(opt =>
                 opt.UseSqlite(Constants.ConnectionStringApi));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddScoped<IEmployeeRepository,
-                EFEmployeeRepository>();
+            services.AddScoped<IEmployeeRepository, EFEmployeeRepository>();
+            services.AddScoped<IUserRepository, EFUserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
