@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MD.Salary.WebApi.Migrations
 {
     [DbContext(typeof(EmployeeContext))]
-    [Migration("20190807085215_InitialCreate")]
+    [Migration("20190930093318_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,7 +17,7 @@ namespace MD.Salary.WebApi.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
-            modelBuilder.Entity("MD.Salary.WebApi.Models.Employee", b =>
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Employee", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd();
@@ -26,7 +26,8 @@ namespace MD.Salary.WebApi.Migrations
 
                     b.Property<long>("HireDate");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<decimal>("SalaryBase")
                         .HasColumnType("decimal(18, 2)");
@@ -36,6 +37,20 @@ namespace MD.Salary.WebApi.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.User", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("Password");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }
