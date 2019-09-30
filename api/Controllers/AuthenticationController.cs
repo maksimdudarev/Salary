@@ -36,11 +36,12 @@ namespace MD.Salary.WebApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var password = item.Password;
-            var pbkdf2Hash = CryptographyService.HashPasswordUsingPBKDF2(password);
-            item.Password = pbkdf2Hash;
-
+            var existed = await _repository.GetByIdAsync(item.ID);
+            if (existed != null)
+            {
+                return Conflict();
+            }
+            item.Password = CryptographyService.HashPasswordUsingPBKDF2(item.Password);
             await _repository.AddAsync(item);
             return CreatedAtAction(nameof(GetUser), new { id = item.ID }, item);
         }
