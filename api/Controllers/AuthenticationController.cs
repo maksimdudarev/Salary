@@ -17,11 +17,11 @@ namespace MD.Salary.WebApi.Controllers
             _repository = repository;
         }
 
-        // GET: api/Authentication/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(long id)
+        // GET: api/Authentication/a@b.com
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetUser(string name)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _repository.GetByNameAsync(name);
             if (item == null)
             {
                 return NotFound();
@@ -37,14 +37,14 @@ namespace MD.Salary.WebApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var existed = await _repository.GetByIdAsync(item.ID);
+            var existed = await _repository.GetByNameAsync(item.Name);
             if (existed != null)
             {
                 return Conflict();
             }
             item.Password = PasswordHash.ScryptHashString(item.Password, PasswordHash.Strength.Medium);
             await _repository.AddAsync(item);
-            return CreatedAtAction(nameof(GetUser), new { id = item.ID }, item);
+            return CreatedAtAction(nameof(GetUser), new { name = item.Name }, item);
         }
     }
 }

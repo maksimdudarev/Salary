@@ -19,6 +19,11 @@ namespace MD.Salary.WebApi.Infrastructure
             return _dbContext.Users.FirstOrDefaultAsync(s => s.ID == id);
         }
 
+        public Task<User> GetByNameAsync(string name)
+        {
+            return _dbContext.Users.FirstOrDefaultAsync(s => s.Name == name);
+        }
+
         public Task AddAsync(User item)
         {
             _dbContext.Users.Add(item);

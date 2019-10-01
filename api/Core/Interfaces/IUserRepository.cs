@@ -6,6 +6,7 @@ namespace MD.Salary.WebApi.Core.Interfaces
     public interface IUserRepository
     {
         Task<User> GetByIdAsync(long id);
+        Task<User> GetByNameAsync(string name);
         Task AddAsync(User item);
     }
 }
