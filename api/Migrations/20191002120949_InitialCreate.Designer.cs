@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MD.Salary.WebApi.Migrations
 {
     [DbContext(typeof(EmployeeContext))]
-    [Migration("20190930093318_InitialCreate")]
+    [Migration("20191002120949_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,12 +39,26 @@ namespace MD.Salary.WebApi.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Token", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("UserID");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Tokens");
+                });
+
             modelBuilder.Entity("MD.Salary.WebApi.Core.Models.User", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Email");
+                    b.Property<string>("Name");
 
                     b.Property<string>("Password");
 

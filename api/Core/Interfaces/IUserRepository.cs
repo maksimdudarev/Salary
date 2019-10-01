@@ -1,12 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MD.Salary.WebApi.Core.Models;
 
 namespace MD.Salary.WebApi.Core.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User> GetByIdAsync(long id);
-        Task<User> GetByNameAsync(string name);
-        Task AddAsync(User item);
+        Task<User> GetUserByIdAsync(long id);
+        Task<User> GetUserByNameAsync(string name);
+        Task<List<User>> UserListAsync();
+        Task AddUserAsync(User item);
+        Task<Token> GetTokenByIdAsync(long id);
+        Task<List<Token>> TokenListAsync();
+        Task AddTokenAsync(Token item);
     }
 }

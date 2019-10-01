@@ -2,6 +2,7 @@
 using MD.Salary.WebApi.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Sodium;
+using System;
 using System.Threading.Tasks;
 
 namespace MD.Salary.WebApi.Controllers
@@ -21,7 +22,7 @@ namespace MD.Salary.WebApi.Controllers
         [HttpGet("{name}")]
         public async Task<IActionResult> GetUser(string name)
         {
-            var item = await _repository.GetByNameAsync(name);
+            var item = await _repository.GetUserByNameAsync(name);
             if (item == null)
             {
                 return NotFound();
@@ -29,22 +30,44 @@ namespace MD.Salary.WebApi.Controllers
             return Ok(item);
         }
 
-        // POST: api/Authentication
-        [HttpPost]
+        // POST: api/Authentication/register
+        [HttpPost("register")]
         public async Task<IActionResult> AddUser([FromBody] User item)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var existed = await _repository.GetByNameAsync(item.Name);
+            var existed = await _repository.GetUserByNameAsync(item.Name);
             if (existed != null)
             {
                 return Conflict();
             }
             item.Password = PasswordHash.ScryptHashString(item.Password, PasswordHash.Strength.Medium);
-            await _repository.AddAsync(item);
+            await _repository.AddUserAsync(item);
             return CreatedAtAction(nameof(GetUser), new { name = item.Name }, item);
+        }
+
+        // GET: api/Authentication/login
+        [HttpPost("login")]
+        public async Task<IActionResult> AddToken([FromBody] User item)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var userlist = await _repository.UserListAsync();
+            var user = userlist.Find(i => PasswordHash.ScryptHashStringVerify(i.Password, item.Password));
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var token = new Token { 
+                UserID = item.ID, 
+                Value = Convert.ToBase64String(SecretBox.GenerateKey())
+            };
+            await _repository.AddTokenAsync(token);
+            return Ok(token.Value);
         }
     }
 }

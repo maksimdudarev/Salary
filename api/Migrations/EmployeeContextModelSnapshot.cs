@@ -37,12 +37,26 @@ namespace MD.Salary.WebApi.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Token", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("UserID");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Tokens");
+                });
+
             modelBuilder.Entity("MD.Salary.WebApi.Core.Models.User", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Email");
+                    b.Property<string>("Name");
 
                     b.Property<string>("Password");
 

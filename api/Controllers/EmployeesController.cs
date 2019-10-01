@@ -21,6 +21,7 @@ namespace MD.Salary.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string searchString)
         {
+            var header = Request.Headers["authorization"];
             var items = await _repository.ListBySearhstringAsync(searchString);
             return Ok(items);
         }
