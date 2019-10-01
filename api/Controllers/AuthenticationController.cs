@@ -1,6 +1,7 @@
 ﻿using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using Sodium;
 using System.Threading.Tasks;
 
 namespace MD.Salary.WebApi.Controllers
@@ -41,7 +42,7 @@ namespace MD.Salary.WebApi.Controllers
             {
                 return Conflict();
             }
-            item.Password = CryptographyService.HashPasswordUsingPBKDF2(item.Password);
+            item.Password = PasswordHash.ScryptHashString(item.Password, PasswordHash.Strength.Medium);
             await _repository.AddAsync(item);
             return CreatedAtAction(nameof(GetUser), new { id = item.ID }, item);
         }
