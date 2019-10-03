@@ -32,7 +32,7 @@ namespace MD.Salary.WebApi.Controllers
 
         // POST: api/Authentication/register
         [HttpPost("register")]
-        public async Task<IActionResult> AddUser([FromBody] User item)
+        public async Task<IActionResult> Register([FromBody] User item)
         {
             if (!ModelState.IsValid)
             {
@@ -50,7 +50,7 @@ namespace MD.Salary.WebApi.Controllers
 
         // GET: api/Authentication/login
         [HttpPost("login")]
-        public async Task<IActionResult> AddToken([FromBody] User item)
+        public async Task<IActionResult> Login([FromBody] User item)
         {
             if (!ModelState.IsValid)
             {
@@ -68,6 +68,19 @@ namespace MD.Salary.WebApi.Controllers
             };
             await _repository.AddTokenAsync(token);
             return Ok(token.Value);
+        }
+
+        // DELETE: api/Authentication/logout
+        [HttpDelete("logout")]
+        public async Task<IActionResult> Logout([FromBody] string value)
+        {
+            var item = await _repository.GetTokenByValueAsync(value);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            await _repository.DeleteTokenAsync(item);
+            return Ok();
         }
     }
 }

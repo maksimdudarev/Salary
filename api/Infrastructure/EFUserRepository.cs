@@ -36,9 +36,9 @@ namespace MD.Salary.WebApi.Infrastructure
             return _dbContext.SaveChangesAsync();
         }
 
-        public Task<Token> GetTokenByIdAsync(long id)
+        public Task<Token> GetTokenByValueAsync(string value)
         {
-            return _dbContext.Tokens.FirstOrDefaultAsync(s => s.ID == id);
+            return _dbContext.Tokens.FirstOrDefaultAsync(s => s.Value == value);
         }
 
         public Task<List<Token>> TokenListAsync()
@@ -49,6 +49,12 @@ namespace MD.Salary.WebApi.Infrastructure
         public Task AddTokenAsync(Token item)
         {
             _dbContext.Tokens.Add(item);
+            return _dbContext.SaveChangesAsync();
+        }
+
+        public Task DeleteTokenAsync(Token item)
+        {
+            _dbContext.Tokens.Remove(item);
             return _dbContext.SaveChangesAsync();
         }
     }

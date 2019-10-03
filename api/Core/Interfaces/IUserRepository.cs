@@ -10,8 +10,9 @@ namespace MD.Salary.WebApi.Core.Interfaces
         Task<User> GetUserByNameAsync(string name);
         Task<List<User>> UserListAsync();
         Task AddUserAsync(User item);
-        Task<Token> GetTokenByIdAsync(long id);
+        Task<Token> GetTokenByValueAsync(string value);
         Task<List<Token>> TokenListAsync();
         Task AddTokenAsync(Token item);
+        Task DeleteTokenAsync(Token item);
     }
 }
