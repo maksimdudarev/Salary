@@ -3,6 +3,7 @@ using MD.Salary.WebApi.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Sodium;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MD.Salary.WebApi.Controllers
@@ -72,8 +73,9 @@ namespace MD.Salary.WebApi.Controllers
 
         // DELETE: api/Authentication/logout
         [HttpDelete("logout")]
-        public async Task<IActionResult> Logout([FromBody] string value)
+        public async Task<IActionResult> Logout()
         {
+            var value = Request.Headers["authorization"].ToString().Split(null).Last();
             var item = await _repository.GetTokenByValueAsync(value);
             if (item == null)
             {
