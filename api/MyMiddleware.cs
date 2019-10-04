@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace MD.Salary.WebApi
 {
@@ -11,16 +10,22 @@ namespace MD.Salary.WebApi
     public class MyMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger _logger;
 
-        public MyMiddleware(RequestDelegate next)
+        public MyMiddleware(RequestDelegate next, ILoggerFactory logFactory)
         {
             _next = next;
+
+            _logger = logFactory.CreateLogger("MyMiddleware");
         }
 
-        public Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext)
         {
+            var value = httpContext.Request.Headers["authorization"].ToString().Split(null).Last();
+            _logger.LogInformation(value);
 
-            return _next(httpContext);
+            await _next(httpContext); // calling next middleware
+
         }
     }
 
