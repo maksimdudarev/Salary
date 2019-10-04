@@ -1,35 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ContactsApi.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
-namespace MD.Salary.WebApi.Middleware
+namespace ContactsApi.Middleware
 {
-    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class UserKeyValidatorsMiddleware
     {
         private readonly RequestDelegate _next;
+        private IContactsRepository ContactsRepo { get; set; }
 
-        public UserKeyValidatorsMiddleware(RequestDelegate next)
+        public UserKeyValidatorsMiddleware(RequestDelegate next, IContactsRepository _repo)
         {
             _next = next;
+            ContactsRepo = _repo;
         }
 
-        public Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext)
         {
+            if (!httpContext.Request.Headers.Keys.Contains("user-key"))
+            {
+                httpContext.Response.StatusCode = 400; //Bad Request                
+                await httpContext.Response.WriteAsync("User Key is missing");
+                return;
+            }
+            else
+            {
+                if (!ContactsRepo.CheckValidUserKey(httpContext.Request.Headers["user-key"]))
+                {
+                    httpContext.Response.StatusCode = 401; //UnAuthorized
+                    await httpContext.Response.WriteAsync("Invalid User Key");
+                    return;
+                }
+            }
 
-            return _next(httpContext);
+            await _next.Invoke(httpContext);
         }
+
     }
 
-    // Extension method used to add the middleware to the HTTP request pipeline.
-    public static class UserKeyValidatorsMiddlewareExtensions
+    public static class UserKeyValidatorsExtension
     {
-        public static IApplicationBuilder UseUserKeyValidatorsMiddleware(this IApplicationBuilder builder)
+        public static IApplicationBuilder ApplyUserKeyValidation(this IApplicationBuilder app)
         {
-            return builder.UseMiddleware<UserKeyValidatorsMiddleware>();
+            app.UseMiddleware<UserKeyValidatorsMiddleware>();
+            return app;
         }
     }
 }

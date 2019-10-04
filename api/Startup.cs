@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Infrastructure;
 using MD.Salary.WebApi.Models;
+using ContactsApi.Middleware;
 
 namespace MD.Salary.WebApi
 {
@@ -49,6 +50,8 @@ namespace MD.Salary.WebApi
             {
                 await context.Response.WriteAsync("Hello World!");
             });
+
+            app.ApplyUserKeyValidation();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
