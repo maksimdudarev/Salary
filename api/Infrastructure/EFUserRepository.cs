@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
+using Microsoft.Extensions.Primitives;
 
 namespace MD.Salary.WebApi.Infrastructure
 {
@@ -56,6 +57,11 @@ namespace MD.Salary.WebApi.Infrastructure
         {
             _dbContext.Tokens.Remove(item);
             return _dbContext.SaveChangesAsync();
+        }
+
+        public bool CheckValidUserKey(StringValues stringValues)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

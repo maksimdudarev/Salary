@@ -11,6 +11,7 @@ using MD.Salary.WebApi.Models;
 using ContactsApi.Middleware;
 using ContactsApi.Contexts;
 using ContactsApi.Repository;
+using MD.Salary.WebApi.Middleware;
 
 namespace MD.Salary.WebApi
 {
@@ -57,6 +58,7 @@ namespace MD.Salary.WebApi
             });
 
             app.ApplyUserKeyValidation();
+            app.UseAuthenticationMiddleware();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
