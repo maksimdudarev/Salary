@@ -8,37 +8,38 @@ namespace ContactsApi.Middleware
     public class UserKeyValidatorsMiddleware
     {
         private readonly RequestDelegate _next;
-        private IContactsRepository Repo { get; set; }
+        private IContactsRepository ContactsRepo { get; set; }
 
         public UserKeyValidatorsMiddleware(RequestDelegate next, IContactsRepository _repo)
         {
             _next = next;
-            Repo = _repo;
+            ContactsRepo = _repo;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext context)
         {
-            if (!httpContext.Request.Headers.Keys.Contains("user-key"))
+            if (!context.Request.Headers.Keys.Contains("user-key"))
             {
-                httpContext.Response.StatusCode = 400; //Bad Request                
-                await httpContext.Response.WriteAsync("User Key is missing");
+                context.Response.StatusCode = 400; //Bad Request                
+                await context.Response.WriteAsync("User Key is missing");
                 return;
             }
             else
             {
-                if (!Repo.CheckValidUserKey(httpContext.Request.Headers["user-key"]))
+                if(!ContactsRepo.CheckValidUserKey(context.Request.Headers["user-key"]))
                 {
-                    httpContext.Response.StatusCode = 401; //UnAuthorized
-                    await httpContext.Response.WriteAsync("Invalid User Key");
+                    context.Response.StatusCode = 401; //UnAuthorized
+                    await context.Response.WriteAsync("Invalid User Key");
                     return;
                 }
             }
 
-            await _next.Invoke(httpContext);
+            await _next.Invoke(context);
         }
 
     }
 
+    #region ExtensionMethod
     public static class UserKeyValidatorsExtension
     {
         public static IApplicationBuilder ApplyUserKeyValidation(this IApplicationBuilder app)
@@ -47,4 +48,5 @@ namespace ContactsApi.Middleware
             return app;
         }
     }
+    #endregion
 }
