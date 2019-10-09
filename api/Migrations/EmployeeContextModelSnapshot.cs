@@ -15,22 +15,6 @@ namespace MD.Salary.WebApi.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
-            modelBuilder.Entity("ContactsApi.Models.Contact", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("IsFamilyMember");
-
-                    b.Property<string>("LastName");
-
-                    b.Property<string>("MobilePhone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Contacts");
-                });
-
             modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Employee", b =>
                 {
                     b.Property<long>("ID")

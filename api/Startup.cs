@@ -8,8 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Infrastructure;
 using MD.Salary.WebApi.Models;
-using ContactsApi.Middleware;
-using ContactsApi.Repository;
 using MD.Salary.WebApi.Middleware;
 
 namespace MD.Salary.WebApi
@@ -31,7 +29,6 @@ namespace MD.Salary.WebApi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddScoped<IEmployeeRepository, EFEmployeeRepository>();
             services.AddScoped<IUserRepository, EFUserRepository>();
-            services.AddScoped<IContactsRepository, EFContactsRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,7 +51,6 @@ namespace MD.Salary.WebApi
                 await context.Response.WriteAsync("Hello World!");
             });*/
 
-            app.ApplyUserKeyValidation();
             app.UseAuthenticationMiddleware();
 
             app.UseDefaultFiles();

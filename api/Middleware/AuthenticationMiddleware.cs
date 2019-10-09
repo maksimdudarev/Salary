@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using MD.Salary.WebApi.Core.Interfaces;
+﻿using MD.Salary.WebApi.Core.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace MD.Salary.WebApi.Middleware
 {
