@@ -10,14 +10,15 @@ namespace ContactsApi.Middleware
         private readonly RequestDelegate _next;
         private IContactsRepository Repo { get; set; }
 
-        public UserKeyValidatorsMiddleware(RequestDelegate next, IContactsRepository _repo)
+        public UserKeyValidatorsMiddleware(RequestDelegate next)
         {
             _next = next;
-            Repo = _repo;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, IContactsRepository _repo)
         {
+            Repo = _repo;
+
             if (!httpContext.Request.Headers.Keys.Contains("user-key"))
             {
                 httpContext.Response.StatusCode = 400; //Bad Request                

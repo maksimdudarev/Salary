@@ -19,6 +19,23 @@ namespace MD.Salary.WebApi.Middleware
         public async Task Invoke(HttpContext httpContext, IUserRepository _repo)
         {
             Repo = _repo;
+
+            if (!httpContext.Request.Headers.Keys.Contains("user-key"))
+            {
+                httpContext.Response.StatusCode = 400; //Bad Request                
+                await httpContext.Response.WriteAsync("User Key is missing");
+                return;
+            }
+            else
+            {
+                if (!Repo.CheckValidUserKey(httpContext.Request.Headers["user-key"]))
+                {
+                    httpContext.Response.StatusCode = 401; //UnAuthorized
+                    await httpContext.Response.WriteAsync("Invalid User Key");
+                    return;
+                }
+            }
+
             await _next.Invoke(httpContext);
             return;
         }

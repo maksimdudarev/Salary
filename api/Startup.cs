@@ -55,8 +55,8 @@ namespace MD.Salary.WebApi
             });*/
             app.UseTestMiddleware();
 
-            //app.ApplyUserKeyValidation();
-            //app.UseAuthenticationMiddleware();
+            app.ApplyUserKeyValidation();
+            app.UseAuthenticationMiddleware();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();

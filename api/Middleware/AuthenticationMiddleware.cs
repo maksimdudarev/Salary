@@ -12,14 +12,15 @@ namespace MD.Salary.WebApi.Middleware
 
         private IUserRepository Repo { get; set; }
 
-        public AuthenticationMiddleware(RequestDelegate next, IUserRepository _repo)
+        public AuthenticationMiddleware(RequestDelegate next)
         {
             _next = next;
-            Repo = _repo;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, IUserRepository _repo)
         {
+            Repo = _repo;
+
             if (!httpContext.Request.Headers.Keys.Contains("user-key"))
             {
                 httpContext.Response.StatusCode = 400; //Bad Request                
