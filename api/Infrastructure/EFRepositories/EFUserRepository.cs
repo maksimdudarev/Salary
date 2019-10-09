@@ -58,22 +58,16 @@ namespace MD.Salary.WebApi.Infrastructure.EFRepositories
             return _dbContext.SaveChangesAsync();
         }
 
-        public bool CheckValidUserKey(string reqkey)
+        public bool CheckValidUserKey(string value)
         {
-            var userkeyList = new List<string>
+            var item = _dbContext.Tokens.FirstOrDefaultAsync(s => s.Value == value);
+            if (item == null)
             {
-                "28236d8ec201df516d0f6472d516d72d",
-                "38236d8ec201df516d0f6472d516d72c",
-                "48236d8ec201df516d0f6472d516d72b"
-            };
-
-            if (userkeyList.Contains(reqkey))
-            {
-                return true;
+                return false;
             }
             else
             {
-                return false;
+                return true;
             }
         }
     }

@@ -31,8 +31,11 @@ namespace MD.Salary.WebApi.Middleware
             }
             else
             {
-                var token = httpContext.Request.Headers[header].ToString().Split(null).Last();
-                if (!Repo.CheckValidUserKey(token))
+                var value = httpContext.Request.Headers[header].ToString().Split(null).Last();
+                var notfoundCheck = Repo.CheckValidUserKey(value);
+                var item = await Repo.GetTokenByValueAsync(value);
+                var notfoundGet = item == null;
+                if (!notfoundCheck)
                 {
                     httpContext.Response.StatusCode = 401; //UnAuthorized
                     await httpContext.Response.WriteAsync("Invalid Token");
