@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
-using Microsoft.Extensions.Primitives;
 
 namespace MD.Salary.WebApi.Infrastructure
 {
@@ -59,9 +58,23 @@ namespace MD.Salary.WebApi.Infrastructure
             return _dbContext.SaveChangesAsync();
         }
 
-        public bool CheckValidUserKey(StringValues stringValues)
+        public bool CheckValidUserKey(string reqkey)
         {
-            throw new System.NotImplementedException();
+            var userkeyList = new List<string>
+            {
+                "28236d8ec201df516d0f6472d516d72d",
+                "38236d8ec201df516d0f6472d516d72c",
+                "48236d8ec201df516d0f6472d516d72b"
+            };
+
+            if (userkeyList.Contains(reqkey))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

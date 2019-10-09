@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MD.Salary.WebApi.Core.Models;
-using Microsoft.Extensions.Primitives;
 
 namespace MD.Salary.WebApi.Core.Interfaces
 {
@@ -15,6 +14,6 @@ namespace MD.Salary.WebApi.Core.Interfaces
         Task<List<Token>> TokenListAsync();
         Task AddTokenAsync(Token item);
         Task DeleteTokenAsync(Token item);
-        bool CheckValidUserKey(StringValues stringValues);
+        bool CheckValidUserKey(string reqkey);
     }
 }
