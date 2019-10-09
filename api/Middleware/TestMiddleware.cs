@@ -16,11 +16,11 @@ namespace MD.Salary.WebApi.Middleware
             _next = next;
         }
 
-        public Task Invoke(HttpContext httpContext, IUserRepository _repo)
+        public async Task Invoke(HttpContext httpContext, IUserRepository _repo)
         {
             Repo = _repo;
-
-            return _next(httpContext);
+            await _next.Invoke(httpContext);
+            return;
         }
     }
 
