@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using MD.Salary.WebApi.Core.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
@@ -8,14 +9,16 @@ namespace MD.Salary.WebApi.Middleware
     public class TestMiddleware
     {
         private readonly RequestDelegate _next;
+        private IUserRepository Repo { get; set; }
 
         public TestMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
-        public Task Invoke(HttpContext httpContext)
+        public Task Invoke(HttpContext httpContext, IUserRepository _repo)
         {
+            Repo = _repo;
 
             return _next(httpContext);
         }
