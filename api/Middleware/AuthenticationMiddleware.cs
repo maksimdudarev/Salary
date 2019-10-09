@@ -1,6 +1,7 @@
 ﻿using MD.Salary.WebApi.Core.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MD.Salary.WebApi.Middleware
@@ -20,25 +21,26 @@ namespace MD.Salary.WebApi.Middleware
         public async Task Invoke(HttpContext httpContext, IUserRepository _repo)
         {
             Repo = _repo;
+            var header = "Authorization";
 
-            if (!httpContext.Request.Headers.Keys.Contains("user-key"))
+            if (!httpContext.Request.Headers.Keys.Contains(header))
             {
                 httpContext.Response.StatusCode = 400; //Bad Request                
-                await httpContext.Response.WriteAsync("User Key is missing");
+                await httpContext.Response.WriteAsync("Token is missing");
                 return;
             }
             else
             {
-                if (!Repo.CheckValidUserKey(httpContext.Request.Headers["user-key"]))
+                var token = httpContext.Request.Headers[header].ToString().Split(null).Last();
+                if (!Repo.CheckValidUserKey(token))
                 {
                     httpContext.Response.StatusCode = 401; //UnAuthorized
-                    await httpContext.Response.WriteAsync("Invalid User Key");
+                    await httpContext.Response.WriteAsync("Invalid Token");
                     return;
                 }
             }
 
             await _next.Invoke(httpContext);
-            return;
         }
     }
 

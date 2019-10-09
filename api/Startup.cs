@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Infrastructure;
+using MD.Salary.WebApi.Infrastructure.EFRepositories;
 using MD.Salary.WebApi.Models;
 using MD.Salary.WebApi.Middleware;
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
 
-namespace MD.Salary.WebApi.Infrastructure
+namespace MD.Salary.WebApi.Infrastructure.EFRepositories
 {
     public class EFUserRepository : IUserRepository
     {
