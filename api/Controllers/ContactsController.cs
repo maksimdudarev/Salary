@@ -34,7 +34,7 @@ namespace ContactsApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Contacts item)
+        public async Task<IActionResult> Create([FromBody] Contact item)
         {
             if (item == null)
             {
@@ -45,7 +45,7 @@ namespace ContactsApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] Contacts item)
+        public async Task<IActionResult> Update(string id, [FromBody] Contact item)
         {
             if (item == null)
             {

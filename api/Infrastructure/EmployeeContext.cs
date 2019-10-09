@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MD.Salary.WebApi.Core.Models;
+using ContactsApi.Models;
 
 namespace MD.Salary.WebApi.Infrastructure
 {
@@ -13,5 +14,6 @@ namespace MD.Salary.WebApi.Infrastructure
         public DbSet<Employee> Employees { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Token> Tokens { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
     }
 }

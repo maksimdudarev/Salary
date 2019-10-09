@@ -1,27 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ContactsApi.Models;
-using ContactsApi.Contexts;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using MD.Salary.WebApi.Infrastructure;
 
 namespace ContactsApi.Repository
 {
-    public class ContactsRepository : IContactsRepository
+    public class EFContactsRepository : IContactsRepository
     {
-        ContactsContext _context;
-        public ContactsRepository(ContactsContext context)
+        EmployeeContext _context;
+        public EFContactsRepository(EmployeeContext context)
         {
             _context = context;
         }       
 
-        public async Task Add(Contacts item)
+        public async Task Add(Contact item)
         {            
             await _context.Contacts.AddAsync(item);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Contacts>> GetAll()
+        public async Task<IEnumerable<Contact>> GetAll()
         {
             return await _context.Contacts.ToListAsync();
         }
@@ -45,7 +45,7 @@ namespace ContactsApi.Repository
             }
         }
 
-        public async Task<Contacts> Find(string key)
+        public async Task<Contact> Find(string key)
         {
             return await _context.Contacts
                 .Where(e => e.MobilePhone.Equals(key))
@@ -62,20 +62,14 @@ namespace ContactsApi.Repository
             }
         }
 
-        public async Task Update(Contacts item)
+        public async Task Update(Contact item)
         {            
             var itemToUpdate = await _context.Contacts.SingleOrDefaultAsync(r => r.MobilePhone == item.MobilePhone);
             if (itemToUpdate != null)
             {
-                itemToUpdate.FirstName = item.FirstName;
                 itemToUpdate.LastName = item.LastName;
                 itemToUpdate.IsFamilyMember = item.IsFamilyMember;
-                itemToUpdate.Company = item.Company;
-                itemToUpdate.JobTitle = item.JobTitle;
-                itemToUpdate.Email = item.Email;
                 itemToUpdate.MobilePhone = item.MobilePhone;
-                itemToUpdate.DateOfBirth = item.DateOfBirth;
-                itemToUpdate.AnniversaryDate = item.AnniversaryDate;
                 await _context.SaveChangesAsync();
             }
         }

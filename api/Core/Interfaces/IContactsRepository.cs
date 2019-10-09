@@ -6,11 +6,11 @@ namespace ContactsApi.Repository
 {
     public interface IContactsRepository
     {
-        Task Add(Contacts item);
-        Task<IEnumerable<Contacts>> GetAll();
-        Task<Contacts> Find(string key);
+        Task Add(Contact item);
+        Task<IEnumerable<Contact>> GetAll();
+        Task<Contact> Find(string key);
         Task Remove(string Id);
-        Task Update(Contacts item);
+        Task Update(Contact item);
 
         bool CheckValidUserKey(string reqkey);
     }
