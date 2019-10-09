@@ -53,7 +53,6 @@ namespace MD.Salary.WebApi
             {
                 await context.Response.WriteAsync("Hello World!");
             });*/
-            app.UseTestMiddleware();
 
             app.ApplyUserKeyValidation();
             app.UseAuthenticationMiddleware();

@@ -38,6 +38,7 @@ namespace MD.Salary.WebApi.Middleware
             }
 
             await _next.Invoke(httpContext);
+            return;
         }
     }
 
