@@ -48,14 +48,14 @@ namespace MD.Salary.WebApi
                 app.UseHsts();
             }
             
-            app.UseMyMiddleware();
+            /*app.UseMyMiddleware();
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Hello World!");
-            });
+            });*/
 
-            app.ApplyUserKeyValidation();
-            app.UseAuthenticationMiddleware();
+            //app.ApplyUserKeyValidation();
+            //app.UseAuthenticationMiddleware();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
