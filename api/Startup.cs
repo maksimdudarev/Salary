@@ -52,7 +52,10 @@ namespace MD.Salary.WebApi
                 await context.Response.WriteAsync("Hello World!");
             });*/
 
-            app.UseAuthenticationMiddleware();
+            app.UseWhen(context => context.Request.Path.StartsWithSegments("/api/employees"), appBuilder =>
+            {
+                appBuilder.UseAuthenticationMiddleware();
+            });
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
