@@ -11,16 +11,13 @@ namespace MD.Salary.WebApi.Middleware
     {
         private readonly RequestDelegate _next;
 
-        private IUserRepository Repo { get; set; }
-
         public AuthenticationMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
-        public async Task Invoke(HttpContext httpContext, IUserRepository _repo)
+        public async Task Invoke(HttpContext httpContext, IUserRepository repo)
         {
-            Repo = _repo;
             var header = "Authorization";
 
             if (!httpContext.Request.Headers.Keys.Contains(header))
@@ -32,10 +29,8 @@ namespace MD.Salary.WebApi.Middleware
             else
             {
                 var value = httpContext.Request.Headers[header].ToString().Split(null).Last();
-                var notfoundCheck = Repo.CheckValidUserKey(value);
-                var item = await Repo.GetTokenByValueAsync(value);
-                var notfoundGet = item == null;
-                if (!notfoundCheck)
+                var item = await repo.GetTokenByValueAsync(value);
+                if (item != null)
                 {
                     httpContext.Response.StatusCode = 401; //UnAuthorized
                     await httpContext.Response.WriteAsync("Invalid Token");

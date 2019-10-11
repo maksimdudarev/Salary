@@ -57,18 +57,5 @@ namespace MD.Salary.WebApi.Infrastructure.EFRepositories
             _dbContext.Tokens.Remove(item);
             return _dbContext.SaveChangesAsync();
         }
-
-        public bool CheckValidUserKey(string value)
-        {
-            var item = _dbContext.Tokens.FirstOrDefaultAsync(s => s.Value == value);
-            if (item == null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
     }
 }
