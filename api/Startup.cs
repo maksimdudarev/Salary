@@ -7,7 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Infrastructure;
+using MD.Salary.WebApi.Infrastructure.EFRepositories;
 using MD.Salary.WebApi.Models;
+using MD.Salary.WebApi.Middleware;
 
 namespace MD.Salary.WebApi
 {
@@ -28,6 +30,7 @@ namespace MD.Salary.WebApi
                 options.UseSqlite(connection));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddScoped<IEmployeeRepository, EFEmployeeRepository>();
+            services.AddScoped<IUserRepository, EFUserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +47,13 @@ namespace MD.Salary.WebApi
                 // production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
+            app.UseWhen(context => !(
+                context.Request.Path.StartsWithSegments("/api/authentication/register") |
+                context.Request.Path.StartsWithSegments("/api/authentication/login")), appBuilder =>
+            {
+                appBuilder.UseAuthenticationMiddleware();
+            });
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
