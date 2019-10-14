@@ -88,7 +88,7 @@ namespace MD.Salary.WebApi.Controllers
 
         // PUT: api/Employees/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(long id, Employee item)
+        public async Task<IActionResult> UpdateEmployee(long id, [FromBody] Employee item)
         {
             if (id != item.ID)
             {
