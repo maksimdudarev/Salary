@@ -23,19 +23,11 @@ namespace MD.Salary.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-
-
-
-
-
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             var connection = Constants.ConnectionStringApi;
             services.AddDbContext<EmployeeContext>(options =>
                 options.UseSqlite(connection));
-            services.AddScoped<IEmployeeRepository,
-                EFEmployeeRepository>();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddScoped<IEmployeeRepository, EFEmployeeRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
