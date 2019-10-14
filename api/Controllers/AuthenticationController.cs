@@ -1,5 +1,6 @@
 ﻿using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
+using MD.Salary.WebApi.Middleware;
 using Microsoft.AspNetCore.Mvc;
 using Sodium;
 using System;
@@ -75,12 +76,8 @@ namespace MD.Salary.WebApi.Controllers
         [HttpDelete("logout")]
         public async Task<IActionResult> Logout()
         {
-            var value = Request.Headers["authorization"].ToString().Split(null).Last();
-            var item = await _repository.GetTokenByValueAsync(value);
-            if (item == null)
-            {
-                return NotFound();
-            }
+            HttpContext.Items.TryGetValue(AuthenticationMiddleware.AuthenticationMiddlewareKey, out var middlewareValue);
+            var item = (Token)middlewareValue;
             await _repository.DeleteTokenAsync(item);
             return Ok();
         }

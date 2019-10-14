@@ -10,32 +10,33 @@ namespace MD.Salary.WebApi.Middleware
     public class AuthenticationMiddleware
     {
         private readonly RequestDelegate _next;
+        public static readonly object AuthenticationMiddlewareKey = new object();
 
         public AuthenticationMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
-        public async Task Invoke(HttpContext httpContext, IUserRepository repo)
+        public async Task Invoke(HttpContext httpContext, IUserRepository _repository)
         {
             var header = "Authorization";
 
             if (!httpContext.Request.Headers.Keys.Contains(header))
             {
-                httpContext.Response.StatusCode = 400; //Bad Request                
-                await httpContext.Response.WriteAsync("Token is missing");
+                httpContext.Response.StatusCode = 400;
                 return;
             }
             else
             {
                 var value = httpContext.Request.Headers[header].ToString().Split(null).Last();
-                var item = await repo.GetTokenByValueAsync(value);
+                var item = await _repository.GetTokenByValueAsync(value);
                 if (item == null)
                 {
-                    httpContext.Response.StatusCode = 401; //UnAuthorized
-                    await httpContext.Response.WriteAsync("Invalid Token");
+                    httpContext.Response.StatusCode = 
+                        httpContext.Request.Path.ToString() == "/api/authentication/logout" ? 404 : 401;
                     return;
                 }
+                httpContext.Items[AuthenticationMiddlewareKey] = item;
             }
 
             await _next.Invoke(httpContext);
