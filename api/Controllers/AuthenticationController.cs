@@ -65,7 +65,7 @@ namespace MD.Salary.WebApi.Controllers
                 return NotFound();
             }
             var token = new Token { 
-                UserID = user.ID, 
+                User = user.ID, 
                 Value = Convert.ToBase64String(SecretBox.GenerateKey())
             };
             await _repository.AddTokenAsync(token);

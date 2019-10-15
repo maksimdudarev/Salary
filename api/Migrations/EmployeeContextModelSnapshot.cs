@@ -41,13 +41,26 @@ namespace MD.Salary.WebApi.Migrations
                     b.ToTable("Employees");
                 });
 
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Role", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Token", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("UserID");
+                    b.Property<long>("User");
 
                     b.Property<string>("Value");
 
@@ -65,6 +78,8 @@ namespace MD.Salary.WebApi.Migrations
                     b.Property<string>("Name");
 
                     b.Property<string>("Password");
+
+                    b.Property<long>("Role");
 
                     b.HasKey("ID");
 
