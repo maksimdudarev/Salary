@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MD.Salary.WebApi.Migrations
 {
     [DbContext(typeof(EmployeeContext))]
-    [Migration("20191015091156_ApiNamespaces")]
-    partial class ApiNamespaces
+    [Migration("20191015131543_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
