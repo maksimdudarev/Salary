@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Infrastructure;
 using MD.Salary.WebApi.Infrastructure.EFRepositories;
-using MD.Salary.WebApi.Models;
 using MD.Salary.WebApi.Middleware;
 
 namespace MD.Salary.WebApi
@@ -25,9 +23,8 @@ namespace MD.Salary.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = Constants.ConnectionStringApi;
-            services.AddDbContext<EmployeeContext>(options =>
-                options.UseSqlite(connection));
+            var connection = @"Server=(localdb)\mssqllocaldb;Database=employee;Trusted_Connection=True;ConnectRetryCount=0";
+            services.AddDbContext<EmployeeContext>(options => options.UseSqlServer(connection));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddScoped<IEmployeeRepository, EFEmployeeRepository>();
             services.AddScoped<IUserRepository, EFUserRepository>();

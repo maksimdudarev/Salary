@@ -2,6 +2,7 @@
 using MD.Salary.WebApi.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MD.Salary.WebApi.Migrations
@@ -13,12 +14,15 @@ namespace MD.Salary.WebApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Employee", b =>
                 {
                     b.Property<long>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Group");
 
@@ -40,7 +44,8 @@ namespace MD.Salary.WebApi.Migrations
             modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Token", b =>
                 {
                     b.Property<long>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<long>("UserID");
 
@@ -54,7 +59,8 @@ namespace MD.Salary.WebApi.Migrations
             modelBuilder.Entity("MD.Salary.WebApi.Core.Models.User", b =>
                 {
                     b.Property<long>("ID")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name");
 

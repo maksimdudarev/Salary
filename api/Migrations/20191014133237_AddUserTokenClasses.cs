@@ -1,34 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MD.Salary.WebApi.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class AddUserTokenClasses : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Employees",
-                columns: table => new
-                {
-                    ID = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: false),
-                    HireDate = table.Column<long>(nullable: false),
-                    Group = table.Column<string>(nullable: true),
-                    SalaryBase = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
-                    SuperiorID = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Employees", x => x.ID);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Tokens",
                 columns: table => new
                 {
                     ID = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserID = table.Column<long>(nullable: false),
                     Value = table.Column<string>(nullable: true)
                 },
@@ -42,7 +26,7 @@ namespace MD.Salary.WebApi.Migrations
                 columns: table => new
                 {
                     ID = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true)
                 },
@@ -54,9 +38,6 @@ namespace MD.Salary.WebApi.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Employees");
-
             migrationBuilder.DropTable(
                 name: "Tokens");
 
