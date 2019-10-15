@@ -16,10 +16,48 @@ namespace MD.Salary.WebApi.Demo
                     DbContextOptions<EmployeeContext>>()))
             {
                 // Look for any items.
-                if (context.Employees.Any())
+                if (context.Employees.Any() & context.Users.Any() & context.Tokens.Any())
                 {
                     return;   // DB has been seeded
                 }
+
+                context.Tokens.AddRange(
+                    new Token
+                    { 
+                        UserID = 1,
+                        Value = "ZIarF0ni+9lUOdL1AudRYMxR58cqJzxEcgbdJpzzWbg="
+                    }
+                );
+
+                context.Users.AddRange(
+                    new User
+                    {
+                        Name = "superuser@gmail.com",
+                        Password = "$7$F6....0....KoO3uekRvftkTrewf8WQlUAQcuoKj8lhJOC5ejmhXq8$U5DbQolT7i2XBQGdooj9yzIpkA3XbcuMB/2Jis5Xvx5"
+                        //superuser
+                    },
+
+                    new User
+                    {
+                        Name = "johnsmith@gmail.com",
+                        Password = "$7$F6....0....PNA7h/KEfA6m.AxZWyxruDiwd0Go8k1SwM4di8qmUZC$DzpaqAfFIobjBnRh65jImotb.Fwcm.i9xucLnmC9oe."
+                        //johnsmith0
+                    },
+
+                    new User
+                    {
+                        Name = "billgates@gmail.com",
+                        Password = "$7$F6....0....vImk8.oLVGxPKipe7k6HBIo9raTbbgrXO.o6ix4fQH7$vpN/2YU8CKCe39aHSk5PqUWKA0cKQLZR8Sl0n1SWPKB"
+                        //billgates1
+                    },
+
+                    new User
+                    {
+                        Name = "donaldtrump@gmail.com",
+                        Password = "$7$F6....0....C40wZ7UAIhDofJi05U396RkXEWZ8/ngXjqEC267Rjw8$AT631EExMySUosY2ov3iT2Azc/LENMF964oXrdeGca5"
+                        //donaldtrump12345
+                    }
+                );
 
                 context.Employees.AddRange(
                     new Employee
