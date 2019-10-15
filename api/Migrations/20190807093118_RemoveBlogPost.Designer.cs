@@ -3,13 +3,15 @@ using MD.Salary.WebApi.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MD.Salary.WebApi.Migrations
 {
     [DbContext(typeof(EmployeeContext))]
-    partial class EmployeeContextModelSnapshot : ModelSnapshot
+    [Migration("20190807093118_RemoveBlogPost")]
+    partial class RemoveBlogPost
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,36 +39,6 @@ namespace MD.Salary.WebApi.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("MD.Salary.WebApi.Models.Token", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<long>("UserID");
-
-                    b.Property<string>("Value");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Tokens");
-                });
-
-            modelBuilder.Entity("MD.Salary.WebApi.Models.User", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Password");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }

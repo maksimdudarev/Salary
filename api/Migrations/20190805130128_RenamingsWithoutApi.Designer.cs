@@ -3,19 +3,36 @@ using MD.Salary.WebApi.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MD.Salary.WebApi.Migrations
 {
     [DbContext(typeof(EmployeeContext))]
-    partial class EmployeeContextModelSnapshot : ModelSnapshot
+    [Migration("20190805130128_RenamingsWithoutApi")]
+    partial class RenamingsWithoutApi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("MD.Salary.WebApi.Models.Blog", b =>
+                {
+                    b.Property<int>("BlogId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Number");
+
+                    b.Property<string>("Url");
+
+                    b.HasKey("BlogId");
+
+                    b.ToTable("Blogs");
+                });
 
             modelBuilder.Entity("MD.Salary.WebApi.Models.Employee", b =>
                 {
@@ -39,34 +56,31 @@ namespace MD.Salary.WebApi.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("MD.Salary.WebApi.Models.Token", b =>
+            modelBuilder.Entity("MD.Salary.WebApi.Models.Post", b =>
                 {
-                    b.Property<long>("ID")
+                    b.Property<int>("PostId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("UserID");
+                    b.Property<int>("BlogId");
 
-                    b.Property<string>("Value");
+                    b.Property<string>("Content");
 
-                    b.HasKey("ID");
+                    b.Property<string>("Title");
 
-                    b.ToTable("Tokens");
+                    b.HasKey("PostId");
+
+                    b.HasIndex("BlogId");
+
+                    b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("MD.Salary.WebApi.Models.User", b =>
+            modelBuilder.Entity("MD.Salary.WebApi.Models.Post", b =>
                 {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Password");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Users");
+                    b.HasOne("MD.Salary.WebApi.Models.Blog", "Blog")
+                        .WithMany("Posts")
+                        .HasForeignKey("BlogId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

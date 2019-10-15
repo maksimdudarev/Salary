@@ -28,8 +28,4 @@
     <PackageReference Include="Sodium.Core" Version="1.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>
