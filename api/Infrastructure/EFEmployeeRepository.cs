@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace MD.Salary.WebApi.Infrastructure
 {
-    public class EFCombineRepository : ICombineRepository
+    public class EFEmployeeRepository : IEmployeeRepository
     {
         private readonly EmployeeContext _dbContext;
 
-        public EFCombineRepository(EmployeeContext dbContext)
+        public EFEmployeeRepository(EmployeeContext dbContext)
         {
             _dbContext = dbContext;
         }

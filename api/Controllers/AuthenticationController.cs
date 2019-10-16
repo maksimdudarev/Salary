@@ -12,9 +12,9 @@ namespace MD.Salary.WebApi.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ICombineRepository _repository;
+        private readonly IEmployeeRepository _repository;
 
-        public AuthenticationController(ICombineRepository repository)
+        public AuthenticationController(IEmployeeRepository repository)
         {
             _repository = repository;
         }

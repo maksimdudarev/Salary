@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MD.Salary.WebApi.Core.Interfaces
 {
-    public interface ICombineRepository
+    public interface IEmployeeRepository
     {
         Task<Employee> GetEmployeeByIdAsync(long id);
         Task<List<Employee>> EmployeeListBySearhstringAsync(string searchString = "");

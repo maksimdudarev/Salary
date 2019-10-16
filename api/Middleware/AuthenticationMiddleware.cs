@@ -17,7 +17,7 @@ namespace MD.Salary.WebApi.Middleware
             _next = next;
         }
 
-        public async Task Invoke(HttpContext httpContext, ICombineRepository _repository)
+        public async Task Invoke(HttpContext httpContext, IEmployeeRepository _repository)
         {
             var header = "Authorization";
 
