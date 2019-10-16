@@ -6,7 +6,9 @@ namespace MD.Salary.WebApi.Core.Models
 {
     public class Employee
     {
-        public long ID { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [ForeignKey(nameof(User))]
+        public long UserId { get; set; }
         [Required]
         public string Name { get; set; }
         public long HireDate { get; set; }

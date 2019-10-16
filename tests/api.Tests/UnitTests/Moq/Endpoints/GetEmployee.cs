@@ -12,7 +12,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
         {
             Employee existingItem = new Employee()
             {
-                ID = 1001,
+                UserId =  1001,
                 Name = "CreatedItemName",
             };
             _repository.Setup(repo => repo.GetEmployeeByIdAsync(1001)).ReturnsAsync(existingItem);

@@ -16,9 +16,9 @@ namespace MD.Salary.WebApi.Infrastructure
             _dbContext = dbContext;
         }
 
-        public Task<Employee> GetEmployeeByIdAsync(long id)
+        public Task<Employee> GetEmployeeByIdAsync(long userId)
         {
-            return _dbContext.Employees.FirstOrDefaultAsync(s => s.ID == id);
+            return _dbContext.Employees.FirstOrDefaultAsync(s => s.UserId == userId);
         }
 
         public Task<List<Employee>> EmployeeListBySearhstringAsync(string searchString)

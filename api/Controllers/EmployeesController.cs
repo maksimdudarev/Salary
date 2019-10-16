@@ -89,14 +89,14 @@ namespace MD.Salary.WebApi.Controllers
                 return BadRequest(ModelState);
             }
             await _repository.AddEmployeeAsync(item);
-            return CreatedAtAction(nameof(GetEmployee), new { id = item.ID }, item);
+            return CreatedAtAction(nameof(GetEmployee), new { userId = item.UserId }, item);
         }
 
         // PUT: api/Employees/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(long id, [FromBody] Employee item)
+        public async Task<IActionResult> UpdateEmployee(long userId, [FromBody] Employee item)
         {
-            if (id != item.ID)
+            if (userId != item.UserId)
             {
                 return BadRequest();
             }
