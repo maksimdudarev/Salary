@@ -15,7 +15,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
                 ID = 1001,
                 Name = "CreatedItemName",
             };
-            _repository.Setup(repo => repo.GetByIdAsync(1001)).ReturnsAsync(existingItem);
+            _repository.Setup(repo => repo.GetEmployeeByIdAsync(1001)).ReturnsAsync(existingItem);
         }
 
         [Fact]

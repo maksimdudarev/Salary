@@ -22,7 +22,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
 
         public Index()
         {
-            _repository.Setup(repo => repo.ListBySearhstringAsync("")).ReturnsAsync(GetTestEmployees());
+            _repository.Setup(repo => repo.EmployeeListBySearhstringAsync("")).ReturnsAsync(GetTestEmployees());
         }
 
         [Fact]
