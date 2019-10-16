@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MD.Salary.WebApi.Application;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
+using MD.Salary.WebApi.Middleware;
 
 namespace MD.Salary.WebApi.Controllers
 {
@@ -50,6 +51,11 @@ namespace MD.Salary.WebApi.Controllers
         [HttpGet("{id}/salary")]
         public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
         {
+            HttpContext.Items.TryGetValue(AuthenticationMiddleware.AuthenticationMiddlewareKey, out var middlewareValue);
+            var token = (Token)middlewareValue;
+            var userid = token.User;
+            
+
             var items = await _repository.ListBySearhstringAsync();
             var program = new WebApiProgram(items, salaryDate, id);
             var salary = program.GetSalaryById();

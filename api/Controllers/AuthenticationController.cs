@@ -4,7 +4,6 @@ using MD.Salary.WebApi.Middleware;
 using Microsoft.AspNetCore.Mvc;
 using Sodium;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MD.Salary.WebApi.Controllers
