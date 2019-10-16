@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Infrastructure;
-using MD.Salary.WebApi.Infrastructure.EFRepositories;
 using MD.Salary.WebApi.Middleware;
 
 namespace MD.Salary.WebApi
@@ -26,8 +25,6 @@ namespace MD.Salary.WebApi
             var connection = @"Server=(localdb)\mssqllocaldb;Database=employee;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<EmployeeContext>(options => options.UseSqlServer(connection));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddScoped<IEmployeeRepository, EFEmployeeRepository>();
-            services.AddScoped<IUserRepository, EFUserRepository>();
             services.AddScoped<ICombineRepository, EFCombineRepository>();
         }
 
