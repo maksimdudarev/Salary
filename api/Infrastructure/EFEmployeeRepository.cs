@@ -16,9 +16,9 @@ namespace MD.Salary.WebApi.Infrastructure
             _dbContext = dbContext;
         }
 
-        public Task<Employee> GetEmployeeByIdAsync(long userId)
+        public Task<Employee> GetEmployeeByIdAsync(long id)
         {
-            return _dbContext.Employees.FirstOrDefaultAsync(s => s.UserId == userId);
+            return _dbContext.Employees.FirstOrDefaultAsync(s => s.UserId == id);
         }
 
         public Task<List<Employee>> EmployeeListBySearhstringAsync(string searchString)
@@ -90,6 +90,11 @@ namespace MD.Salary.WebApi.Infrastructure
         {
             _dbContext.Tokens.Remove(item);
             return _dbContext.SaveChangesAsync();
+        }
+
+        public Task<Role> GetRoleByIdAsync(long id)
+        {
+            return _dbContext.Roles.FirstOrDefaultAsync(s => s.ID == id);
         }
     }
 }

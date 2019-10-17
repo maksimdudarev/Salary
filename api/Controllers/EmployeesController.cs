@@ -52,10 +52,13 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
         {
             HttpContext.Items.TryGetValue(AuthenticationMiddleware.AuthenticationMiddlewareKey, out var middlewareValue);
-            var token = (Token)middlewareValue;
-            var userid = token.User;
-            
-
+            var userid = ((Token)middlewareValue).User;
+            var user = await _repository.GetUserByIdAsync(userid);
+            var role = await _repository.GetRoleByIdAsync(user.Role);
+            if (!(userid == id || role.Name == "superuser"))
+            {
+                return Unauthorized();
+            }
             var items = await _repository.EmployeeListBySearhstringAsync();
             var program = new WebApiProgram(items, salaryDate, id);
             var salary = program.GetSalaryById();
@@ -89,14 +92,14 @@ namespace MD.Salary.WebApi.Controllers
                 return BadRequest(ModelState);
             }
             await _repository.AddEmployeeAsync(item);
-            return CreatedAtAction(nameof(GetEmployee), new { userId = item.UserId }, item);
+            return CreatedAtAction(nameof(GetEmployee), new { id = item.UserId }, item);
         }
 
         // PUT: api/Employees/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(long userId, [FromBody] Employee item)
+        public async Task<IActionResult> UpdateEmployee(long id, [FromBody] Employee item)
         {
-            if (userId != item.UserId)
+            if (id != item.UserId)
             {
                 return BadRequest();
             }

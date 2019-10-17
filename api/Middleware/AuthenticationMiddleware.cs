@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace MD.Salary.WebApi.Middleware
@@ -23,7 +24,7 @@ namespace MD.Salary.WebApi.Middleware
 
             if (!httpContext.Request.Headers.Keys.Contains(header))
             {
-                httpContext.Response.StatusCode = 400;
+                httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return;
             }
             else
@@ -33,7 +34,8 @@ namespace MD.Salary.WebApi.Middleware
                 if (item == null)
                 {
                     httpContext.Response.StatusCode = 
-                        httpContext.Request.Path.ToString() == "/api/authentication/logout" ? 404 : 401;
+                        httpContext.Request.Path.ToString() == "/api/authentication/logout" ? 
+                        (int)HttpStatusCode.NotFound : (int)HttpStatusCode.Unauthorized;
                     return;
                 }
                 httpContext.Items[AuthenticationMiddlewareKey] = item;
