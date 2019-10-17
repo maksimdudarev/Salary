@@ -83,7 +83,7 @@ namespace MD.Salary.WebApi.Demo
                         HireDate = 1115251200,
                         Group = "Employee",
                         SalaryBase = 15M,
-                        SuperiorID = 2
+                        SuperiorID = 3
                     },
 
                     new Employee
@@ -93,7 +93,7 @@ namespace MD.Salary.WebApi.Demo
                         HireDate = 1183766400,
                         Group = "Manager",
                         SalaryBase = 30M,
-                        SuperiorID = 3
+                        SuperiorID = 4
                     },
 
                     new Employee
@@ -103,7 +103,7 @@ namespace MD.Salary.WebApi.Demo
                         HireDate = 1386720000,
                         Group = "Salesman",
                         SalaryBase = 35M,
-                        SuperiorID = 5
+                        SuperiorID = 6
                     },
 
                     new Employee
@@ -113,7 +113,7 @@ namespace MD.Salary.WebApi.Demo
                         HireDate = 1018224000,
                         Group = "Employee",
                         SalaryBase = 20M,
-                        SuperiorID = 3
+                        SuperiorID = 4
                     },
 
                     new Employee
@@ -133,7 +133,7 @@ namespace MD.Salary.WebApi.Demo
                         HireDate = 168652800,
                         Group = "Salesman",
                         SalaryBase = 25M,
-                        SuperiorID = 2
+                        SuperiorID = 3
                     },
 
                     new Employee
@@ -143,7 +143,7 @@ namespace MD.Salary.WebApi.Demo
                         HireDate = 1359590400,
                         Group = "Employee",
                         SalaryBase = 10M,
-                        SuperiorID = 6
+                        SuperiorID = 7
                     },
 
                     new Employee
@@ -153,7 +153,7 @@ namespace MD.Salary.WebApi.Demo
                         HireDate = 978307200,
                         Group = "Manager",
                         SalaryBase = 45M,
-                        SuperiorID = 3
+                        SuperiorID = 4
                     }
                 );
                 context.SaveChanges();
