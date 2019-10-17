@@ -1,5 +1,7 @@
 ﻿using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
+using MD.Salary.WebApi.Middleware;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,6 +70,15 @@ namespace MD.Salary.WebApi.Infrastructure
         {
             _dbContext.Users.Add(item);
             return _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> CheckUserAsync(HttpContext httpContext, long id)
+        {
+            httpContext.Items.TryGetValue(AuthenticationMiddleware.AuthenticationMiddlewareKey, out var middlewareValue);
+            var userId = ((Token)middlewareValue).User;
+            var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.ID == userId);
+            var role = await _dbContext.Roles.FirstOrDefaultAsync(s => s.ID == user.Role);
+            return userId == id || role.Name == "superuser";
         }
 
         public Task<Token> GetTokenByValueAsync(string value)

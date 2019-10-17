@@ -51,11 +51,8 @@ namespace MD.Salary.WebApi.Controllers
         [HttpGet("{id}/salary")]
         public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
         {
-            HttpContext.Items.TryGetValue(AuthenticationMiddleware.AuthenticationMiddlewareKey, out var middlewareValue);
-            var userid = ((Token)middlewareValue).User;
-            var user = await _repository.GetUserByIdAsync(userid);
-            var role = await _repository.GetRoleByIdAsync(user.Role);
-            if (!(userid == id || role.Name == "superuser"))
+            var check = await _repository.CheckUserAsync(HttpContext, id);
+            if (!check)
             {
                 return Unauthorized();
             }
@@ -73,6 +70,11 @@ namespace MD.Salary.WebApi.Controllers
         [HttpGet("{id}/subs")]
         public async Task<IActionResult> GetEmployeeSubs(long id, long salaryDate)
         {
+            var check = await _repository.CheckUserAsync(HttpContext, id);
+            if (!check)
+            {
+                return Unauthorized();
+            }
             var items = await _repository.EmployeeListBySearhstringAsync();
             var program = new WebApiProgram(items, salaryDate, id);
             var salary = program.GetSubordinate();

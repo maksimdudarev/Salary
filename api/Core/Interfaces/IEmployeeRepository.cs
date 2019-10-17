@@ -1,4 +1,5 @@
 ﻿using MD.Salary.WebApi.Core.Models;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace MD.Salary.WebApi.Core.Interfaces
         Task<User> GetUserByNameAsync(string name);
         Task<List<User>> UserListAsync();
         Task AddUserAsync(User item);
+        Task<bool> CheckUserAsync(HttpContext httpContext, long id);
         Task<Token> GetTokenByValueAsync(string value);
         Task<List<Token>> TokenListAsync();
         Task AddTokenAsync(Token item);
