@@ -6,6 +6,5 @@
         public string Name { get; set; }
         public string Password { get; set; }
         public long Role { get; set; }
-        public long Employee { get; set; }
     }
 }

@@ -8,6 +8,7 @@ namespace MD.Salary.WebApi.Core.Models
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         [ForeignKey(nameof(User))]
+        [Column(Order = 0)]
         public long UserId { get; set; }
         [Required]
         public string Name { get; set; }
