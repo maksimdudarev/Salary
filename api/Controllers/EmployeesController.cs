@@ -51,8 +51,9 @@ namespace MD.Salary.WebApi.Controllers
         [HttpGet("{id}/salary")]
         public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
         {
-            var check = await _repository.CheckUserAsync(HttpContext, id);
-            if (!check)
+            var checkId = await _repository.CheckUserAsync(HttpContext, id);
+            var checkRole = await _repository.CheckRoleAsync(HttpContext);
+            if (!(checkId || checkRole))
             {
                 return Unauthorized();
             }
@@ -70,8 +71,9 @@ namespace MD.Salary.WebApi.Controllers
         [HttpGet("{id}/subs")]
         public async Task<IActionResult> GetEmployeeSubs(long id, long salaryDate)
         {
-            var check = await _repository.CheckUserAsync(HttpContext, id);
-            if (!check)
+            var checkId = await _repository.CheckUserAsync(HttpContext, id);
+            var checkRole = await _repository.CheckRoleAsync(HttpContext);
+            if (!(checkId || checkRole))
             {
                 return Unauthorized();
             }

@@ -3,6 +3,7 @@ using MD.Salary.WebApi.Core.Models;
 using MD.Salary.WebApi.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -74,11 +75,29 @@ namespace MD.Salary.WebApi.Infrastructure
 
         public async Task<bool> CheckUserAsync(HttpContext httpContext, long id)
         {
+            var user = await GetUserByTokenAsync(httpContext);
+            return user.ID == id;
+        }
+
+        public async Task<bool> CheckRoleAsync(HttpContext httpContext)
+        {
+            var role = await GetRoleByTokenAsync(httpContext);
+            return role.Name == "superuser";
+        }
+
+        private async Task<User> GetUserByTokenAsync(HttpContext httpContext)
+        {
             httpContext.Items.TryGetValue(AuthenticationMiddleware.AuthenticationMiddlewareKey, out var middlewareValue);
             var userId = ((Token)middlewareValue).User;
             var user = await _dbContext.Users.FirstOrDefaultAsync(s => s.ID == userId);
+            return user;
+        }
+
+        private async Task<Role> GetRoleByTokenAsync(HttpContext httpContext)
+        {
+            var user = await GetUserByTokenAsync(httpContext);
             var role = await _dbContext.Roles.FirstOrDefaultAsync(s => s.ID == user.Role);
-            return userId == id || role.Name == "superuser";
+            return role;
         }
 
         public Task<Token> GetTokenByValueAsync(string value)
