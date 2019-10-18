@@ -4,12 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MD.Salary.WebApi.Migrations
 {
     [DbContext(typeof(EmployeeContext))]
-    [Migration("20191014133237_AddUserTokenClasses")]
-    partial class AddUserTokenClasses
+    [Migration("20191017063829_UsersDelEmployee")]
+    partial class UsersDelEmployee
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,35 +20,47 @@ namespace MD.Salary.WebApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("MD.Salary.WebApi.Models.Employee", b =>
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Employee", b =>
                 {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<long>("UserId");
 
                     b.Property<string>("Group");
 
                     b.Property<long>("HireDate");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<decimal>("SalaryBase")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<long>("SuperiorID");
 
-                    b.HasKey("ID");
+                    b.HasKey("UserId");
 
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("MD.Salary.WebApi.Models.Token", b =>
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Role", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("UserID");
+                    b.Property<string>("Name");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Token", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("User");
 
                     b.Property<string>("Value");
 
@@ -56,7 +69,7 @@ namespace MD.Salary.WebApi.Migrations
                     b.ToTable("Tokens");
                 });
 
-            modelBuilder.Entity("MD.Salary.WebApi.Models.User", b =>
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.User", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -65,6 +78,8 @@ namespace MD.Salary.WebApi.Migrations
                     b.Property<string>("Name");
 
                     b.Property<string>("Password");
+
+                    b.Property<long>("Role");
 
                     b.HasKey("ID");
 

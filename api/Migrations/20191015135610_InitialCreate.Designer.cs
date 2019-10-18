@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MD.Salary.WebApi.Migrations
 {
     [DbContext(typeof(EmployeeContext))]
-    [Migration("20190719172039_InitialCreate")]
+    [Migration("20191015135610_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +20,7 @@ namespace MD.Salary.WebApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("MD.Salary.ConsoleApp.Models.EmployeeDB", b =>
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Employee", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -29,7 +30,8 @@ namespace MD.Salary.WebApi.Migrations
 
                     b.Property<long>("HireDate");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<decimal>("SalaryBase")
                         .HasColumnType("decimal(18, 2)");
@@ -41,46 +43,49 @@ namespace MD.Salary.WebApi.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("MD.Salary.WebApi.Models.Blog", b =>
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Role", b =>
                 {
-                    b.Property<int>("BlogId")
+                    b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Number");
+                    b.Property<string>("Name");
 
-                    b.Property<string>("Url");
+                    b.HasKey("ID");
 
-                    b.HasKey("BlogId");
-
-                    b.ToTable("Blogs");
+                    b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("MD.Salary.WebApi.Models.Post", b =>
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.Token", b =>
                 {
-                    b.Property<int>("PostId")
+                    b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("BlogId");
+                    b.Property<long>("User");
 
-                    b.Property<string>("Content");
+                    b.Property<string>("Value");
 
-                    b.Property<string>("Title");
+                    b.HasKey("ID");
 
-                    b.HasKey("PostId");
-
-                    b.HasIndex("BlogId");
-
-                    b.ToTable("Posts");
+                    b.ToTable("Tokens");
                 });
 
-            modelBuilder.Entity("MD.Salary.WebApi.Models.Post", b =>
+            modelBuilder.Entity("MD.Salary.WebApi.Core.Models.User", b =>
                 {
-                    b.HasOne("MD.Salary.WebApi.Models.Blog", "Blog")
-                        .WithMany("Posts")
-                        .HasForeignKey("BlogId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Password");
+
+                    b.Property<long>("Role");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }
