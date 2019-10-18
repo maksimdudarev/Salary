@@ -13,16 +13,16 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
         {
             var items = new List<Employee>
             {
-                new Employee() { ID = 1001, Name = "Orange Juice", Group="Orange Tree", SalaryBase = 5.00M },
-                new Employee() { ID = 1002, Name = "Diary Milk", Group="Cow", SalaryBase = 4.00M },
-                new Employee() { ID = 1003, Name = "Frozen Pizza", Group="Uncle Mickey", SalaryBase = 12.00M }
+                new Employee() { UserId =  1001, Name = "Orange Juice", Group="Orange Tree", SalaryBase = 5.00M },
+                new Employee() { UserId =  1002, Name = "Diary Milk", Group="Cow", SalaryBase = 4.00M },
+                new Employee() { UserId =  1003, Name = "Frozen Pizza", Group="Uncle Mickey", SalaryBase = 12.00M }
             };
             return items;
         }
 
         public IndexSalary()
         {
-            _repository.Setup(repo => repo.ListBySearhstringAsync("")).ReturnsAsync(GetTestEmployees());
+            _repository.Setup(repo => repo.EmployeeListBySearhstringAsync("")).ReturnsAsync(GetTestEmployees());
         }
 
         [Fact]
