@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,8 +25,9 @@ namespace MD.Salary.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<EmployeeContext>(opt =>
-                opt.UseSqlite(Constants.ConnectionStringApi));
+            var connection = Constants.ConnectionStringApi;
+            services.AddDbContext<EmployeeContext>(options =>
+                options.UseSqlite(connection));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddScoped<IEmployeeRepository, EFEmployeeRepository>();
             services.AddScoped<IUserRepository, EFUserRepository>();
@@ -40,6 +42,7 @@ namespace MD.Salary.WebApi
             }
             else
             {
+
                 // The default HSTS value is 30 days. You may want to change this for 
                 // production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
@@ -55,6 +58,8 @@ namespace MD.Salary.WebApi
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseHttpsRedirection();
+
+
             app.UseMvc();
         }
     }

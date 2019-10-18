@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MD.Salary.WebApi.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 using Xunit;
 using static MD.Salary.WebApi.Tests.UnitTests.Asyncs;
-using static MD.Salary.WebApi.Tests.UnitTests.Constants;
 
 namespace MD.Salary.WebApi.Tests.UnitTests.Moq
 {
@@ -12,9 +12,14 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
         {
             // Arrange
             _controller.ModelState.AddModelError("Name", "Required");
+            Employee nameMissingItem = new Employee()
+            {
+                Group = "TestGroup",
+                SalaryBase = 12.00M
+            };
 
             // Act
-            var actResult = GetAsyncActionResult(() => _controller.AddEmployee(NameMissingItem));
+            var actResult = GetAsyncActionResult(() => _controller.AddEmployee(nameMissingItem));
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(actResult);
@@ -23,8 +28,17 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
         [Fact]
         public void ReturnsCreatedAtActionResult()
         {
+            // Arrange
+            Employee createdItem = new Employee()
+            {
+                ID = 5000,
+                Name = "CreatedItemName",
+                Group = "TestGroup",
+                SalaryBase = 12.00M
+            };
+
             // Act
-            var actResult = GetAsyncActionResult(() => _controller.AddEmployee(CreatedItem));
+            var actResult = GetAsyncActionResult(() => _controller.AddEmployee(createdItem));
 
             // Assert
             Assert.IsType<CreatedAtActionResult>(actResult);
