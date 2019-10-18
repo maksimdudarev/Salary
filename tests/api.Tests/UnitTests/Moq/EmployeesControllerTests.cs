@@ -1,6 +1,6 @@
-﻿using Moq;
-using MD.Salary.WebApi.Core.Interfaces;
+﻿using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Controllers;
+using Moq;
 
 namespace MD.Salary.WebApi.Tests.UnitTests.Moq
 {
