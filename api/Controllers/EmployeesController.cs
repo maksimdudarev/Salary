@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using MD.Salary.WebApi.Application;
 using MD.Salary.WebApi.Core.Interfaces;
 using MD.Salary.WebApi.Core.Models;
-using MD.Salary.WebApi.Middleware;
 
 namespace MD.Salary.WebApi.Controllers
 {
@@ -30,6 +29,11 @@ namespace MD.Salary.WebApi.Controllers
         [HttpGet("salary")]
         public async Task<IActionResult> IndexSalary(long salaryDate)
         {
+            var checkRole = await _repository.CheckRoleSuperuserAsync(HttpContext);
+            if (!checkRole)
+            {
+                return Unauthorized();
+            }
             var items = await _repository.EmployeeListBySearhstringAsync();
             var program = new WebApiProgram(items, salaryDate);
             return Ok(program.Employees.GetSalaryTotal());
@@ -52,7 +56,7 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<IActionResult> GetEmployeeSalary(long id, long salaryDate)
         {
             var checkId = await _repository.CheckUserAsync(HttpContext, id);
-            var checkRole = await _repository.CheckRoleAsync(HttpContext);
+            var checkRole = await _repository.CheckRoleSuperuserAsync(HttpContext);
             if (!(checkId || checkRole))
             {
                 return Unauthorized();
@@ -72,7 +76,7 @@ namespace MD.Salary.WebApi.Controllers
         public async Task<IActionResult> GetEmployeeSubs(long id, long salaryDate)
         {
             var checkId = await _repository.CheckUserAsync(HttpContext, id);
-            var checkRole = await _repository.CheckRoleAsync(HttpContext);
+            var checkRole = await _repository.CheckRoleSuperuserAsync(HttpContext);
             if (!(checkId || checkRole))
             {
                 return Unauthorized();

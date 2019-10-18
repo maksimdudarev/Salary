@@ -22,6 +22,6 @@ namespace MD.Salary.WebApi.Core.Interfaces
         Task AddTokenAsync(Token item);
         Task DeleteTokenAsync(Token item);
         Task<Role> GetRoleByIdAsync(long id);
-        Task<bool> CheckRoleAsync(HttpContext httpContext);
+        Task<bool> CheckRoleSuperuserAsync(HttpContext httpContext);
     }
 }

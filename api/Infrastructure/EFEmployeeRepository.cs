@@ -3,7 +3,6 @@ using MD.Salary.WebApi.Core.Models;
 using MD.Salary.WebApi.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -79,7 +78,7 @@ namespace MD.Salary.WebApi.Infrastructure
             return user.ID == id;
         }
 
-        public async Task<bool> CheckRoleAsync(HttpContext httpContext)
+        public async Task<bool> CheckRoleSuperuserAsync(HttpContext httpContext)
         {
             var role = await GetRoleByTokenAsync(httpContext);
             return role.Name == "superuser";
