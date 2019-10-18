@@ -31,7 +31,7 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
             // Arrange
             Employee createdItem = new Employee()
             {
-                ID = 5000,
+                UserId =  5000,
                 Name = "CreatedItemName",
                 Group = "TestGroup",
                 SalaryBase = 12.00M

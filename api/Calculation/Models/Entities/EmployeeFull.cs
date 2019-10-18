@@ -19,7 +19,7 @@ namespace MD.Salary.WebApi.Models
         public CalculatorPersonal SalaryPersonal { get; set; }
         public EmployeeFull(Employee employeeDB)
         {
-            ID = employeeDB.ID;
+            ID = employeeDB.UserId;
             Name = employeeDB.Name;
             HireDate = DateTimeOffset.FromUnixTimeSeconds(employeeDB.HireDate).UtcDateTime;
             Enum.TryParse(employeeDB.Group, out Group group);

@@ -24,10 +24,10 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq
             // Arrange
             Employee existingItem = new Employee()
             {
-                ID = 1001,
+                UserId =  1001,
                 Name = "CreatedItemName",
             };
-            _repository.Setup(repo => repo.GetByIdAsync(1001)).ReturnsAsync(existingItem);
+            _repository.Setup(repo => repo.GetEmployeeByIdAsync(1001)).ReturnsAsync(existingItem);
 
             // Act
             var actResult = GetAsyncActionResult(() => _controller.DeleteEmployee(1001));

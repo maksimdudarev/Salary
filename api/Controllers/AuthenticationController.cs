@@ -4,7 +4,6 @@ using MD.Salary.WebApi.Middleware;
 using Microsoft.AspNetCore.Mvc;
 using Sodium;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MD.Salary.WebApi.Controllers
@@ -13,9 +12,9 @@ namespace MD.Salary.WebApi.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IUserRepository _repository;
+        private readonly IEmployeeRepository _repository;
 
-        public AuthenticationController(IUserRepository repository)
+        public AuthenticationController(IEmployeeRepository repository)
         {
             _repository = repository;
         }
@@ -65,7 +64,7 @@ namespace MD.Salary.WebApi.Controllers
                 return NotFound();
             }
             var token = new Token { 
-                UserID = user.ID, 
+                User = user.ID, 
                 Value = Convert.ToBase64String(SecretBox.GenerateKey())
             };
             await _repository.AddTokenAsync(token);
