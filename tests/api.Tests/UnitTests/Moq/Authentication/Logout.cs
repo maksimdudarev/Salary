@@ -12,12 +12,12 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq.Authentication
         public void ReturnsOkResult()
         {
             // Arrange
-            Employee existingItem = new Employee()
+            Token existingItem = new Token()
             {
-                UserId = 1001,
-                Name = "CreatedItemName",
+                ID = 1001,
+                Value = "CreatedItemName",
             };
-            _repository.Setup(repo => repo.GetEmployeeByIdAsync(1001)).ReturnsAsync(existingItem);
+            _repository.Setup(repo => repo.GetTokenByValueAsync("CreatedItemName")).ReturnsAsync(existingItem);
 
             // Act
             var actResult = GetAsyncActionResult(() => _controller.Logout());
