@@ -1,5 +1,6 @@
 ﻿using MD.Salary.WebApi.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using Xunit;
 using static MD.Salary.WebApi.Tests.UnitTests.Asyncs;
 
@@ -23,6 +24,24 @@ namespace MD.Salary.WebApi.Tests.UnitTests.Moq.Authentication
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(actResult);
+        }
+
+        [Fact]
+        public void ReturnsConflictResult()
+        {
+            // Arrange
+            User existingItem = new User()
+            {
+                ID = 1001,
+                Name = "CreatedItemName",
+            };
+            _repository.Setup(repo => repo.GetUserByNameAsync("CreatedItemName")).ReturnsAsync(existingItem);
+
+            // Act
+            var actResult = GetAsyncActionResult(() => _controller.Register(existingItem));
+
+            // Assert
+            Assert.IsType<ConflictResult>(actResult);
         }
 
         [Fact]
