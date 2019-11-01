@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using MD.Salary.WebApi.Core.Models;
 
 namespace MD.Salary.WebApi.Models
 {
@@ -10,8 +12,12 @@ namespace MD.Salary.WebApi.Models
             public ICalculatorSub Sub;
         }
         private Dictionary<Group, Calculators> SalaryDictionary { get; set; }
-        public Factory()
+        private Dictionary<Group, EmployeeFull> EmployeeDictionary { get; set; }
+        private Group Group { get; set; }
+        public Factory(Employee employeeDB)
         {
+            Enum.TryParse(employeeDB.Group, out Group group);
+            Group = group;
             SalaryDictionary = new Dictionary<Group, Calculators> {
                 {Group.Employee, new Calculators {
                     Sub = new CalculatorSubEmployee(
@@ -29,10 +35,19 @@ namespace MD.Salary.WebApi.Models
                     Personal = new CalculatorPersonal(
                         Constants.Salesman) } },
             };
+            EmployeeDictionary = new Dictionary<Group, EmployeeFull> {
+                { Group.Employee, new EmployeeFull(employeeDB) },
+                { Group.Manager, new EmployeeFull(employeeDB) },
+                { Group.Salesman, new EmployeeFull(employeeDB) },
+            };
         }
-        public Calculators GetCalculator(Group group)
+        public Calculators GetCalculator()
         {
-            return SalaryDictionary[group];
+            return SalaryDictionary[Group];
+        }
+        public EmployeeFull GetEmployee()
+        {
+            return EmployeeDictionary[Group];
         }
     }
 }

@@ -11,7 +11,6 @@ namespace MD.Salary.WebApi.Models
         public long ID { get; set; }
         public string Name { get; set; }
         public DateTime HireDate { get; set; }
-        public Group Group { get; set; }
         public decimal SalaryBase { get; set; }
         public long SuperiorID { get; set; }
         public List<EmployeeFull> SubordinateList { get; set; }
@@ -22,11 +21,9 @@ namespace MD.Salary.WebApi.Models
             ID = employeeDB.UserId;
             Name = employeeDB.Name;
             HireDate = DateTimeOffset.FromUnixTimeSeconds(employeeDB.HireDate).UtcDateTime;
-            Enum.TryParse(employeeDB.Group, out Group group);
-            Group = group;
             SalaryBase = employeeDB.SalaryBase;
             SuperiorID = employeeDB.SuperiorID;
-            var calculator = new Factory().GetCalculator(Group);
+            var calculator = new Factory(employeeDB).GetCalculator();
             SalaryPersonal = calculator.Personal;
             SalarySub = calculator.Sub;
         }
@@ -35,10 +32,20 @@ namespace MD.Salary.WebApi.Models
             List<long> subordinateID = employeeList.Where(emp => emp.SuperiorID == ID).Select(emp => emp.ID).ToList();
             SubordinateList = employeeList.Where(emp => subordinateID.Contains(emp.ID)).ToList();
         }
-        public decimal GetSalary(DateTime salaryDate, MemoizationCache salaryCache)
+        public virtual decimal GetSalary(DateTime salaryDate, MemoizationCache salaryCache)
         {
-            decimal salary = SalaryPersonal.GetSalary(SalaryBase, HireDate, salaryDate) + SalarySub.GetSalary(SubordinateList, salaryDate, salaryCache);
+            decimal salary = GetSalaryPersonal(salaryDate) + GetSalarySub(salaryDate, salaryCache);
             salaryCache.Add(ID, salary);
+            return salary;
+        }
+        public decimal GetSalaryPersonal(DateTime salaryDate)
+        {
+            decimal salary = SalaryPersonal.GetSalary(SalaryBase, HireDate, salaryDate);
+            return salary;
+        }
+        public virtual decimal GetSalarySub(DateTime salaryDate, MemoizationCache salaryCache)
+        {
+            decimal salary = SalarySub.GetSalary(SubordinateList, salaryDate, salaryCache);
             return salary;
         }
     }

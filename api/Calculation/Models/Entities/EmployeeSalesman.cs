@@ -5,20 +5,20 @@ using MD.Salary.WebApi.Utilities;
 
 namespace MD.Salary.WebApi.Models
 {
-    public class EmployeeSalesman : EmployeeBase
+    public class EmployeeSalesman : EmployeeFull
     {
-        public List<EmployeeFull> SubordinateList { get; set; }
-        public ICalculatorSub SalarySub { get; set; }
+        //public List<EmployeeFull> SubordinateList { get; set; }
+        //public ICalculatorSub SalarySub { get; set; }
         public EmployeeSalesman(Employee employeeDB) : base(employeeDB)
         {
         }
-        public decimal GetSalary(DateTime salaryDate, MemoizationCache salaryCache)
+        public override decimal GetSalary(DateTime salaryDate, MemoizationCache salaryCache)
         {
             decimal salary = GetSalaryPersonal(salaryDate) + GetSalarySub(salaryDate, salaryCache);
             salaryCache.Add(ID, salary);
             return salary;
         }
-        private decimal GetSalarySub(DateTime salaryDate, MemoizationCache salaryCache)
+        public override decimal GetSalarySub(DateTime salaryDate, MemoizationCache salaryCache)
         {
             decimal salary = SalarySub.GetSalary(SubordinateList, salaryDate, salaryCache);
             return salary;

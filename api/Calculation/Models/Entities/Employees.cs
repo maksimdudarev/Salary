@@ -12,7 +12,7 @@ namespace MD.Salary.WebApi.Application
         public List<EmployeeFull> Items { get; set; } = new List<EmployeeFull>();
         public Employees(List<Employee> employeesDB)
         {
-            foreach (var employeeDB in employeesDB) Items.Add(new EmployeeFull(employeeDB));
+            foreach (var employeeDB in employeesDB) Items.Add(new Factory(employeeDB).GetEmployee());
         }
         public void CalculateSubordinate()
         {
